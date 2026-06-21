@@ -107,11 +107,32 @@
         .cal-day.has-news::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #f04438; border-radius: 50%; }
         .news-display-box { background: #1e2638; padding: 12px; border-radius: 12px; font-size: 13px; min-height: 50px; border-left: 3px solid #f04438; margin-top: 12px; line-height: 1.4; }
         .patterns-grid { display: flex; flex-direction: column; gap: 14px; }
+        
+        /* Security & Admin Styles */
+        .access-screen { text-align: center; padding-top: 80px; display: none !important; }
+        .access-screen.active { display: block !important; }
+        .admin-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #151b28; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .del-btn { color: #f04438; cursor: pointer; font-weight: bold; padding: 4px 8px; border-radius: 4px; background: rgba(240,68,56,0.1); }
+        .del-btn:active { background: rgba(240,68,56,0.2); }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- ЭКРАН БЛОКИРОВКИ ДОСТУПА -->
+        <div class="screen access-screen" id="access-denied-screen">
+            <h2 style="color: #f04438; justify-content: center; font-size: 28px; margin-bottom: 10px;">⛔ Доступ закрыт</h2>
+            <div class="screen-content">
+                <p style="color: #a4b1cd; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">Ваш Telegram ID не найден в списке разрешенных пользователей этого приватного сообщества.</p>
+                <div class="info-item" style="border-left-color: #f04438; background: #1e2638;">
+                    <h4 style="color: #fff; margin-bottom: 4px;">Ваш ID для запроса:</h4>
+                    <p id="denied-telegram-id" style="font-size: 20px; color: #00FF9D; font-weight: bold; letter-spacing: 1px;">Определяется...</p>
+                </div>
+                <p style="font-size: 12px; color: #667085; margin-top: 15px;">Передайте этот ID администратору для получения доступа.</p>
+            </div>
+        </div>
+
         <div class="screen active" id="menu-screen">
             <div class="welcome">Welcome</div>
             <div class="brand-title">VIP COMMUNITY</div>
@@ -184,12 +205,32 @@
                         <input type="number" id="profile-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
                     </div>
                 </div>
+                
+                <!-- АДМИН-КНОПКА ДЛЯ СОЗДАТЕЛЯ -->
+                <div id="admin-link-box" style="display: none; margin-top: 14px;">
+                    <button class="back-btn" style="color: #0c111d; background: #00FF9D; border: none; font-size: 15px;" onclick="switchScreen('admin-panel-screen')">⚙️ Админ-панель</button>
+                </div>
+
                 <div class="target-box" style="margin-top:14px; background:#1e2638;">
                     <h4 style="color:#00FF9D; font-size:13px; margin-bottom:6px;">🧠 Подсказка ИИ по депозиту:</h4>
                     <div class="ai-hint-label" id="ai-profile-hint" style="border:none; padding:0; margin:0;">Загрузка персонального ИИ-анализа рисков...</div>
                 </div>
             </div>
             <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <!-- ПАНЕЛЬ АДМИНИСТРАТОРА -->
+        <div class="screen" id="admin-panel-screen">
+            <h2>⚙️ Админ-панель</h2>
+            <div class="screen-content">
+                <div style="display:flex; gap:8px; margin-bottom:14px;">
+                    <input type="text" id="new-user-id" placeholder="ID нового пользователя" style="flex:1; padding:12px; border-radius:10px; background:#151b28; border:1px solid rgba(255,255,255,0.1); color:#fff; outline:none; font-size: 14px;">
+                    <button onclick="addAllowedUser()" style="background:#00FF9D; color:#0c111d; border:none; border-radius:10px; padding:0 16px; font-weight:bold; cursor:pointer;">Добавить</button>
+                </div>
+                <h4 style="font-size:13px; color:#8592ad; margin-bottom:8px; text-transform: uppercase; letter-spacing: 1px;">Разрешенные ID:</h4>
+                <div class="admin-list" id="admin-users-list"></div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('profile-screen')">← Назад в профиль</button>
         </div>
 
         <div class="screen" id="signals-screen">
@@ -371,6 +412,65 @@
     </div>
 
     <script>
+        // ============================================
+        // ЛОГИКА БЕЗОПАСНОСТИ И АВТОРИЗАЦИИ
+        // ============================================
+        const MASTER_ADMIN = "5817328317"; // Твой ID
+
+        function getAllowedUsers() {
+            return JSON.parse(localStorage.getItem('allowed_users') || "[]");
+        }
+
+        function checkAccess(userId) {
+            if (String(userId) === MASTER_ADMIN) return true;
+            const users = getAllowedUsers();
+            return users.includes(String(userId));
+        }
+
+        window.addAllowedUser = function() {
+            const idInput = document.getElementById('new-user-id');
+            const id = idInput.value.trim();
+            if (!id) return;
+            
+            let users = getAllowedUsers();
+            if (!users.includes(id) && id !== MASTER_ADMIN) {
+                users.push(id);
+                localStorage.setItem('allowed_users', JSON.stringify(users));
+                renderAdminList();
+            }
+            idInput.value = '';
+        };
+
+        window.removeUser = function(id) {
+            let users = getAllowedUsers().filter(u => u !== String(id));
+            localStorage.setItem('allowed_users', JSON.stringify(users));
+            renderAdminList();
+        };
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-users-list');
+            if(!list) return;
+            list.innerHTML = '';
+            
+            // Вывод самого создателя (визуально, удалить нельзя)
+            const masterItem = document.createElement('div');
+            masterItem.className = 'admin-item';
+            masterItem.style.borderColor = '#00FF9D';
+            masterItem.innerHTML = `<span style="color:#00FF9D; font-weight:bold;">${MASTER_ADMIN} (Ты - Владелец)</span> <span></span>`;
+            list.appendChild(masterItem);
+
+            getAllowedUsers().forEach(id => {
+                const item = document.createElement('div');
+                item.className = 'admin-item';
+                item.innerHTML = `<span>ID: ${id}</span> <span class="del-btn" onclick="removeUser('${id}')">Удалить</span>`;
+                list.appendChild(item);
+            });
+        }
+
+        // ============================================
+        // ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
+        // ============================================
+
         document.addEventListener('DOMContentLoaded', () => {
             const GROQ_API_KEY = "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";
             const SERVER_URL = "https://vip-miniapp.onrender.com"; 
@@ -687,14 +787,8 @@
 
             function openPdfViewer(fileName, title) {
                 document.getElementById('viewer-title').innerText = title;
-                // Получаем базовый URL без имени файла
-                const path = window.location.href.split('?')[0].split('#')[0];
-                const baseUrl = path.substring(0, path.lastIndexOf('/'));
-                const fileUrl = baseUrl + '/' + fileName;
-                
-                // Используем Google Docs Viewer для встраивания
-                const viewerUrl = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
-                document.getElementById('book-frame').src = viewerUrl;
+                const fileUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + fileName;
+                document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
                 switchScreen('book-viewer-screen');
             }
 
@@ -826,6 +920,9 @@
             window.switchScreen = switchScreen;
 
             async function init() {
+                let userId = null;
+                let fullName = "Трейдер TEAM";
+
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
                     window.Telegram.WebApp.expand();
@@ -833,15 +930,50 @@
                     const tgData = window.Telegram.WebApp.initDataUnsafe;
                     if (tgData && tgData.user) {
                         const user = tgData.user;
-                        let fullName = user.first_name || "";
+                        userId = String(user.id);
+                        fullName = user.first_name || "";
                         if (user.last_name) fullName += " " + user.last_name;
-                        const usernameEl = document.getElementById('profile-username');
-                        const idEl = document.getElementById('profile-telegram-id');
-                        if (usernameEl) usernameEl.innerText = fullName || "Трейдер TEAM";
-                        if (idEl) idEl.innerText = user.id;
                     }
                 }
+
+                // ============================================
+                // ЗАПУСК ПРОВЕРКИ БЕЗОПАСНОСТИ
+                // ============================================
+                const deniedScreen = document.getElementById('access-denied-screen');
+                const menuScreen = document.getElementById('menu-screen');
+                const deniedIdDisplay = document.getElementById('denied-telegram-id');
+
+                if (userId) {
+                    deniedIdDisplay.innerText = userId;
+
+                    // Если это Владелец (Ты) -> открываем кнопку Админ-панели
+                    if (userId === MASTER_ADMIN) {
+                        const adminBtnBox = document.getElementById('admin-link-box');
+                        if (adminBtnBox) adminBtnBox.style.display = 'block';
+                        renderAdminList();
+                    }
+
+                    // Если пользователя НЕТ в списке разрешенных -> Заблокировать
+                    if (!checkAccess(userId)) {
+                        if (menuScreen) menuScreen.classList.remove('active');
+                        if (deniedScreen) deniedScreen.classList.add('active');
+                        return; // ⛔ ВАЖНО: Останавливаем загрузку остального приложения
+                    }
+                } else {
+                    // Если запустили НЕ из телеграма (ID нет) -> Тоже заблокировать (защита от копирования ссылок)
+                    deniedIdDisplay.innerText = "Неизвестно (Откройте в Telegram)";
+                    if (menuScreen) menuScreen.classList.remove('active');
+                    if (deniedScreen) deniedScreen.classList.add('active');
+                    return; // ⛔ Останавливаем загрузку
+                }
                 
+                // === ЕСЛИ ДОСТУП ЕСТЬ, ГРУЗИМ ДАННЫЕ ПРОФИЛЯ ===
+                const usernameEl = document.getElementById('profile-username');
+                const idEl = document.getElementById('profile-telegram-id');
+                if (usernameEl) usernameEl.innerText = fullName;
+                if (idEl) idEl.innerText = userId;
+                
+                // Загружаем остальной функционал
                 initBalances();
                 loadBooks();
                 window.generateNewsCalendar();
