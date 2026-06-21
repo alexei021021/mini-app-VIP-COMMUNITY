@@ -3,372 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ALIFA VIP</title>
+    <title>VIP COMMUNITY PRO AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0c111d; color: #ffffff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 16px; user-select: none; overflow-x: hidden; }
-        .container { width: 100%; max-width: 420px; }
-        .welcome { font-size: 11px; letter-spacing: 3px; color: #667085; margin-bottom: 4px; text-transform: uppercase; font-weight: 600; }
-        .brand-title { font-size: 32px; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 20px; color: #ffffff; }
-        .balance-card { background: linear-gradient(135deg, #151b28 0%, #1e2638 100%); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
-        .balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .balance-info h5 { font-size: 11px; color: #8592ad; text-transform: uppercase; letter-spacing: 1px; }
-        .pocket-input-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(12, 17, 29, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 4px 10px; margin-top: 6px; }
-        .pocket-input-wrapper span { color: #00FF9D; font-weight: bold; }
-        .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 800; width: 100%; outline: none; }
-        .status-badge { background: linear-gradient(90deg, #00FF9D 0%, #00b36c 100%); color: #0c111d; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; }
-        .ai-management-box { background: rgba(0, 255, 157, 0.04); border: 1px solid rgba(0, 255, 157, 0.15); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .ai-management-box strong { color: #00FF9D; font-size: 15px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 16px; }
-        .card { background: #151b28; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; cursor: pointer; transition: all 0.2s ease; }
-        .card:active { transform: scale(0.96); border-color: #00FF9D; background: #192235; }
-        .icon-circle { width: 54px; height: 54px; border-radius: 50%; background: #1e2638; display: flex; justify-content: center; align-items: center; margin-bottom: 14px; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #e4e7ec; text-align: center; }
-        .screen { display: none !important; }
-        .screen.active { display: block !important; animation: screenFade 0.22s ease-out forwards; }
-        @keyframes screenFade { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        h2 { font-size: 24px; margin-bottom: 18px; color: #00FF9D; display: flex; align-items: center; gap: 8px; }
-        .screen-content { background: #151b28; border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .info-item { padding: 14px; background: #1e2638; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #00FF9D; }
-        .info-item h4 { font-size: 14px; margin-bottom: 4px; color: #fff; }
-        .info-item p { font-size: 13px; color: #8592ad; line-height: 1.4; }
-        .back-btn { width: 100%; padding: 15px; border-radius: 14px; font-size: 14px; font-weight: 700; background: transparent; color: #8592ad; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: all 0.15s ease; margin-top: 8px; }
-        .back-btn:active { background: rgba(255,255,255,0.02); }
-        .tabs-header { display: flex; gap: 10px; margin-bottom: 14px; }
-        .tab-btn { flex: 1; padding: 10px; background: #1e2638; border: 1px solid rgba(255, 255, 255, 0.05); color: #8592ad; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; }
-        .tab-btn.active { background: #00FF9D; color: #0c111d; border-color: #00FF9D; }
+        body { 
+            font-family: 'Montserrat', -apple-system, sans-serif; 
+            background-color: #050810; 
+            color: #ffffff; 
+            min-height: 100vh; 
+            user-select: none; 
+            overflow-x: hidden; 
+        }
+        
+        /* Глобальные неоновые цвета */
+        :root {
+            --neon-green: #00FFAA;
+            --neon-purple: #9D00FF;
+            --neon-red: #FF2E63;
+            --glass-bg: rgba(15, 20, 35, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
+        }
+
+        .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; }
+        
+        /* Настройка фонов для каждого экрана (стеклянный морфизм поверх котировок) */
+        .screen { 
+            display: none !important; 
+            min-height: 100vh; 
+            padding: 30px 20px; 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        #menu-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
+        #profile-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=1080&q=80'); }
+        #bot-selector-screen, #bot-chat-screen, #bot-analysis-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
+        #signals-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1080&q=80'); }
+        #education-screen, #book-viewer-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1080&q=80'); }
+        #sessions-screen, #calendar-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1608222284001-a482ccdf0cd5?auto=format&fit=crop&w=1080&q=80'); }
+        #chat-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1080&q=80'); }
+        #admin-panel-screen, #access-denied-screen { background-image: linear-gradient(rgba(20,5,10,0.9), rgba(20,5,10,0.95)), url('https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1080&q=80'); }
+
+        .screen.active { display: block !important; animation: screenFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes screenFade { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* Типографика */
+        .welcome { font-size: 12px; letter-spacing: 4px; color: var(--neon-green); margin-bottom: 4px; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(0, 255, 170, 0.4); text-align: center; }
+        .brand-title { font-size: 34px; font-weight: 900; letter-spacing: 1px; margin-bottom: 24px; color: #ffffff; text-align: center; text-transform: uppercase; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { font-size: 24px; margin-bottom: 20px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 170, 0.3); }
+
+        /* Основные блоки (круглые/овальные) */
+        .glass-box {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px; /* Сильное скругление */
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.02);
+        }
+
+        /* Баланс */
+        .balance-card { position: relative; overflow: hidden; border: 1px solid rgba(0, 255, 170, 0.3); box-shadow: 0 0 30px rgba(0, 255, 170, 0.15); }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .balance-info h5 { font-size: 11px; color: #a4b1cd; text-transform: uppercase; letter-spacing: 1px; }
+        .pocket-input-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 255, 170, 0.2); border-radius: 50px; padding: 8px 16px; margin-top: 8px; transition: all 0.3s; }
+        .pocket-input-wrapper:focus-within { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 170, 0.3); }
+        .pocket-input-wrapper span { color: var(--neon-green); font-weight: 900; font-size: 18px; }
+        .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 20px; font-weight: 900; width: 100%; outline: none; }
+        
+        .status-badge { background: linear-gradient(90deg, var(--neon-green) 0%, #00b36c 100%); color: #000; padding: 6px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 255, 170, 0.5); }
+        
+        .ai-management-box { background: linear-gradient(90deg, rgba(157,0,255,0.1) 0%, rgba(0,255,170,0.1) 100%); border: 1px solid rgba(0, 255, 170, 0.3); border-radius: 50px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
+        .ai-management-box strong { color: var(--neon-green); font-size: 16px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 255, 170, 0.5); }
+        .server-status-info { font-size: 11px; text-align: center; margin-top: -6px; margin-bottom: 20px; color: #a4b1cd; font-weight: 600; letter-spacing: 1px; }
+
+        /* Сетка Меню */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 10px; }
+        .card { 
+            background: var(--glass-bg); 
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); 
+            border-radius: 40px; 
+            aspect-ratio: 1 / 1.1; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .card:active { transform: scale(0.92); border-color: var(--neon-green); background: rgba(0, 255, 170, 0.1); box-shadow: 0 0 25px rgba(0, 255, 170, 0.3); }
+        .icon-circle { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,255,170,0.15) 0%, rgba(157,0,255,0.15) 100%); display: flex; justify-content: center; align-items: center; margin-bottom: 16px; font-size: 28px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; text-align: center; }
+
+        /* Внутренние экраны */
+        .screen-content { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 40px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--glass-border); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .info-item { padding: 18px; background: rgba(0,0,0,0.3); border-radius: 25px; margin-bottom: 14px; border-left: 4px solid var(--neon-green); position: relative; overflow: hidden; }
+        .info-item::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(90deg, rgba(0,255,170,0.05) 0%, transparent 100%); pointer-events: none; }
+        .info-item h4 { font-size: 14px; margin-bottom: 6px; color: #fff; font-weight: 800; }
+        .info-item p { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
+        
+        /* Кнопки Назад */
+        .back-btn { width: 100%; padding: 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s ease; margin-top: 10px; backdrop-filter: blur(10px); }
+        .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-green); }
+
+        /* Вкладки */
+        .tabs-header { display: flex; gap: 12px; margin-bottom: 16px; }
+        .tab-btn { flex: 1; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: #8592ad; border-radius: 50px; font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; text-align: center; transition: all 0.3s; }
+        .tab-btn.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 170, 0.4); }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .pattern-img { width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255, 255, 255, 0.08); }
-        .ai-mode-selection { display: flex; flex-direction: column; gap: 14px; }
-        .mode-btn { background: linear-gradient(135deg, #1e2638 0%, #151b28 100%); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; text-align: left; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 16px; }
-        .mode-btn:active { border-color: #00FF9D; background: #1d273a; }
-        .mode-icon { font-size: 28px; }
-        .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 2px; }
-        .mode-info p { font-size: 12px; color: #667085; }
-        .search-box { background: #1e2638; border-radius: 12px; padding: 10px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 12px; }
-        .search-input { width: 100%; padding: 10px; background: #151b28; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
-        .search-input:focus { border-color: #00FF9D; }
-        .pairs-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #151b28; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid transparent; }
-        .pair-row:active { border-color: #00FF9D; color: #00FF9D; }
-        .server-status-info { font-size: 11px; text-align: center; margin-top: -6px; margin-bottom: 10px; color: #667085; }
+        .tab-content.active { display: block; animation: fadeUp 0.3s ease forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Списки и Поиск */
+        .ai-mode-selection { display: flex; flex-direction: column; gap: 16px; }
+        .mode-btn { background: var(--glass-bg); border: 1px solid rgba(0, 255, 170, 0.2); border-radius: 35px; padding: 22px; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 18px; backdrop-filter: blur(10px); }
+        .mode-btn:active { border-color: var(--neon-green); background: rgba(0, 255, 170, 0.1); transform: scale(0.96); }
+        .mode-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,255,170,0.2); }
+        .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 4px; font-weight: 800; }
+        .mode-info p { font-size: 12px; color: #a4b1cd; line-height: 1.4; }
+
+        .search-box { background: var(--glass-bg); border-radius: 35px; padding: 14px; border: 1px solid var(--glass-border); margin-bottom: 14px; backdrop-filter: blur(10px); }
+        .search-input { width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; font-size: 14px; outline: none; font-weight: 600; transition: all 0.3s; }
+        .search-input:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); }
         
-        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #080c14; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .radar-container { position: relative; width: 140px; height: 140px; margin-bottom: 20px; }
-        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px dashed rgba(0, 255, 157, 0.2); border-radius: 50%; animation: radarRotate 3s linear infinite; }
-        .radar-line { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; border: 2px solid transparent; border-top-color: #00FF9D; border-radius: 50%; animation: radarRotate 1s cubic-bezier(0.4, 0.1, 0.1, 0.9) infinite; }
-        .radar-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: #00FF9D; border-radius: 50%; box-shadow: 0 0 30px #00FF9D; }
+        .pairs-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-right: 4px; }
+        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
+        .pair-row:active { border-color: var(--neon-green); background: rgba(0,255,170,0.1); transform: scale(0.98); }
+
+        /* Чат */
+        .chat-box { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); border-radius: 35px; padding: 16px; overflow-y: auto; border: 1px solid var(--glass-border); margin-bottom: 12px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); }
+        .chat-msg { max-width: 85%; padding: 14px 18px; border-radius: 25px; margin-bottom: 12px; font-size: 13px; line-height: 1.5; word-wrap: break-word; position: relative; font-weight: 600; }
+        .chat-msg.bot { background: rgba(30, 40, 60, 0.8); color: #fff; align-self: flex-start; border-bottom-left-radius: 5px; border: 1px solid rgba(0,255,170,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .chat-msg.user { background: var(--neon-green); color: #000; align-self: flex-end; border-bottom-right-radius: 5px; box-shadow: 0 4px 15px rgba(0,255,170,0.3); font-weight: 800; }
+        
+        .input-area { display: flex; gap: 10px; align-items: center; background: var(--glass-bg); padding: 10px; border-radius: 50px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .input-area input { flex: 1; padding: 14px 20px; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; font-weight: 600; }
+        .send-btn { background: var(--neon-green); color: #000; border: none; padding: 0 24px; height: 44px; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+        .send-btn:active { transform: scale(0.95); }
+        .attach-btn { background: rgba(255,255,255,0.1); color: #fff; border: none; width: 44px; height: 44px; border-radius: 50%; font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+
+        /* Радар и Анализ (Фуллскрин) */
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 5, 15, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .radar-container { position: relative; width: 200px; height: 200px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
+        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(0, 255, 170, 0.1); border-radius: 50%; animation: radarRotate 2s linear infinite; box-shadow: 0 0 50px rgba(0,255,170,0.1); }
+        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(0,255,170,0.5)); transform-origin: bottom left; border-top-right-radius: 100px; }
+        .radar-line { position: absolute; width: 80%; height: 80%; border: 1px dashed rgba(157,0,255,0.4); border-radius: 50%; animation: radarRotate 4s linear infinite reverse; }
+        .radar-core { position: absolute; width: 40px; height: 40px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 40px var(--neon-green), 0 0 80px var(--neon-green); animation: pulse 1s ease-in-out infinite alternate; }
         @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .radar-status { font-size: 14px; color: #00FF9D; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.2); opacity: 1; } }
+        .radar-status { font-size: 16px; color: var(--neon-green); text-align: center; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px rgba(0,255,170,0.5); }
         
-        .analysis-final { display: none; text-align: center; width: 100%; max-width: 360px; animation: fadeInUp 0.4s ease forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .final-dir { font-size: 36px; font-weight: 900; margin: 10px 0; letter-spacing: 1px; }
-        .final-dir.up { color: #00FF9D; text-shadow: 0 0 30px rgba(0,255,157,0.6); }
-        .final-dir.down { color: #f04438; text-shadow: 0 0 30px rgba(240,68,56,0.6); }
-        .progress-bar-bg { background: #1e2638; height: 8px; border-radius: 4px; overflow: hidden; margin: 12px 0; }
-        .progress-bar-fill { height: 100%; width: 0%; transition: width 1s ease-in-out; }
+        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .final-dir { font-size: 48px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
+        .final-dir.up { color: var(--neon-green); text-shadow: 0 0 40px rgba(0,255,170,0.6); }
+        .final-dir.down { color: var(--neon-red); text-shadow: 0 0 40px rgba(255,46,99,0.6); }
+        .progress-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 50px; overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .progress-bar-fill { height: 100%; width: 0%; transition: width 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 20px currentColor; }
         
-        .ta-dashboard { background: #151b28; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; text-align: left; margin-top: 14px; }
-        .ta-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .ta-dashboard { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 24px; text-align: left; margin-top: 20px; backdrop-filter: blur(10px); }
+        .ta-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); font-weight: 600; }
         .ta-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .ta-label { color: #a4b1cd; }
-        .ta-val { font-weight: bold; color: #fff; }
-        .ta-verdict { font-size: 13px; font-weight: 800; text-transform: uppercase; text-align: center; padding: 6px; border-radius: 8px; margin-top: 10px; }
-        .ta-verdict.buy { background: rgba(0, 255, 157, 0.1); color: #00FF9D; }
-        .ta-verdict.sell { background: rgba(240, 68, 56, 0.1); color: #f04438; }
+        .ta-val { font-weight: 900; color: #fff; }
+        .ta-verdict { font-size: 15px; font-weight: 900; text-transform: uppercase; text-align: center; padding: 14px; border-radius: 50px; margin-top: 16px; letter-spacing: 1px; }
+        .ta-verdict.buy { background: rgba(0, 255, 170, 0.15); color: var(--neon-green); border: 1px solid rgba(0,255,170,0.3); }
+        .ta-verdict.sell { background: rgba(255, 46, 99, 0.15); color: var(--neon-red); border: 1px solid rgba(255,46,99,0.3); }
+
+        /* Обучение и Книги */
+        .book-item { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 30px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        .book-info h4 { font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
+        .book-info p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
+        .read-btn { background: rgba(0,255,170,0.1); color: var(--neon-green); border: 1px solid rgba(0, 255, 170, 0.3); padding: 10px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+        .pdf-frame-box { width: 100%; height: 65vh; border: none; border-radius: 30px; background: #fff; }
+
+        /* Календарь и Сессии */
+        .target-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 35px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05); }
+        .target-input { width: 100%; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,170,0.2); border-radius: 50px; color: #fff; font-size: 15px; outline: none; margin-bottom: 12px; font-weight: 800; text-align: center; transition: all 0.3s; }
+        .target-input:focus { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0,255,170,0.2); }
+        .ai-hint-label { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
         
-        .chat-box { display: flex; flex-direction: column; height: 50vh; background: #111724; border-radius: 16px; padding: 12px; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 12px; }
-        .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; margin-bottom: 10px; font-size: 13px; line-height: 1.4; word-wrap: break-word; position: relative; }
-        .chat-msg.bot { background: #1e2638; color: #e4e7ec; align-self: flex-start; border-left: 3px solid #00FF9D; }
-        .chat-msg.user { background: #00FF9D; color: #0c111d; align-self: flex-end; font-weight: 600; }
-        .chat-img-attach { max-width: 100%; border-radius: 8px; margin-top: 6px; display: block; border: 1px solid rgba(255,255,255,0.1); }
-        .input-area { display: flex; gap: 8px; align-items: center; }
-        .input-area input { flex: 1; padding: 14px; background: #1e2638; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 14px; outline: none; }
-        .input-area input:focus { border-color: #00FF9D; }
-        .send-btn { background: #00FF9D; color: #0c111d; border: none; padding: 0 18px; height: 48px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .attach-btn { background: #1e2638; color: #8592ad; border: 1px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 12px; font-size: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .book-item { background: #1e2638; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; }
-        .book-item:active { border-color: #00FF9D; }
-        .book-info h4 { font-size: 13px; color: #fff; margin-bottom: 2px; }
-        .book-info p { font-size: 11px; color: #667085; }
-        .read-btn { background: rgba(0,255,157,0.1); color: #00FF9D; border: 1px solid rgba(0, 255, 157, 0.2); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; }
-        .pdf-frame-box { width: 100%; height: 65vh; border: none; border-radius: 12px; background: #fff; }
-        .target-box { background: #1e2638; padding: 14px; border-radius: 12px; margin-bottom: 12px; }
-        .target-input { width: 100%; padding: 10px; background: #151b28; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 13px; outline: none; margin-bottom: 8px; }
-        .ai-hint-label { font-size: 12px; color: #a4b1cd; line-height: 1.4; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px; margin-top: 10px; }
-        .cal-header { color: #667085; font-weight: bold; padding-bottom: 4px; }
-        .cal-day { padding: 8px 0; color: #a4b1cd; border-radius: 6px; position: relative; cursor: pointer; background: rgba(255,255,255,0.01); }
-        .cal-day.today { background: #00FF9D !important; color: #0c111d !important; font-weight: bold; }
-        .cal-day.has-news::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #f04438; border-radius: 50%; }
-        .news-display-box { background: #1e2638; padding: 12px; border-radius: 12px; font-size: 13px; min-height: 50px; border-left: 3px solid #f04438; margin-top: 12px; line-height: 1.4; }
-        .patterns-grid { display: flex; flex-direction: column; gap: 14px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 13px; margin-top: 12px; font-weight: 800; }
+        .cal-header { color: var(--neon-purple); font-weight: 900; padding-bottom: 8px; }
+        .cal-day { padding: 12px 0; color: #fff; border-radius: 15px; position: relative; cursor: pointer; background: rgba(255,255,255,0.05); transition: all 0.2s; }
+        .cal-day:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
+        .cal-day.today { background: var(--neon-green) !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,170,0.5); }
+        .cal-day.has-news::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 8px var(--neon-red); }
+        .news-display-box { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 25px; font-size: 13px; font-weight: 600; min-height: 60px; border-left: 4px solid var(--neon-purple); margin-top: 16px; line-height: 1.5; }
         
-        /* Security & Admin Styles */
-        .access-screen { text-align: center; padding-top: 80px; display: none !important; }
-        .access-screen.active { display: block !important; }
-        .admin-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #151b28; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        .del-btn { color: #f04438; cursor: pointer; font-weight: bold; padding: 4px 8px; border-radius: 4px; background: rgba(240,68,56,0.1); }
-        .del-btn:active { background: rgba(240,68,56,0.2); }
+        .pattern-img { width: 100%; border-radius: 20px; margin-top: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        /* Админ-панель */
+        .admin-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.4); border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; font-weight: 800; }
+        .del-btn { color: var(--neon-red); cursor: pointer; font-weight: 900; padding: 6px 12px; border-radius: 50px; background: rgba(255,46,99,0.1); border: 1px solid rgba(255,46,99,0.3); text-transform: uppercase; font-size: 11px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ЭКРАН БЛОКИРОВКИ ДОСТУПА -->
-        <div class="screen access-screen" id="access-denied-screen">
-            <h2 style="color: #f04438; justify-content: center; font-size: 28px; margin-bottom: 10px;">⛔ Доступ закрыт</h2>
-            <div class="screen-content">
-                <p style="color: #a4b1cd; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">Ваш Telegram ID не найден в списке разрешенных пользователей этого приватного сообщества.</p>
-                <div class="info-item" style="border-left-color: #f04438; background: #1e2638;">
-                    <h4 style="color: #fff; margin-bottom: 4px;">Ваш ID для запроса:</h4>
-                    <p id="denied-telegram-id" style="font-size: 20px; color: #00FF9D; font-weight: bold; letter-spacing: 1px;">Определяется...</p>
+        <div class="screen" id="access-denied-screen">
+            <h2 style="color: var(--neon-red); justify-content: center; font-size: 32px; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
+            <div class="glass-box" style="text-align: center;">
+                <p style="color: #a4b1cd; font-size: 14px; line-height: 1.6; margin-bottom: 24px; font-weight: 600;">Система безопасности PRO AI не распознала ваш Telegram ID в реестре закрытого клуба.</p>
+                <div class="info-item" style="border-left-color: var(--neon-red); background: rgba(0,0,0,0.5);">
+                    <h4 style="color: #fff; margin-bottom: 8px;">ВАШ ID-КЛЮЧ:</h4>
+                    <p id="denied-telegram-id" style="font-size: 24px; color: var(--neon-red); font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,46,99,0.3);">Определяется...</p>
                 </div>
-                <p style="font-size: 12px; color: #667085; margin-top: 15px;">Передайте этот ID администратору для получения доступа.</p>
+                <p style="font-size: 12px; color: #667085; margin-top: 20px; font-weight: 800; text-transform: uppercase;">Передайте ключ администратору</p>
             </div>
         </div>
 
         <div class="screen active" id="menu-screen">
-            <div class="welcome">Welcome</div>
-            <div class="brand-title">ALIFA VIP</div>
+            <div class="welcome">Neural Network Access</div>
+            <div class="brand-title">PRO AI BOT</div>
             
-            <div class="balance-card">
+            <div class="balance-card glass-box">
                 <div class="balance-header">
                     <div class="balance-info">
-                        <h5>Сумма Pocket Option</h5>
+                        <h5>Депозит Pocket Option</h5>
                         <div class="pocket-input-wrapper">
                             <span>$</span>
                             <input type="number" id="main-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
                         </div>
                     </div>
-                    <div class="status-badge" id="server-indicator">ЗАГРУЗКА...</div>
+                    <div class="status-badge" id="server-indicator">СИНХР...</div>
                 </div>
                 <div class="ai-management-box">
-                    <span>AI Риск-Менеджмент (2%):</span>
+                    <span>ИИ Риск (2%):</span>
                     <strong id="ai-calc-stake">$20.00</strong>
                 </div>
             </div>
-            <div class="server-status-info" id="server-status-text">Синхронизация с сервером Render...</div>
+            <div class="server-status-info" id="server-status-text">Установка защищенного соединения...</div>
 
             <div class="grid">
                 <div class="card" data-target="profile-screen">
                     <div class="icon-circle">👤</div>
-                    <div class="card-title">Личный профиль</div>
+                    <div class="card-title">Профиль</div>
                 </div>
                 <div class="card" data-target="bot-selector-screen">
-                    <div class="icon-circle">🤖</div>
-                    <div class="card-title">ALIFA VIP AI Бот</div>
+                    <div class="icon-circle">🧠</div>
+                    <div class="card-title">Нейросеть</div>
                 </div>
                 <div class="card" data-target="signals-screen">
-                    <div class="icon-circle">📊</div>
-                    <div class="card-title">Сигналы</div>
+                    <div class="icon-circle">📡</div>
+                    <div class="card-title">Сигналы PRO</div>
                 </div>
                 <div class="card" data-target="education-screen">
-                    <div class="icon-circle">📘</div>
-                    <div class="card-title">Обучение</div>
+                    <div class="icon-circle">📚</div>
+                    <div class="card-title">База знаний</div>
                 </div>
                 <div class="card" data-target="sessions-screen">
-                    <div class="icon-circle">📅</div>
-                    <div class="card-title">Личные сессии</div>
+                    <div class="icon-circle">🎯</div>
+                    <div class="card-title">Цели ИИ</div>
                 </div>
                 <div class="card" data-target="calendar-screen">
-                    <div class="icon-circle">📆</div>
-                    <div class="card-title">Календарь</div>
+                    <div class="icon-circle">📅</div>
+                    <div class="card-title">Макро-данные</div>
                 </div>
-                <div class="card" data-target="chat-screen" style="grid-column: span 2; aspect-ratio: unset; padding: 20px 15px;">
-                    <div class="icon-circle" style="margin-bottom: 8px;">💬</div>
-                    <div class="card-title">Чат Команды</div>
+                <div class="card" data-target="chat-screen" style="grid-column: span 2; aspect-ratio: unset; padding: 25px 20px;">
+                    <div class="icon-circle" style="margin-bottom: 12px; width: 70px; height: 70px; font-size: 32px;">💬</div>
+                    <div class="card-title">Закрытый Чат Клуба</div>
                 </div>
             </div>
         </div>
 
         <div class="screen" id="profile-screen">
-            <h2>👤 Личный профиль</h2>
-            <div class="screen-content">
+            <h2>👤 ДАННЫЕ ТРЕЙДЕРА</h2>
+            <div class="glass-box">
                 <div class="info-item">
-                    <h4>Имя пользователя</h4>
+                    <h4>Позывной</h4>
                     <p id="profile-username">Загрузка...</p>
                 </div>
                 <div class="info-item">
-                    <h4>Ваш Telegram ID</h4>
+                    <h4>Telegram ID</h4>
                     <p id="profile-telegram-id">Загрузка...</p>
                 </div>
                 <div class="info-item">
-                    <h4>Ваша сумма Pocket Option</h4>
-                    <div class="pocket-input-wrapper" style="background: #151b28; margin-top: 8px;">
+                    <h4>Рабочий капитал</h4>
+                    <div class="pocket-input-wrapper" style="background: rgba(0,0,0,0.5); margin-top: 10px;">
                         <span>$</span>
                         <input type="number" id="profile-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
                     </div>
                 </div>
                 
-                <!-- АДМИН-КНОПКА ДЛЯ СОЗДАТЕЛЯ -->
-                <div id="admin-link-box" style="display: none; margin-top: 14px;">
-                    <button class="back-btn" style="color: #0c111d; background: #00FF9D; border: none; font-size: 15px;" onclick="switchScreen('admin-panel-screen')">⚙️ Админ-панель</button>
+                <div id="admin-link-box" style="display: none; margin-top: 20px;">
+                    <button class="back-btn" style="color: #000; background: var(--neon-purple); border: none; font-size: 15px; box-shadow: 0 0 20px rgba(157,0,255,0.4);" onclick="switchScreen('admin-panel-screen')">⚙️ ПАНЕЛЬ УПРАВЛЕНИЯ</button>
                 </div>
 
-                <div class="target-box" style="margin-top:14px; background:#1e2638;">
-                    <h4 style="color:#00FF9D; font-size:13px; margin-bottom:6px;">🧠 Подсказка ИИ по депозиту:</h4>
-                    <div class="ai-hint-label" id="ai-profile-hint" style="border:none; padding:0; margin:0;">Загрузка персонального ИИ-анализа рисков...</div>
+                <div class="target-box" style="margin-top:20px; border-color: var(--neon-green);">
+                    <h4 style="color:var(--neon-green); font-size:14px; margin-bottom:8px; font-weight:800; text-transform:uppercase;">🧠 Директива ИИ:</h4>
+                    <div class="ai-hint-label" id="ai-profile-hint">Сбор данных для анализа...</div>
                 </div>
             </div>
-            <button class="back-btn">← Назад в меню</button>
+            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
-        <!-- ПАНЕЛЬ АДМИНИСТРАТОРА -->
         <div class="screen" id="admin-panel-screen">
-            <h2>⚙️ Админ-панель</h2>
-            <div class="screen-content">
-                <div style="display:flex; gap:8px; margin-bottom:14px;">
-                    <input type="text" id="new-user-id" placeholder="ID нового пользователя" style="flex:1; padding:12px; border-radius:10px; background:#151b28; border:1px solid rgba(255,255,255,0.1); color:#fff; outline:none; font-size: 14px;">
-                    <button onclick="addAllowedUser()" style="background:#00FF9D; color:#0c111d; border:none; border-radius:10px; padding:0 16px; font-weight:bold; cursor:pointer;">Добавить</button>
+            <h2>⚙️ СИСТЕМА ДОСТУПА</h2>
+            <div class="glass-box">
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input type="text" id="new-user-id" placeholder="Ввести ID трейдера" style="flex:1; padding:16px; border-radius:50px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; outline:none; font-size: 14px; font-weight:700;">
+                    <button onclick="addAllowedUser()" style="background:var(--neon-purple); color:#fff; border:none; border-radius:50px; padding:0 24px; font-weight:900; cursor:pointer; text-transform:uppercase; box-shadow: 0 0 15px rgba(157,0,255,0.4);">ADD</button>
                 </div>
-                <h4 style="font-size:13px; color:#8592ad; margin-bottom:8px; text-transform: uppercase; letter-spacing: 1px;">Разрешенные ID:</h4>
+                <h4 style="font-size:12px; color:#a4b1cd; margin-bottom:12px; text-transform: uppercase; letter-spacing: 2px; font-weight:800;">Реестр допусков:</h4>
                 <div class="admin-list" id="admin-users-list"></div>
             </div>
-            <button class="back-btn" onclick="switchScreen('profile-screen')">← Назад в профиль</button>
+            <button class="back-btn" onclick="switchScreen('profile-screen')">← ВЕРНУТЬСЯ</button>
         </div>
 
         <div class="screen" id="signals-screen">
-            <h2>📊 Торговые сигналы</h2>
+            <h2>📡 PRO СИГНАЛЫ</h2>
             <div class="tabs-header">
-                <div class="tab-btn active" data-tab="live-signals">Живой эфир</div>
-                <div class="tab-btn" data-tab="patterns-guide" onclick="window.scrollTo(0,0)">База паттернов</div>
+                <div class="tab-btn active" data-tab="live-signals">ПОТОК</div>
+                <div class="tab-btn" data-tab="patterns-guide" onclick="window.scrollTo(0,0)">ПАТТЕРНЫ</div>
             </div>
             <div class="tab-content active" id="live-signals">
-                <div class="screen-content" style="display: flex; flex-direction: column; gap: 10px;" id="live-signals-render-box">
-                    <div style="color:#667085; text-align:center; font-size:13px; padding:10px;">Ожидание потока данных...</div>
+                <div class="glass-box" style="display: flex; flex-direction: column; gap: 10px;" id="live-signals-render-box">
+                    <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px; font-weight:600;">Ожидание коннекта к пулу данных...</div>
                 </div>
             </div>
             <div class="tab-content" id="patterns-guide">
-                <div class="screen-content" style="max-height: 55vh; overflow-y: auto;">
-                    <div class="patterns-grid">
+                <div class="glass-box" style="max-height: 55vh; overflow-y: auto;">
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
                         <div class="info-item">
-                            <h4>Паттерн: Бычий Флаг</h4>
+                            <h4>Бычий Флаг</h4>
                             <p>Модель продолжения восходящего тренда.</p>
-                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Бычий флаг">
+                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
                         </div>
                         <div class="info-item">
-                            <h4>Паттерн: Голова и Плечи</h4>
-                            <p>Сильнейшая разворотная модель на вершине рынка.</p>
-                            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Голова и плечи">
-                        </div>
-                        <div class="info-item">
-                            <h4>Паттерн: Двойное Дно</h4>
-                            <p>Разворот тренда снизу вверх от сильного уровня.</p>
-                            <img src="https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Двойное дно">
+                            <h4>Голова и Плечи</h4>
+                            <p>Сильнейшая разворотная модель на вершине.</p>
+                            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
                         </div>
                         <div class="info-item" style="margin-bottom:0;">
-                            <h4>Паттерн: Симметричный Треугольник</h4>
-                            <p>Период неопределенности, выход импульсом в сторону пробития.</p>
-                            <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Треугольник">
+                            <h4>Двойное Дно</h4>
+                            <p>Разворот тренда от сильного уровня поддержки.</p>
+                            <img src="https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="back-btn">← Назад в меню</button>
+            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
         <div class="screen" id="bot-selector-screen">
-            <h2>🤖 ALIFA VIP AI Бот</h2>
+            <h2>🧠 МОДУЛЬ ИИ PRO</h2>
             <div class="ai-mode-selection">
                 <div class="mode-btn" onclick="switchScreen('bot-chat-screen')">
-                    <div class="mode-icon">💬</div>
+                    <div class="mode-icon" style="color: var(--neon-purple);">💬</div>
                     <div class="mode-info">
-                        <h4>Пообщаться с искусственным интеллектом</h4>
-                        <p>Задать вопрос по стратегии, риск-менеджменту или анализу</p>
+                        <h4>Прямой диалог с Нейросетью</h4>
+                        <p>Консультации по риск-менеджменту и стратегиям</p>
                     </div>
                 </div>
                 <div class="mode-btn" onclick="switchScreen('bot-analysis-screen'); window.filterAnalysisPairs();">
-                    <div class="mode-icon">🔍</div>
+                    <div class="mode-icon" style="color: var(--neon-green);">🔍</div>
                     <div class="mode-info">
-                        <h4>Проанализировать валютную пару</h4>
-                        <p>Сканирование пар с вашего сервера в реальном времени</p>
+                        <h4>Сканер котировок</h4>
+                        <p>Запуск глубокого технического анализа валютных пар</p>
                     </div>
                 </div>
             </div>
-            <button class="back-btn" style="margin-top: 20px;">← Назад в меню</button>
+            <button class="back-btn" style="margin-top: 24px;">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
         <div class="screen" id="bot-chat-screen">
-            <h2>💬 Общение с ИИ</h2>
+            <h2>💬 ИИ-КОНСУЛЬТАНТ</h2>
             <div class="chat-box" id="ai-chat-container">
-                <div class="chat-msg bot">Привет! Я искусственный интеллект Команды. Какую тему разберем сегодня?</div>
-                <div class="chat-msg bot" id="ai-chat-typing" style="display:none; color:#667085;">ИИ обдумывает ответ...</div>
+                <div class="chat-msg bot">Система PRO AI активирована. Готов провести анализ рынка или скорректировать вашу торговую систему. Ввод данных...</div>
+                <div class="chat-msg bot" id="ai-chat-typing" style="display:none; color:var(--neon-green); border:none; background:transparent; box-shadow:none;">Генерация ответа...</div>
             </div>
             <div class="input-area">
-                <input type="text" id="ai-chat-input" placeholder="Задайте ваш вопрос...">
-                <button class="send-btn" onclick="sendAiChatMessage()">Отправить</button>
+                <input type="text" id="ai-chat-input" placeholder="Введите запрос нейросети...">
+                <button class="send-btn" onclick="sendAiChatMessage()">SEND</button>
             </div>
-            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← Назад к выбору</button>
+            <button class="back-btn" onclick="switchScreen('bot-selector-screen')" style="margin-top:16px;">← СМЕНИТЬ МОДУЛЬ</button>
         </div>
 
         <div class="screen" id="bot-analysis-screen">
-            <h2>🔍 Поиск и Анализ</h2>
+            <h2>🔍 СКАНЕР PRO</h2>
             <div class="search-box">
-                <input type="text" id="analysis-search-input" class="search-input" placeholder="Поиск пары с сервера..." oninput="window.filterAnalysisPairs()">
+                <input type="text" id="analysis-search-input" class="search-input" placeholder="Ввод тикера (например, EUR/USD)..." oninput="window.filterAnalysisPairs()">
                 <div class="pairs-list" id="analysis-pairs-render-box"></div>
             </div>
-            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← Назад к выбору</button>
+            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← СМЕНИТЬ МОДУЛЬ</button>
         </div>
 
         <div class="screen" id="education-screen">
-            <h2>📘 Библиотека Команды</h2>
-            <div class="screen-content" style="max-height: 60vh; overflow-y: auto;" id="books-list-box"></div>
-            <button class="back-btn">← Назад в меню</button>
+            <h2>📚 БАЗА ЗНАНИЙ PRO</h2>
+            <div class="glass-box" style="max-height: 60vh; overflow-y: auto; padding: 16px;" id="books-list-box"></div>
+            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
         <div class="screen" id="book-viewer-screen">
-            <h2 id="viewer-title" style="font-size: 16px;">Просмотр книги</h2>
-            <div class="screen-content" style="padding: 6px; background:#1e2638;">
+            <h2 id="viewer-title" style="font-size: 16px; text-transform: uppercase;">Чтение Архива</h2>
+            <div class="glass-box" style="padding: 10px;">
                 <iframe id="book-frame" class="pdf-frame-box" src=""></iframe>
             </div>
-            <button class="back-btn" onclick="switchScreen('education-screen'); document.getElementById('book-frame').src='';">← Назад к списку</button>
+            <button class="back-btn" onclick="switchScreen('education-screen'); document.getElementById('book-frame').src='';">← ЗАКРЫТЬ ДОКУМЕНТ</button>
         </div>
 
         <div class="screen" id="sessions-screen">
-            <h2>📅 Ваши цели и сессии</h2>
-            <div class="screen-content">
-                <div class="target-box">
-                    <h4 style="font-size:14px; margin-bottom:6px; color:#fff;">Желаемый заработок на неделю ($):</h4>
-                    <input type="number" id="user-weekly-target" class="target-input" value="500" placeholder="Какую сумму хотите заработать?" onchange="calculateWeeklyTarget()">
+            <h2>🎯 ЦЕЛЕПОЛАГАНИЕ</h2>
+            <div class="glass-box">
+                <div class="target-box" style="background: transparent; border: none; padding: 0;">
+                    <h4 style="font-size:14px; margin-bottom:12px; color:#fff; text-align:center; font-weight:800; text-transform:uppercase;">План профита (Неделя $):</h4>
+                    <input type="number" id="user-weekly-target" class="target-input" value="500" placeholder="0.00" onchange="calculateWeeklyTarget()">
                     
-                    <button class="back-btn" style="background:#00FF9D; color:#0c111d; font-weight:bold; border:none; padding:8px; margin-bottom: 10px;" onclick="calculateWeeklyTarget()">Рассчитать сессию с ИИ</button>
+                    <button class="back-btn" style="background:var(--neon-green); color:#000; font-weight:900; border:none; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0,255,170,0.3);" onclick="calculateWeeklyTarget()">СГЕНЕРИРОВАТЬ АЛГОРИТМ</button>
                     
-                    <div class="ai-hint-label" id="ai-target-hint" style="color: #fff; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">Введите цель и нажмите кнопку для расчета плана сделок.</div>
+                    <div class="ai-hint-label" id="ai-target-hint" style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 25px; border-left: 4px solid var(--neon-purple);">Установите финансовую цель для формирования торгового плана.</div>
                 </div>
             </div>
-            <button class="back-btn">← Назад в меню</button>
+            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
         <div class="screen" id="calendar-screen">
-            <h2>📆 Экономический календарь</h2>
-            <div class="screen-content">
-                <div style="text-align:center; font-weight:bold; color:#00FF9D; margin-bottom:10px;">Июнь 2026</div>
+            <h2>📅 МАКРО-ДАННЫЕ</h2>
+            <div class="glass-box">
+                <div style="text-align:center; font-weight:900; font-size:18px; color:var(--neon-green); margin-bottom:16px; text-transform:uppercase; letter-spacing:2px;">Текущий Месяц</div>
                 <div class="cal-grid" id="calendar-days-box"></div>
-                <div class="news-display-box" id="news-details-box">Нажмите на любой день июня, чтобы узнать макроэкономическую ситуацию в мире от ИИ.</div>
+                <div class="news-display-box" id="news-details-box">Синхронизация с глобальными экономическими сводками. Выберите дату для отчета ИИ.</div>
             </div>
-            <button class="back-btn">← Назад в меню</button>
+            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
 
         <div class="screen" id="chat-screen">
-            <h2>💬 Чат Команды</h2>
+            <h2>💬 PRO COMMUNITY</h2>
             <div class="chat-box" id="community-chat-container">
-                <div class="chat-msg bot" style="border-left-color:#667085;"><b>Система:</b> Добро пожаловать в общий чат ALIFA VIP. Делитесь своими скриншотами заработка за неделю!</div>
+                <div class="chat-msg bot" style="border-color: var(--neon-purple); background: rgba(157,0,255,0.15);"><b>Система PRO:</b> Защищенный канал связи открыт. Обмен опытом и результатами.</div>
             </div>
             <div class="input-area">
                 <label class="attach-btn" for="chat-file-input">
                     📷
                     <input type="file" id="chat-file-input" accept="image/*" style="display:none;" onchange="handleChatScreenshot(this)">
                 </label>
-                <input type="text" id="community-chat-input" placeholder="Напишите сообщение или прикрепите профит...">
-                <button class="send-btn" onclick="sendCommunityMessage()">Отправить</button>
+                <input type="text" id="community-chat-input" placeholder="Передача данных в пул...">
+                <button class="send-btn" onclick="sendCommunityMessage()">SEND</button>
             </div>
-            <button class="back-btn">← Назад в меню</button>
+            <button class="back-btn" style="margin-top:16px;">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
     </div>
 
@@ -378,36 +459,36 @@
             <div class="radar-line"></div>
             <div class="radar-core"></div>
         </div>
-        <div class="radar-status" id="radar-status-text">Запуск сканирования...</div>
+        <div class="radar-status" id="radar-status-text">ОБРАБОТКА МАССИВА ДАННЫХ...</div>
         
-        <div class="analysis-final" id="radar-final-result">
-            <div style="color: #8592ad; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;" id="analyzed-pair-title">EUR/USD</div>
+        <div class="analysis-final glass-box" id="radar-final-result" style="background: rgba(10,15,25,0.85); border: 1px solid var(--neon-green);">
+            <div style="color: #a4b1cd; font-size: 14px; text-transform: uppercase; letter-spacing: 4px; font-weight:800;" id="analyzed-pair-title">EUR/USD</div>
             <div class="final-dir" id="final-direction-arrow">ВВЕРХ ▲</div>
-            <div style="font-size: 14px; color: #a4b1cd;">Точность алгоритма Groq AI: <strong id="final-accuracy-percent" style="color:#00FF9D;">89%</strong></div>
+            <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 10px;">PRO УВЕРЕННОСТЬ: <strong id="final-accuracy-percent" style="color:var(--neon-green); font-size:18px;">89%</strong></div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" id="final-progress-fill"></div></div>
             
-            <div class="ta-dashboard">
-                <div style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #667085; margin-bottom: 10px; text-align: center;">Технический анализ (Таймфрейм: 1 минута)</div>
+            <div class="ta-dashboard" style="background: rgba(0,0,0,0.6); border: none;">
+                <div style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-purple); margin-bottom: 16px; text-align: center;">Техническая сводка (М1)</div>
                 <div class="ta-row">
-                    <span class="ta-label">Индекс RSI (14)</span>
+                    <span class="ta-label">Осциллятор RSI (14)</span>
                     <span class="ta-val" id="ta-rsi-val">0.00</span>
                 </div>
                 <div class="ta-row">
-                    <span class="ta-label">Скользящая средняя SMA (9)</span>
+                    <span class="ta-label">Мувинг SMA (9)</span>
                     <span class="ta-val" id="ta-sma9-val">0.0000</span>
                 </div>
                 <div class="ta-row">
-                    <span class="ta-label">Скользящая средняя SMA (20)</span>
+                    <span class="ta-label">Мувинг SMA (20)</span>
                     <span class="ta-val" id="ta-sma20-val">0.0000</span>
                 </div>
                 <div class="ta-row">
-                    <span class="ta-label">Сила тренда (Волатильность)</span>
+                    <span class="ta-label">Индекс Волатильности</span>
                     <span class="ta-val" id="ta-vol-val">0.00%</span>
                 </div>
-                <div class="ta-verdict" id="ta-verdict-box">АНАЛИЗ...</div>
+                <div class="ta-verdict" id="ta-verdict-box">ВЫЧИСЛЕНИЕ...</div>
             </div>
 
-            <button class="back-btn" style="background:#00FF9D; color:#0c111d; border:none; font-weight:bold; padding:12px; max-width:200px; margin: 16px auto 0 auto;" onclick="window.closeFullscreenAnalysis()">Закрыть анализ</button>
+            <button class="back-btn" style="background:var(--neon-green); color:#000; border:none; font-weight:900; padding:18px; width: 100%; margin-top: 20px; box-shadow: 0 0 20px rgba(0,255,170,0.3);" onclick="window.closeFullscreenAnalysis()">ЗАВЕРШИТЬ ПРОЦЕСС</button>
         </div>
     </div>
 
@@ -415,7 +496,7 @@
         // ============================================
         // ЛОГИКА БЕЗОПАСНОСТИ И АВТОРИЗАЦИИ
         // ============================================
-        const MASTER_ADMIN = "5817328317"; // Твой ID
+        const MASTER_ADMIN = "5817328317";
 
         function getAllowedUsers() {
             return JSON.parse(localStorage.getItem('allowed_users') || "[]");
@@ -452,17 +533,16 @@
             if(!list) return;
             list.innerHTML = '';
             
-            // Вывод самого создателя (визуально, удалить нельзя)
             const masterItem = document.createElement('div');
             masterItem.className = 'admin-item';
-            masterItem.style.borderColor = '#00FF9D';
-            masterItem.innerHTML = `<span style="color:#00FF9D; font-weight:bold;">${MASTER_ADMIN} (Ты - Владелец)</span> <span></span>`;
+            masterItem.style.borderColor = 'var(--neon-green)';
+            masterItem.innerHTML = `<span style="color:var(--neon-green); font-weight:900;">${MASTER_ADMIN} [ROOT ADMIN]</span> <span></span>`;
             list.appendChild(masterItem);
 
             getAllowedUsers().forEach(id => {
                 const item = document.createElement('div');
                 item.className = 'admin-item';
-                item.innerHTML = `<span>ID: ${id}</span> <span class="del-btn" onclick="removeUser('${id}')">Удалить</span>`;
+                item.innerHTML = `<span>USER: ${id}</span> <span class="del-btn" onclick="removeUser('${id}')">DROP</span>`;
                 list.appendChild(item);
             });
         }
@@ -477,26 +557,26 @@
 
             let serverPayouts = {}; 
 
-            const ALIF_BOOKS = [
-                { title: "Как играть и выигрывать на бирже", desc: "Классика биржевой торговли", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
-                { title: "Капитал в XXI веке", desc: "Экономическое исследование", file: "Kapital_v_XXI_veke.pdf" },
-                { title: "Малая энциклопедия трейдера", desc: "Базовые понятия рынка", file: "Malaya_enciklopediya_trejdera.pdf" },
-                { title: "Японские свечи", desc: "Технический анализ финансовых рынков", file: "Yaponskie_svechi.pdf" },
-                { title: "Пособие по Эллиоту", desc: "Волновая теория", file: "Posobie_po_Elliotu.pdf" },
-                { title: "Психология трейдинга", desc: "Работа с мышлением", file: "Psihologiya_trejdinga.pdf" },
-                { title: "Путь Черепах", desc: "История обучения трейдеров", file: "Put_Cherepah.pdf" },
-                { title: "Торговый хаос", desc: "Метод Билла Вильямса", file: "Torgovyj_haos.pdf" },
-                { title: "Торговый алгоритм", desc: "Механика рынка", file: "Torgovyj_algoritm.pdf" },
-                { title: "Rossman R.", desc: "Справочные материалы", file: "Rossman_R.pdf" }
+            const PRO_BOOKS = [
+                { title: "Алгоритмика Рынков", desc: "Базовые паттерны и механика", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
+                { title: "Структура Капитала", desc: "Макроэкономический анализ", file: "Kapital_v_XXI_veke.pdf" },
+                { title: "Архитектура Трейдинга", desc: "Словарь терминов и понятий", file: "Malaya_enciklopediya_trejdera.pdf" },
+                { title: "Прайс Экшен PRO", desc: "Углубленный анализ свечей", file: "Yaponskie_svechi.pdf" },
+                { title: "Волновые Циклы", desc: "Поведенческая модель рынка", file: "Posobie_po_Elliotu.pdf" },
+                { title: "Нейро-психология", desc: "Контроль эмоций в сделках", file: "Psihologiya_trejdinga.pdf" },
+                { title: "Система Черепах", desc: "Исторические стратегии фондов", file: "Put_Cherepah.pdf" },
+                { title: "Теория Хаоса", desc: "Математика нелинейных рынков", file: "Torgovyj_haos.pdf" },
+                { title: "Механика Ликвидности", desc: "Smart Money концепты", file: "Torgovyj_algoritm.pdf" },
+                { title: "Справочник Индикаторов", desc: "Математическое описание ТА", file: "Rossman_R.pdf" }
             ];
 
             const WORLD_AI_MARKETS = {
-                1: "🌍 ИИ-Обзор: Начало месяца. Азиатские рынки показывают стабильный приток капитала. USD стабилен, рекомендуется торговать EUR/USD на пробой утреннего флета.",
-                2: "🌍 ИИ-Обзор: Повышение индекса деловой активности в ЕС. Британский фунт (GBP) упирается в ключевое сопротивление. Ожидается коррекция вниз.",
-                5: "🔴 ИИ-Обзор: Публикация Non-Farm Payrolls в США. Колоссальные вливания маркетмейкеров. Повышенная волатильность на всех парах с USD. Рекомендуется снизить риски до 0.5%!",
-                12: "🌍 ИИ-Обзор: ФРС США проводит закрытые слушания по инфляции. Золото бьет рекорды. Валютные пары JPY показывают сильный нисходящий тренд.",
-                18: "🌍 ИИ-Обзор: Стагнация нефтяных котировок оказывает сильное давление на товарные пары (USD/CAD, AUD/USD). Торговля строго в рамках сформировавшихся каналов.",
-                25: "🌍 ИИ-Обзор: Фиксация квартальной прибыли крупными фондами. Повышенная хаотичность движений на рынке. Лучше использовать скальпинг-стратегии по RSI на М1."
+                1: "🌐 PRO-Сводка: Начало месяца. Азиатская сессия аккумулирует объемы. Индекс USD в фазе накопления, приоритет работы в каналах.",
+                2: "🌐 PRO-Сводка: Выход данных PMI в Еврозоне. GBP/USD тестирует критические уровни сопротивления. Вероятна смена локального тренда.",
+                5: "🔴 АЛЕРТ: Non-Farm Payrolls. Ожидается вливание аномальной ликвидности алгоритмами маркетмейкеров. Риск-менеджмент: STRICT 0.5%.",
+                12: "🌐 PRO-Сводка: Заседание ФРС (FOMC). XAU/USD (Золото) обновляет максимумы. Пары с JPY перепроданы, формируют разворотные структуры.",
+                18: "🌐 PRO-Сводка: Консолидация на рынке энергоносителей. AUD и CAD в узком флете. Идеальные условия для работы скальпинг-ботов на M1/M5.",
+                25: "🌐 PRO-Сводка: Экспирация квартальных опционов. Повышенный рыночный шум. Рекомендация: работа строго по тренду старшего ТФ."
             };
 
             const cards = document.querySelectorAll('.card');
@@ -571,7 +651,7 @@
                 const hintEl = document.getElementById('ai-profile-hint');
                 if(!hintEl) return;
                 let stake = currentBalance * 0.02;
-                hintEl.innerHTML = `При балансе <b>$${currentBalance}</b> ваш фиксированный риск составляет 2% (<b>$${stake.toFixed(2)}</b> на сделку). ИИ рекомендует: придерживаться сессий из 3 прибыльных сделок в день. Не перекрывать минусы более чем 3 ступенями Мартингейла.`;
+                hintEl.innerHTML = `КАПИТАЛ: <b>$${currentBalance}</b><br>АЛГОРИТМ РИСКА: 2% (<b>$${stake.toFixed(2)}</b> / сделка).<br><br><span style="color:#fff;">Установка PRO ИИ:</span> Завершать сессию после 3 успешных итераций. Блокировка торгов после 3 ступеней Мартингейла. Соблюдение дисциплины обязательно.`;
             }
 
             window.calculateWeeklyTarget = function() {
@@ -585,7 +665,7 @@
                 let profitPerTrade = singleStake * (averagePayoutPercent / 100);
 
                 if (targetSum <= 0) {
-                    hintEl.innerText = "Пожалуйста, укажите корректную сумму желаемой прибыли.";
+                    hintEl.innerText = "Ошибка: Введено нулевое или отрицательное значение профита.";
                     return;
                 }
 
@@ -593,9 +673,12 @@
                 let dailyTrades = (requiredTrades / 5).toFixed(1);
 
                 hintEl.innerHTML = `
-                    🎯 <b>Расчет ИИ по целям:</b><br>
-                    Чтобы заработать <b>$${targetSum}</b> за торговую неделю при вашей ставке 2% ($${singleStake.toFixed(2)}), вам необходимо закрыть суммарно чистыми <b>${requiredTrades} плюсовых сделок</b>.<br>
-                    В среднем это ориентировочно по <b>${dailyTrades} чистых плюсов в день</b> (при 5-дневной рабочей неделе). Не завышайте лот и закрывайте сессию сразу по достижении дневной нормы!
+                    <span style="color:var(--neon-green); font-weight:900; font-size:15px;">📊 АЛГОРИТМ СГЕНЕРИРОВАН:</span><br><br>
+                    Цель: <b>$${targetSum}</b><br>
+                    Объем входа: <b>$${singleStake.toFixed(2)}</b> (2%)<br><br>
+                    Для выполнения плана требуется: <b>${requiredTrades} успешных позиций</b>.<br>
+                    Суточная норма: <b>${dailyTrades} плюсов</b> (при 5-дневной активности).<br><br>
+                    <span style="color:var(--neon-red);">Внимание:</span> Запрещено превышать рабочий лот ради ускорения плана.
                 `;
             };
 
@@ -609,23 +692,22 @@
                         serverPayouts = await response.json();
                         
                         if (indicator) {
-                            indicator.innerText = "ОНЛАЙН";
-                            indicator.style.background = "linear-gradient(90deg, #00FF9D 0%, #00b36c 100%)";
+                            indicator.innerText = "ONLINE";
+                            indicator.style.background = "linear-gradient(90deg, var(--neon-green) 0%, #00b36c 100%)";
                         }
-                        if (statusText) statusText.innerText = "Данные реального времени успешно синхронизированы.";
+                        if (statusText) statusText.innerText = "Прямой шлюз с сервером Render: СТАБИЛЕН";
 
                         renderLiveSignalsTab();
                         filterAnalysisPairs();
                     } else {
-                        throw new Error("Ошибка ответа сервера");
+                        throw new Error("API Reject");
                     }
                 } catch (error) {
-                    console.error("Ошибка запроса к server:", error);
                     if (indicator) {
-                        indicator.innerText = "ОФФЛАЙН";
-                        indicator.style.background = "linear-gradient(90deg, #f04438 0%, #b32e25 100%)";
+                        indicator.innerText = "OFFLINE";
+                        indicator.style.background = "linear-gradient(90deg, var(--neon-red) 0%, #b32e25 100%)";
                     }
-                    if (statusText) statusText.innerHTML = `<span style="color:#f04438;">Ошибка подключения к ${SERVER_URL}</span>`;
+                    if (statusText) statusText.innerHTML = `<span style="color:var(--neon-red);">Потеря пакетов с хостом ${SERVER_URL}</span>`;
                 }
             }
 
@@ -635,7 +717,7 @@
 
                 const pairs = Object.keys(serverPayouts);
                 if (pairs.length === 0) {
-                    box.innerHTML = `<div style="color:#667085; text-align:center; font-size:13px; padding:10px;">Нет активных пар на сервере.</div>`;
+                    box.innerHTML = `<div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px;">Поток ликвидности пуст.</div>`;
                     return;
                 }
 
@@ -643,9 +725,9 @@
                 pairs.forEach(pair => {
                     const row = document.createElement('div');
                     row.className = 'pair-row';
-                    row.style.background = '#1e2638';
+                    row.style.background = 'rgba(0,0,0,0.5)';
                     row.style.cursor = 'default';
-                    row.innerHTML = `<span>${pair}</span><span style="color:#00FF9D; font-weight:bold;">+${serverPayouts[pair]}%</span>`;
+                    row.innerHTML = `<span>${pair}</span><span style="color:var(--neon-green); font-weight:900;">+${serverPayouts[pair]}%</span>`;
                     box.appendChild(row);
                 });
             }
@@ -659,8 +741,8 @@
 
                 if (list.length === 0) {
                     renderBox.innerHTML = `
-                        <div style="color:#667085; text-align:center; font-size:13px; padding:20px; line-height:1.5;">
-                            Пары не найдены.
+                        <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:30px; font-weight:600;">
+                            Тикер не найден в пуле.
                         </div>
                     `;
                     return;
@@ -673,7 +755,7 @@
                     row.addEventListener('click', () => launchFullscreenAnalysis(pair));
                     row.innerHTML = `
                         <span>${pair}</span> 
-                        <span style="color:#00FF9D; font-size:12px; font-weight:bold;">+${payout}% →</span>
+                        <span style="color:var(--neon-green); font-size:13px; font-weight:900;">+${payout}% <span style="font-size:16px;">→</span></span>
                     `;
                     renderBox.appendChild(row);
                 });
@@ -698,7 +780,7 @@
                 if(!overlay) return;
 
                 overlay.style.setProperty('display', 'flex', 'important');
-                if(radarAnim) radarAnim.style.display = 'block';
+                if(radarAnim) radarAnim.style.display = 'flex';
                 if(statusText) statusText.style.display = 'block';
                 if(finalBlock) finalBlock.style.display = 'none';
 
@@ -747,19 +829,21 @@
                     fill.style.width = accuracy + '%';
 
                     if(isUp) {
-                        arrow.innerText = "ВВЕРХ ▲";
+                        arrow.innerText = "LONG (ВВЕРХ) ▲";
                         arrow.className = "final-dir up";
-                        fill.style.background = "#00FF9D";
-                        verdictBox.innerText = score >= 2 ? "Активно покупать" : "Покупать";
+                        fill.style.background = "var(--neon-green)";
+                        fill.style.boxShadow = "0 0 20px var(--neon-green)";
+                        verdictBox.innerText = score >= 2 ? "СТРОГИЙ LONG" : "УМЕРЕННЫЙ LONG";
                         verdictBox.className = "ta-verdict buy";
                     } else {
-                        arrow.innerText = "ВНИЗ ▼";
+                        arrow.innerText = "SHORT (ВНИЗ) ▼";
                         arrow.className = "final-dir down";
-                        fill.style.background = "#f04438";
-                        verdictBox.innerText = score <= -2 ? "Активно продавать" : "Продавать";
+                        fill.style.background = "var(--neon-red)";
+                        fill.style.boxShadow = "0 0 20px var(--neon-red)";
+                        verdictBox.innerText = score <= -2 ? "СТРОГИЙ SHORT" : "УМЕРЕННЫЙ SHORT";
                         verdictBox.className = "ta-verdict sell";
                     }
-                }, 2200); 
+                }, 2800); 
             }
 
             window.closeFullscreenAnalysis = function() {
@@ -771,12 +855,12 @@
                 const container = document.getElementById('books-list-box');
                 if (!container) return;
                 container.innerHTML = '';
-                ALIF_BOOKS.forEach(b => {
+                PRO_BOOKS.forEach(b => {
                     const item = document.createElement('div');
                     item.className = 'book-item';
                     item.innerHTML = `
                         <div class="book-info"><h4>${b.title}</h4><p>${b.desc}</p></div>
-                        <button class="read-btn" data-file="${b.file}" data-title="${b.title}">Читать напрямую</button>
+                        <button class="read-btn" data-file="${b.file}" data-title="${b.title}">ОТКРЫТЬ</button>
                     `;
                     item.querySelector('.read-btn').addEventListener('click', (e) => {
                         openPdfViewer(e.target.getAttribute('data-file'), e.target.getAttribute('data-title'));
@@ -796,7 +880,7 @@
                 const grid = document.getElementById('calendar-days-box');
                 if (!grid) return;
                 grid.innerHTML = '';
-                const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+                const days = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'];
                 days.forEach(d => {
                     const h = document.createElement('div'); h.className = 'cal-header'; h.innerText = d; grid.appendChild(h);
                 });
@@ -806,7 +890,7 @@
                     if(i === 21) dEl.classList.add('today'); 
                     
                     dEl.addEventListener('click', () => {
-                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌍 <b>ИИ-Анализ дня (${i} Июня):</b> На макроэкономическом поле затишье. Основные индексы торгуются в боковиках. Прекрасное время для разворотных стратегий от локальных уровней поддержки и сопротивления.`;
+                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌐 <b>ИНДЕКС ДНЯ (${i}):</b> Нейтральный фон. Маркетмейкеры в фазе ожидания. Отработка классического ТА от уровней.`;
                     });
                     grid.appendChild(dEl);
                 }
@@ -844,10 +928,10 @@
                         body: JSON.stringify({
                             model: "llama-3.3-70b-versatile",
                             messages: [
-                                { role: "system", content: "Ты — ИИ торговой Команды ALIFA VIP." },
+                                { role: "system", content: "Ты — продвинутый ИИ-аналитик торгового клуба VIP COMMUNITY PRO. Отвечай кратко, профессионально, как нейросеть для трейдеров." },
                                 { role: "user", content: txt }
                             ],
-                            temperature: 0.6
+                            temperature: 0.5
                         })
                     });
                     const data = await res.json();
@@ -855,11 +939,11 @@
 
                     if (data.choices && data.choices[0]) {
                         let answer = data.choices[0].message.content;
-                        appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'), 'bot', true);
+                        appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--neon-green);">$1</b>').replace(/\n/g, '<br>'), 'bot', true);
                     }
                 } catch(e) {
                     if(typing) typing.style.display = 'none';
-                    appendMsg('ai-chat-container', 'Ошибка соединения с ИИ.', 'bot');
+                    appendMsg('ai-chat-container', 'System Error: Сервер перегружен.', 'bot');
                 }
             };
 
@@ -907,7 +991,7 @@
                         const container = document.getElementById('community-chat-container');
                         const msg = document.createElement('div');
                         msg.className = 'chat-msg user';
-                        msg.innerHTML = `<b>Мой отчет профита за неделю:</b><br><img src="${e.target.result}" class="chat-img-attach">`;
+                        msg.innerHTML = `<b>ОТЧЕТ PRO:</b><br><img src="${e.target.result}" style="max-width:100%; border-radius:15px; margin-top:8px; border:1px solid rgba(0,255,170,0.3);">`;
                         container.appendChild(msg);
                         
                         container.scrollTop = container.scrollHeight;
@@ -921,11 +1005,13 @@
 
             async function init() {
                 let userId = null;
-                let fullName = "Трейдер Команды";
+                let fullName = "GUEST_PRO";
 
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
                     window.Telegram.WebApp.expand();
+                    window.Telegram.WebApp.setHeaderColor('#050810');
+                    window.Telegram.WebApp.setBackgroundColor('#050810');
 
                     const tgData = window.Telegram.WebApp.initDataUnsafe;
                     if (tgData && tgData.user) {
@@ -946,34 +1032,29 @@
                 if (userId) {
                     deniedIdDisplay.innerText = userId;
 
-                    // Если это Владелец (Ты) -> открываем кнопку Админ-панели
                     if (userId === MASTER_ADMIN) {
                         const adminBtnBox = document.getElementById('admin-link-box');
                         if (adminBtnBox) adminBtnBox.style.display = 'block';
                         renderAdminList();
                     }
 
-                    // Если пользователя НЕТ в списке разрешенных -> Заблокировать
                     if (!checkAccess(userId)) {
                         if (menuScreen) menuScreen.classList.remove('active');
                         if (deniedScreen) deniedScreen.classList.add('active');
-                        return; // ⛔ ВАЖНО: Останавливаем загрузку остального приложения
+                        return; 
                     }
                 } else {
-                    // Если запустили НЕ из телеграма (ID нет) -> Тоже заблокировать (защита от копирования ссылок)
-                    deniedIdDisplay.innerText = "Неизвестно (Откройте в Telegram)";
+                    deniedIdDisplay.innerText = "NULL (USE TELEGRAM CLIENT)";
                     if (menuScreen) menuScreen.classList.remove('active');
                     if (deniedScreen) deniedScreen.classList.add('active');
-                    return; // ⛔ Останавливаем загрузку
+                    return; 
                 }
                 
-                // === ЕСЛИ ДОСТУП ЕСТЬ, ГРУЗИМ ДАННЫЕ ПРОФИЛЯ ===
                 const usernameEl = document.getElementById('profile-username');
                 const idEl = document.getElementById('profile-telegram-id');
                 if (usernameEl) usernameEl.innerText = fullName;
                 if (idEl) idEl.innerText = userId;
                 
-                // Загружаем остальной функционал
                 initBalances();
                 loadBooks();
                 window.generateNewsCalendar();
