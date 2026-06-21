@@ -377,13 +377,12 @@
 
             let serverPayouts = {}; 
 
-            // Книги: Используем Google Docs Viewer для открытия напрямую в iframe внутри Mini App
-            // ПРИМЕЧАНИЕ: Файлы (file property) должны быть доступны по прямым ссылкам
+            // Список книг (файлы должны лежать в корне репозитория GitHub)
             const ALIF_BOOKS = [
                 { title: "Как играть и выигрывать на бирже", desc: "Классика биржевой торговли", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
                 { title: "Капитал в XXI веке", desc: "Экономическое исследование", file: "Kapital_v_XXI_veke.pdf" },
                 { title: "Малая энциклопедия трейдера", desc: "Базовые понятия рынка", file: "Malaya_enciklopediya_trejdera.pdf" },
-                { title: "Японские свечи", desc: "Технический анализ финансовых рынков", file: "Yaponskie_svechi_Nison.pdf" },
+                { title: "Японские свечи", desc: "Технический анализ финансовых рынков", file: "Yaponskie_svechi.pdf" },
                 { title: "Пособие по Эллиоту", desc: "Волновая теория", file: "Posobie_po_Elliotu.pdf" },
                 { title: "Психология трейдинга", desc: "Работа с мышлением", file: "Psihologiya_trejdinga.pdf" },
                 { title: "Путь Черепах", desc: "История обучения трейдеров", file: "Put_Cherepah.pdf" },
@@ -392,7 +391,6 @@
                 { title: "Rossman R.", desc: "Справочные материалы", file: "Rossman_R.pdf" }
             ];
 
-            // Глобальный ИИ-анализ рынков по дням для Календаря
             const WORLD_AI_MARKETS = {
                 1: "🌍 ИИ-Обзор: Начало месяца. Азиатские рынки показывают стабильный приток капитала. USD стабилен, рекомендуется торговать EUR/USD на пробой утреннего флета.",
                 2: "🌍 ИИ-Обзор: Повышение индекса деловой активности в ЕС. Британский фунт (GBP) упирается в ключевое сопротивление. Ожидается коррекция вниз.",
@@ -544,22 +542,12 @@
 
                 box.innerHTML = '';
                 pairs.forEach(pair => {
-                    if (serverPayouts[pair] === 0) {
-                        const row = document.createElement('div');
-                        row.className = 'pair-row';
-                        row.style.background = '#1a2233';
-                        row.style.cursor = 'default';
-                        row.style.opacity = '0.5';
-                        row.innerHTML = `<span>${pair}</span><span style="color:#667085; font-weight:bold;">N/A</span>`;
-                        box.appendChild(row);
-                    } else {
-                        const row = document.createElement('div');
-                        row.className = 'pair-row';
-                        row.style.background = '#1e2638';
-                        row.style.cursor = 'default';
-                        row.innerHTML = `<span>${pair}</span><span style="color:#00FF9D; font-weight:bold;">+${serverPayouts[pair]}%</span>`;
-                        box.appendChild(row);
-                    }
+                    const row = document.createElement('div');
+                    row.className = 'pair-row';
+                    row.style.background = '#1e2638';
+                    row.style.cursor = 'default';
+                    row.innerHTML = `<span>${pair}</span><span style="color:#00FF9D; font-weight:bold;">+${serverPayouts[pair]}%</span>`;
+                    box.appendChild(row);
                 });
             }
 
@@ -573,7 +561,7 @@
                 if (list.length === 0) {
                     renderBox.innerHTML = `
                         <div style="color:#667085; text-align:center; font-size:13px; padding:20px; line-height:1.5;">
-                            Пары не найдены или сервер пуст.
+                            Пары не найдены.
                         </div>
                     `;
                     return;
@@ -583,21 +571,11 @@
                     let payout = serverPayouts[pair];
                     const row = document.createElement('div');
                     row.className = 'pair-row';
-                    
-                    if (payout === 0) {
-                        row.style.opacity = '0.5';
-                        row.style.cursor = 'not-allowed';
-                        row.innerHTML = `
-                            <span>${pair}</span> 
-                            <span style="color:#667085; font-size:12px; font-weight:bold;">N/A</span>
-                        `;
-                    } else {
-                        row.addEventListener('click', () => launchFullscreenAnalysis(pair));
-                        row.innerHTML = `
-                            <span>${pair}</span> 
-                            <span style="color:#00FF9D; font-size:12px; font-weight:bold;">+${payout}% →</span>
-                        `;
-                    }
+                    row.addEventListener('click', () => launchFullscreenAnalysis(pair));
+                    row.innerHTML = `
+                        <span>${pair}</span> 
+                        <span style="color:#00FF9D; font-size:12px; font-weight:bold;">+${payout}% →</span>
+                    `;
                     renderBox.appendChild(row);
                 });
             }
@@ -640,7 +618,6 @@
                     }
                     
                     let currentPrice = candles[candles.length - 1];
-                    
                     let sum9 = 0, sum20 = 0;
                     candles.slice(-9).forEach(p => sum9 += p);
                     candles.forEach(p => sum20 += p);
@@ -649,7 +626,6 @@
 
                     let rsi = Math.floor(Math.random() * (78 - 24 + 1)) + 24;
                     let vol = (Math.random() * 0.45 + 0.05).toFixed(2);
-
                     let score = 0; 
                     if(currentPrice > sma9) score++; else score--;
                     if(sma9 > sma20) score++; else score--;
@@ -658,7 +634,6 @@
 
                     let isUp = score >= 0;
                     let accuracy = Math.floor(Math.random() * (96 - 76 + 1)) + 76;
-
                     let precision = pairName.includes("JPY") ? 3 : 5;
                     document.getElementById('ta-rsi-val').innerText = rsi;
                     document.getElementById('ta-sma9-val').innerText = sma9.toFixed(precision);
@@ -676,14 +651,12 @@
                         arrow.innerText = "ВВЕРХ ▲";
                         arrow.className = "final-dir up";
                         fill.style.background = "#00FF9D";
-                        
                         verdictBox.innerText = score >= 2 ? "Активно покупать" : "Покупать";
                         verdictBox.className = "ta-verdict buy";
                     } else {
                         arrow.innerText = "ВНИЗ ▼";
                         arrow.className = "final-dir down";
                         fill.style.background = "#f04438";
-                        
                         verdictBox.innerText = score <= -2 ? "Активно продавать" : "Продавать";
                         verdictBox.className = "ta-verdict sell";
                     }
@@ -713,9 +686,10 @@
                 });
             }
 
-            function openPdfViewer(fileUrl, title) {
+            function openPdfViewer(fileName, title) {
                 document.getElementById('viewer-title').innerText = title;
-                // Предполагаем, что файл доступен в корне или по полному URL
+                // Формируем прямую ссылку на файл в вашем репозитории
+                const fileUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + fileName;
                 document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
                 switchScreen('book-viewer-screen');
             }
@@ -734,7 +708,7 @@
                     if(i === 21) dEl.classList.add('today'); 
                     
                     dEl.addEventListener('click', () => {
-                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌍 <b>ИИ-Анализ дня (${i} Июня):</b> На макроэкономическом поле затишье. Основные индексы торгуются в боковиках. Прекрасное время для разворотных стратегий от локальных уровней поддержки и сопротивления на секундных и минутных экспирациях.`;
+                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌍 <b>ИИ-Анализ дня (${i} Июня):</b> На макроэкономическом поле затишье. Основные индексы торгуются в боковиках. Прекрасное время для разворотных стратегий от локальных уровней поддержки и сопротивления.`;
                     });
                     grid.appendChild(dEl);
                 }
@@ -855,22 +829,12 @@
                     const tgData = window.Telegram.WebApp.initDataUnsafe;
                     if (tgData && tgData.user) {
                         const user = tgData.user;
-                        
                         let fullName = user.first_name || "";
                         if (user.last_name) fullName += " " + user.last_name;
-                        if (!fullName.trim() && user.username) fullName = "@" + user.username;
-                        if (!fullName.trim()) fullName = "Трейдер TEAM";
-
                         const usernameEl = document.getElementById('profile-username');
                         const idEl = document.getElementById('profile-telegram-id');
-                        
-                        if (usernameEl) usernameEl.innerText = fullName;
+                        if (usernameEl) usernameEl.innerText = fullName || "Трейдер TEAM";
                         if (idEl) idEl.innerText = user.id;
-                    } else {
-                        const usernameEl = document.getElementById('profile-username');
-                        const idEl = document.getElementById('profile-telegram-id');
-                        if (usernameEl) usernameEl.innerText = "Браузерная версия (Тест)";
-                        if (idEl) idEl.innerText = "123456789";
                     }
                 }
                 
@@ -878,10 +842,8 @@
                 loadBooks();
                 window.generateNewsCalendar();
                 loadSavedCommunityChat();
-                
                 await updateLivePayouts();
                 setInterval(updateLivePayouts, 5000); 
-                
                 calculateWeeklyTarget();
             }
 
