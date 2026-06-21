@@ -377,7 +377,6 @@
 
             let serverPayouts = {}; 
 
-            // Список книг (файлы должны лежать в корне репозитория GitHub)
             const ALIF_BOOKS = [
                 { title: "Как играть и выигрывать на бирже", desc: "Классика биржевой торговли", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
                 { title: "Капитал в XXI веке", desc: "Экономическое исследование", file: "Kapital_v_XXI_veke.pdf" },
@@ -688,9 +687,14 @@
 
             function openPdfViewer(fileName, title) {
                 document.getElementById('viewer-title').innerText = title;
-                // Формируем прямую ссылку на файл в вашем репозитории
-                const fileUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + fileName;
-                document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
+                // Получаем базовый URL без имени файла
+                const path = window.location.href.split('?')[0].split('#')[0];
+                const baseUrl = path.substring(0, path.lastIndexOf('/'));
+                const fileUrl = baseUrl + '/' + fileName;
+                
+                // Используем Google Docs Viewer для встраивания
+                const viewerUrl = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
+                document.getElementById('book-frame').src = viewerUrl;
                 switchScreen('book-viewer-screen');
             }
 
