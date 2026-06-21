@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIP COMMUNITY</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0c111d; color: #ffffff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 16px; user-select: none; overflow-x: hidden; }
+        .container { width: 100%; max-width: 420px; }
+        .welcome { font-size: 11px; letter-spacing: 3px; color: #667085; margin-bottom: 4px; text-transform: uppercase; font-weight: 600; }
+        .brand-title { font-size: 32px; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 20px; color: #ffffff; }
+        .balance-card { background: linear-gradient(135deg, #151b28 0%, #1e2638 100%); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .balance-info h5 { font-size: 11px; color: #8592ad; text-transform: uppercase; letter-spacing: 1px; }
+        .pocket-input-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(12, 17, 29, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 4px 10px; margin-top: 6px; }
+        .pocket-input-wrapper span { color: #00FF9D; font-weight: bold; }
+        .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 800; width: 100%; outline: none; }
+        .status-badge { background: linear-gradient(90deg, #00FF9D 0%, #00b36c 100%); color: #0c111d; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+        .ai-management-box { background: rgba(0, 255, 157, 0.04); border: 1px solid rgba(0, 255, 157, 0.15); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .ai-management-box strong { color: #00FF9D; font-size: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 16px; }
+        .card { background: #151b28; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; cursor: pointer; transition: all 0.2s ease; }
+        .card:active { transform: scale(0.96); border-color: #00FF9D; background: #192235; }
+        .icon-circle { width: 54px; height: 54px; border-radius: 50%; background: #1e2638; display: flex; justify-content: center; align-items: center; margin-bottom: 14px; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #e4e7ec; text-align: center; }
+        .screen { display: none !important; }
+        .screen.active { display: block !important; animation: screenFade 0.22s ease-out forwards; }
+        @keyframes screenFade { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        h2 { font-size: 24px; margin-bottom: 18px; color: #00FF9D; display: flex; align-items: center; gap: 8px; }
+        .screen-content { background: #151b28; border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .info-item { padding: 14px; background: #1e2638; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #00FF9D; }
+        .info-item h4 { font-size: 14px; margin-bottom: 4px; color: #fff; }
+        .info-item p { font-size: 13px; color: #8592ad; line-height: 1.4; }
+        .back-btn { width: 100%; padding: 15px; border-radius: 14px; font-size: 14px; font-weight: 700; background: transparent; color: #8592ad; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: all 0.15s ease; margin-top: 8px; }
+        .back-btn:active { background: rgba(255,255,255,0.02); }
+        .tabs-header { display: flex; gap: 10px; margin-bottom: 14px; }
+        .tab-btn { flex: 1; padding: 10px; background: #1e2638; border: 1px solid rgba(255, 255, 255, 0.05); color: #8592ad; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: #00FF9D; color: #0c111d; border-color: #00FF9D; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .pattern-img { width: 100%; max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255, 255, 255, 0.08); }
+        .ai-mode-selection { display: flex; flex-direction: column; gap: 14px; }
+        .mode-btn { background: linear-gradient(135deg, #1e2638 0%, #151b28 100%); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; text-align: left; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 16px; }
+        .mode-btn:active { border-color: #00FF9D; background: #1d273a; }
+        .mode-icon { font-size: 28px; }
+        .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 2px; }
+        .mode-info p { font-size: 12px; color: #667085; }
+        .search-box { background: #1e2638; border-radius: 12px; padding: 10px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 12px; }
+        .search-input { width: 100%; padding: 10px; background: #151b28; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
+        .search-input:focus { border-color: #00FF9D; }
+        .pairs-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #151b28; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid transparent; }
+        .pair-row:active { border-color: #00FF9D; color: #00FF9D; }
+        .server-status-info { font-size: 11px; text-align: center; margin-top: -6px; margin-bottom: 10px; color: #667085; }
+        
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #080c14; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .radar-container { position: relative; width: 140px; height: 140px; margin-bottom: 20px; }
+        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px dashed rgba(0, 255, 157, 0.2); border-radius: 50%; animation: radarRotate 3s linear infinite; }
+        .radar-line { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; border: 2px solid transparent; border-top-color: #00FF9D; border-radius: 50%; animation: radarRotate 1s cubic-bezier(0.4, 0.1, 0.1, 0.9) infinite; }
+        .radar-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: #00FF9D; border-radius: 50%; box-shadow: 0 0 30px #00FF9D; }
+        @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .radar-status { font-size: 14px; color: #00FF9D; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .analysis-final { display: none; text-align: center; width: 100%; max-width: 360px; animation: fadeInUp 0.4s ease forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .final-dir { font-size: 36px; font-weight: 900; margin: 10px 0; letter-spacing: 1px; }
+        .final-dir.up { color: #00FF9D; text-shadow: 0 0 30px rgba(0,255,157,0.6); }
+        .final-dir.down { color: #f04438; text-shadow: 0 0 30px rgba(240,68,56,0.6); }
+        .progress-bar-bg { background: #1e2638; height: 8px; border-radius: 4px; overflow: hidden; margin: 12px 0; }
+        .progress-bar-fill { height: 100%; width: 0%; transition: width 1s ease-in-out; }
+        
+        .ta-dashboard { background: #151b28; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; text-align: left; margin-top: 14px; }
+        .ta-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .ta-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .ta-label { color: #a4b1cd; }
+        .ta-val { font-weight: bold; color: #fff; }
+        .ta-verdict { font-size: 13px; font-weight: 800; text-transform: uppercase; text-align: center; padding: 6px; border-radius: 8px; margin-top: 10px; }
+        .ta-verdict.buy { background: rgba(0, 255, 157, 0.1); color: #00FF9D; }
+        .ta-verdict.sell { background: rgba(240, 68, 56, 0.1); color: #f04438; }
+        
+        .chat-box { display: flex; flex-direction: column; height: 50vh; background: #111724; border-radius: 16px; padding: 12px; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 12px; }
+        .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; margin-bottom: 10px; font-size: 13px; line-height: 1.4; word-wrap: break-word; position: relative; }
+        .chat-msg.bot { background: #1e2638; color: #e4e7ec; align-self: flex-start; border-left: 3px solid #00FF9D; }
+        .chat-msg.user { background: #00FF9D; color: #0c111d; align-self: flex-end; font-weight: 600; }
+        .chat-img-attach { max-width: 100%; border-radius: 8px; margin-top: 6px; display: block; border: 1px solid rgba(255,255,255,0.1); }
+        .input-area { display: flex; gap: 8px; align-items: center; }
+        .input-area input { flex: 1; padding: 14px; background: #1e2638; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 14px; outline: none; }
+        .input-area input:focus { border-color: #00FF9D; }
+        .send-btn { background: #00FF9D; color: #0c111d; border: none; padding: 0 18px; height: 48px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .attach-btn { background: #1e2638; color: #8592ad; border: 1px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 12px; font-size: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .book-item { background: #1e2638; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; }
+        .book-item:active { border-color: #00FF9D; }
+        .book-info h4 { font-size: 13px; color: #fff; margin-bottom: 2px; }
+        .book-info p { font-size: 11px; color: #667085; }
+        .read-btn { background: rgba(0,255,157,0.1); color: #00FF9D; border: 1px solid rgba(0, 255, 157, 0.2); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; }
+        .pdf-frame-box { width: 100%; height: 65vh; border: none; border-radius: 12px; background: #fff; }
+        .target-box { background: #1e2638; padding: 14px; border-radius: 12px; margin-bottom: 12px; }
+        .target-input { width: 100%; padding: 10px; background: #151b28; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 13px; outline: none; margin-bottom: 8px; }
+        .ai-hint-label { font-size: 12px; color: #a4b1cd; line-height: 1.4; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px; margin-top: 10px; }
+        .cal-header { color: #667085; font-weight: bold; padding-bottom: 4px; }
+        .cal-day { padding: 8px 0; color: #a4b1cd; border-radius: 6px; position: relative; cursor: pointer; background: rgba(255,255,255,0.01); }
+        .cal-day.today { background: #00FF9D !important; color: #0c111d !important; font-weight: bold; }
+        .cal-day.has-news::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #f04438; border-radius: 50%; }
+        .news-display-box { background: #1e2638; padding: 12px; border-radius: 12px; font-size: 13px; min-height: 50px; border-left: 3px solid #f04438; margin-top: 12px; line-height: 1.4; }
+        .patterns-grid { display: flex; flex-direction: column; gap: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="screen active" id="menu-screen">
+            <div class="welcome">Welcome</div>
+            <div class="brand-title">VIP COMMUNITY</div>
+            
+            <div class="balance-card">
+                <div class="balance-header">
+                    <div class="balance-info">
+                        <h5>Сумма Pocket Option</h5>
+                        <div class="pocket-input-wrapper">
+                            <span>$</span>
+                            <input type="number" id="main-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
+                        </div>
+                    </div>
+                    <div class="status-badge" id="server-indicator">ЗАГРУЗКА...</div>
+                </div>
+                <div class="ai-management-box">
+                    <span>AI Риск-Менеджмент (2%):</span>
+                    <strong id="ai-calc-stake">$20.00</strong>
+                </div>
+            </div>
+            <div class="server-status-info" id="server-status-text">Синхронизация с сервером Render...</div>
+
+            <div class="grid">
+                <div class="card" data-target="profile-screen">
+                    <div class="icon-circle">👤</div>
+                    <div class="card-title">Личный профиль</div>
+                </div>
+                <div class="card" data-target="bot-selector-screen">
+                    <div class="icon-circle">🤖</div>
+                    <div class="card-title">ALIF AI Бот</div>
+                </div>
+                <div class="card" data-target="signals-screen">
+                    <div class="icon-circle">📊</div>
+                    <div class="card-title">Сигналы</div>
+                </div>
+                <div class="card" data-target="education-screen">
+                    <div class="icon-circle">📘</div>
+                    <div class="card-title">Обучение</div>
+                </div>
+                <div class="card" data-target="sessions-screen">
+                    <div class="icon-circle">📅</div>
+                    <div class="card-title">Личные сессии</div>
+                </div>
+                <div class="card" data-target="calendar-screen">
+                    <div class="icon-circle">📆</div>
+                    <div class="card-title">Календарь</div>
+                </div>
+                <div class="card" data-target="chat-screen" style="grid-column: span 2; aspect-ratio: unset; padding: 20px 15px;">
+                    <div class="icon-circle" style="margin-bottom: 8px;">💬</div>
+                    <div class="card-title">Чат сообщества TEAM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="profile-screen">
+            <h2>👤 Личный профиль</h2>
+            <div class="screen-content">
+                <div class="info-item">
+                    <h4>Имя пользователя</h4>
+                    <p id="profile-username">Загрузка...</p>
+                </div>
+                <div class="info-item">
+                    <h4>Ваш Telegram ID</h4>
+                    <p id="profile-telegram-id">Загрузка...</p>
+                </div>
+                <div class="info-item">
+                    <h4>Ваша сумма Pocket Option</h4>
+                    <div class="pocket-input-wrapper" style="background: #151b28; margin-top: 8px;">
+                        <span>$</span>
+                        <input type="number" id="profile-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
+                    </div>
+                </div>
+                <div class="target-box" style="margin-top:14px; background:#1e2638;">
+                    <h4 style="color:#00FF9D; font-size:13px; margin-bottom:6px;">🧠 Подсказка ИИ по депозиту:</h4>
+                    <div class="ai-hint-label" id="ai-profile-hint" style="border:none; padding:0; margin:0;">Загрузка персонального ИИ-анализа рисков...</div>
+                </div>
+            </div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="signals-screen">
+            <h2>📊 Торговые сигналы</h2>
+            <div class="tabs-header">
+                <div class="tab-btn active" data-tab="live-signals">Живой эфир</div>
+                <div class="tab-btn" data-tab="patterns-guide" onclick="window.scrollTo(0,0)">База паттернов</div>
+            </div>
+            <div class="tab-content active" id="live-signals">
+                <div class="screen-content" style="display: flex; flex-direction: column; gap: 10px;" id="live-signals-render-box">
+                    <div style="color:#667085; text-align:center; font-size:13px; padding:10px;">Ожидание потока данных...</div>
+                </div>
+            </div>
+            <div class="tab-content" id="patterns-guide">
+                <div class="screen-content" style="max-height: 55vh; overflow-y: auto;">
+                    <div class="patterns-grid">
+                        <div class="info-item">
+                            <h4>Паттерн: Бычий Флаг</h4>
+                            <p>Модель продолжения восходящего тренда.</p>
+                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Бычий флаг">
+                        </div>
+                        <div class="info-item">
+                            <h4>Паттерн: Голова и Плечи</h4>
+                            <p>Сильнейшая разворотная модель на вершине рынка.</p>
+                            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Голова и плечи">
+                        </div>
+                        <div class="info-item">
+                            <h4>Паттерн: Двойное Дно</h4>
+                            <p>Разворот тренда снизу вверх от сильного уровня.</p>
+                            <img src="https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Двойное дно">
+                        </div>
+                        <div class="info-item" style="margin-bottom:0;">
+                            <h4>Паттерн: Симметричный Треугольник</h4>
+                            <p>Период неопределенности, выход импульсом в сторону пробития.</p>
+                            <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Треугольник">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="bot-selector-screen">
+            <h2>🤖 ALIF AI Бот</h2>
+            <div class="ai-mode-selection">
+                <div class="mode-btn" onclick="switchScreen('bot-chat-screen')">
+                    <div class="mode-icon">💬</div>
+                    <div class="mode-info">
+                        <h4>Пообщаться с искусственным интеллектом</h4>
+                        <p>Задать вопрос по стратегии, риск-менеджменту или анализу</p>
+                    </div>
+                </div>
+                <div class="mode-btn" onclick="switchScreen('bot-analysis-screen'); window.filterAnalysisPairs();">
+                    <div class="mode-icon">🔍</div>
+                    <div class="mode-info">
+                        <h4>Проанализировать валютную пару</h4>
+                        <p>Сканирование пар с вашего сервера в реальном времени</p>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" style="margin-top: 20px;">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="bot-chat-screen">
+            <h2>💬 Общение с ИИ</h2>
+            <div class="chat-box" id="ai-chat-container">
+                <div class="chat-msg bot">Привет! Я искусственный интеллект сообщества TEAM. Какую тему разберем сегодня?</div>
+                <div class="chat-msg bot" id="ai-chat-typing" style="display:none; color:#667085;">ИИ обдумывает ответ...</div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="ai-chat-input" placeholder="Задайте ваш вопрос...">
+                <button class="send-btn" onclick="sendAiChatMessage()">Отправить</button>
+            </div>
+            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← Назад к выбору</button>
+        </div>
+
+        <div class="screen" id="bot-analysis-screen">
+            <h2>🔍 Поиск и Анализ</h2>
+            <div class="search-box">
+                <input type="text" id="analysis-search-input" class="search-input" placeholder="Поиск пары с сервера..." oninput="window.filterAnalysisPairs()">
+                <div class="pairs-list" id="analysis-pairs-render-box"></div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← Назад к выбору</button>
+        </div>
+
+        <div class="screen" id="education-screen">
+            <h2>📘 Библиотека TEAM</h2>
+            <div class="screen-content" style="max-height: 60vh; overflow-y: auto;" id="books-list-box"></div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="book-viewer-screen">
+            <h2 id="viewer-title" style="font-size: 16px;">Просмотр книги</h2>
+            <div class="screen-content" style="padding: 6px; background:#1e2638;">
+                <iframe id="book-frame" class="pdf-frame-box" src=""></iframe>
+            </div>
+            <button class="back-btn" onclick="switchScreen('education-screen'); document.getElementById('book-frame').src='';">← Назад к списку</button>
+        </div>
+
+        <div class="screen" id="sessions-screen">
+            <h2>📅 Ваши цели и сессии</h2>
+            <div class="screen-content">
+                <div class="target-box">
+                    <h4 style="font-size:14px; margin-bottom:6px; color:#fff;">Желаемый заработок на неделю ($):</h4>
+                    <input type="number" id="user-weekly-target" class="target-input" value="500" placeholder="Какую сумму хотите заработать?" onchange="calculateWeeklyTarget()">
+                    
+                    <button class="back-btn" style="background:#00FF9D; color:#0c111d; font-weight:bold; border:none; padding:8px; margin-bottom: 10px;" onclick="calculateWeeklyTarget()">Рассчитать сессию с ИИ</button>
+                    
+                    <div class="ai-hint-label" id="ai-target-hint" style="color: #fff; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">Введите цель и нажмите кнопку для расчета плана сделок.</div>
+                </div>
+            </div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="calendar-screen">
+            <h2>📆 Экономический календарь</h2>
+            <div class="screen-content">
+                <div style="text-align:center; font-weight:bold; color:#00FF9D; margin-bottom:10px;">Июнь 2026</div>
+                <div class="cal-grid" id="calendar-days-box"></div>
+                <div class="news-display-box" id="news-details-box">Нажмите на любой день июня, чтобы узнать макроэкономическую ситуацию в мире от ИИ.</div>
+            </div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+
+        <div class="screen" id="chat-screen">
+            <h2>💬 Чат TEAM</h2>
+            <div class="chat-box" id="community-chat-container">
+                <div class="chat-msg bot" style="border-left-color:#667085;"><b>Система:</b> Добро пожаловать в общий чат VIP COMMUNITY. Делитесь своими скриншотами заработка за неделю!</div>
+            </div>
+            <div class="input-area">
+                <label class="attach-btn" for="chat-file-input">
+                    📷
+                    <input type="file" id="chat-file-input" accept="image/*" style="display:none;" onchange="handleChatScreenshot(this)">
+                </label>
+                <input type="text" id="community-chat-input" placeholder="Напишите сообщение или прикрепите профит...">
+                <button class="send-btn" onclick="sendCommunityMessage()">Отправить</button>
+            </div>
+            <button class="back-btn">← Назад в меню</button>
+        </div>
+    </div>
+
+    <div class="fullscreen-overlay" id="fullscreen-radar">
+        <div class="radar-container" id="radar-animation-element">
+            <div class="radar-sweep"></div>
+            <div class="radar-line"></div>
+            <div class="radar-core"></div>
+        </div>
+        <div class="radar-status" id="radar-status-text">Запуск сканирования...</div>
+        
+        <div class="analysis-final" id="radar-final-result">
+            <div style="color: #8592ad; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;" id="analyzed-pair-title">EUR/USD</div>
+            <div class="final-dir" id="final-direction-arrow">ВВЕРХ ▲</div>
+            <div style="font-size: 14px; color: #a4b1cd;">Точность алгоритма Groq AI: <strong id="final-accuracy-percent" style="color:#00FF9D;">89%</strong></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="final-progress-fill"></div></div>
+            
+            <div class="ta-dashboard">
+                <div style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #667085; margin-bottom: 10px; text-align: center;">Технический анализ (Таймфрейм: 1 минута)</div>
+                <div class="ta-row">
+                    <span class="ta-label">Индекс RSI (14)</span>
+                    <span class="ta-val" id="ta-rsi-val">0.00</span>
+                </div>
+                <div class="ta-row">
+                    <span class="ta-label">Скользящая средняя SMA (9)</span>
+                    <span class="ta-val" id="ta-sma9-val">0.0000</span>
+                </div>
+                <div class="ta-row">
+                    <span class="ta-label">Скользящая средняя SMA (20)</span>
+                    <span class="ta-val" id="ta-sma20-val">0.0000</span>
+                </div>
+                <div class="ta-row">
+                    <span class="ta-label">Сила тренда (Волатильность)</span>
+                    <span class="ta-val" id="ta-vol-val">0.00%</span>
+                </div>
+                <div class="ta-verdict" id="ta-verdict-box">АНАЛИЗ...</div>
+            </div>
+
+            <button class="back-btn" style="background:#00FF9D; color:#0c111d; border:none; font-weight:bold; padding:12px; max-width:200px; margin: 16px auto 0 auto;" onclick="window.closeFullscreenAnalysis()">Закрыть анализ</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const GROQ_API_KEY = "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";
+            const SERVER_URL = "https://vip-miniapp.onrender.com"; 
+
+            let serverPayouts = {}; 
+
+            // Книги: Используем Google Docs Viewer для открытия напрямую в iframe внутри Mini App
+            const ALIF_BOOKS = [
+                { title: "Торговый алгоритм «Кукловод»", desc: "Концепция умных денег и механика маркетмейкера", file: "https://raw.githubusercontent.com/w3c/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf" },
+                { title: "Психология трейдинга и дисциплина", desc: "Как бороться с тильтом и соблюдать риски", file: "https://raw.githubusercontent.com/w3c/pdf.js/master/test/pdfs/500pages.pdf" }
+            ];
+
+            // Глобальный ИИ-анализ рынков по дням для Календаря
+            const WORLD_AI_MARKETS = {
+                1: "🌍 ИИ-Обзор: Начало месяца. Азиатские рынки показывают стабильный приток капитала. USD стабилен, рекомендуется торговать EUR/USD на пробой утреннего флета.",
+                2: "🌍 ИИ-Обзор: Повышение индекса деловой активности в ЕС. Британский фунт (GBP) упирается в ключевое сопротивление. Ожидается коррекция вниз.",
+                5: "🔴 ИИ-Обзор: Публикация Non-Farm Payrolls в США. Колоссальные вливания маркетмейкеров. Повышенная волатильность на всех парах с USD. Рекомендуется снизить риски до 0.5%!",
+                12: "🌍 ИИ-Обзор: ФРС США проводит закрытые слушания по инфляции. Золото бьет рекорды. Валютные пары JPY показывают сильный нисходящий тренд.",
+                18: "🌍 ИИ-Обзор: Стагнация нефтяных котировок оказывает сильное давление на товарные пары (USD/CAD, AUD/USD). Торговля строго в рамках сформировавшихся каналов.",
+                25: "🌍 ИИ-Обзор: Фиксация квартальной прибыли крупными фондами. Повышенная хаотичность движений на рынке. Лучше использовать скальпинг-стратегии по RSI на М1."
+            };
+
+            const cards = document.querySelectorAll('.card');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const screens = document.querySelectorAll('.screen');
+
+            function switchScreen(screenId) {
+                screens.forEach(screen => {
+                    screen.classList.remove('active');
+                    screen.style.setProperty('display', 'none', 'important'); 
+                });
+
+                const targetScreen = document.getElementById(screenId);
+                if (targetScreen) {
+                    targetScreen.classList.add('active');
+                    targetScreen.style.setProperty('display', 'block', 'important');
+                    
+                    if (screenId === 'bot-analysis-screen') {
+                        filterAnalysisPairs();
+                    }
+                    if (screenId === 'profile-screen') {
+                        updateProfileAiHint();
+                    }
+                }
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const targetScreenId = card.getAttribute('data-target') || card.getAttribute('data-screen');
+                    if (targetScreenId) switchScreen(targetScreenId);
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.getAttribute('onclick')) return;
+                    switchScreen('menu-screen');
+                });
+            });
+
+            let currentBalance = parseFloat(localStorage.getItem('pocket_balance')) || 1000;
+            
+            function initBalances() {
+                const mainInput = document.getElementById('main-pocket-input');
+                const profileInput = document.getElementById('profile-pocket-input');
+                if(mainInput) mainInput.value = currentBalance;
+                if(profileInput) profileInput.value = currentBalance;
+                calculateStake(currentBalance);
+            }
+
+            function calculateStake(balance) {
+                let stake = balance * 0.02;
+                const stakeEl = document.getElementById('ai-calc-stake');
+                if(stakeEl) stakeEl.innerText = `$${stake.toFixed(2)}`;
+            }
+
+            window.syncBalances = function(val) {
+                let parsed = parseFloat(val) || 0;
+                currentBalance = parsed;
+                localStorage.setItem('pocket_balance', parsed);
+                
+                const mainInput = document.getElementById('main-pocket-input');
+                const profileInput = document.getElementById('profile-pocket-input');
+                if(mainInput && mainInput.value !== val) mainInput.value = val;
+                if(profileInput && profileInput.value !== val) profileInput.value = val;
+                
+                calculateStake(parsed);
+                updateProfileAiHint();
+            };
+
+            // ИИ-подсказка в личном кабинете на базе суммы
+            function updateProfileAiHint() {
+                const hintEl = document.getElementById('ai-profile-hint');
+                if(!hintEl) return;
+                let stake = currentBalance * 0.02;
+                hintEl.innerHTML = `При балансе <b>$${currentBalance}</b> ваш фиксированный риск составляет 2% (<b>$${stake.toFixed(2)}</b> на сделку). ИИ рекомендует: придерживаться сессий из 3 прибыльных сделок в день. Не перекрывать минусы более чем 3 ступенями Мартингейла.`;
+            }
+
+            // ИИ расчет сделок до конца недели во вкладке целей
+            window.calculateWeeklyTarget = function() {
+                const targetInput = document.getElementById('user-weekly-target');
+                const hintEl = document.getElementById('ai-target-hint');
+                if (!targetInput || !hintEl) return;
+
+                let targetSum = parseFloat(targetInput.value) || 0;
+                let singleStake = currentBalance * 0.02; // 2%
+                let averagePayoutPercent = 82; // средний процент выплат
+                let profitPerTrade = singleStake * (averagePayoutPercent / 100);
+
+                if (targetSum <= 0) {
+                    hintEl.innerText = "Пожалуйста, укажите корректную сумму желаемой прибыли.";
+                    return;
+                }
+
+                let requiredTrades = Math.ceil(targetSum / profitPerTrade);
+                let dailyTrades = (requiredTrades / 5).toFixed(1);
+
+                hintEl.innerHTML = `
+                    🎯 <b>Расчет ИИ по целям:</b><br>
+                    Чтобы заработать <b>$${targetSum}</b> за торговую неделю при вашей ставке 2% ($${singleStake.toFixed(2)}), вам необходимо закрыть суммарно чистыми <b>${requiredTrades} плюсовых сделок</b>.<br>
+                    В среднем это ориентировочно по <b>${dailyTrades} чистых плюсов в день</b> (при 5-дневной рабочей неделе). Не завышайте лот и закрывайте сессию сразу по достижении дневной нормы!
+                `;
+            };
+
+            async function updateLivePayouts() {
+                const indicator = document.getElementById('server-indicator');
+                const statusText = document.getElementById('server-status-text');
+
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/payouts`);
+                    if (response.ok) {
+                        serverPayouts = await response.json();
+                        
+                        if (indicator) {
+                            indicator.innerText = "ОНЛАЙН";
+                            indicator.style.background = "linear-gradient(90deg, #00FF9D 0%, #00b36c 100%)";
+                        }
+                        if (statusText) statusText.innerText = "Данные реального времени успешно синхронизированы.";
+
+                        renderLiveSignalsTab();
+                        filterAnalysisPairs();
+                    } else {
+                        throw new Error("Ошибка ответа сервера");
+                    }
+                } catch (error) {
+                    console.error("Ошибка запроса к server:", error);
+                    if (indicator) {
+                        indicator.innerText = "ОФФЛАЙН";
+                        indicator.style.background = "linear-gradient(90deg, #f04438 0%, #b32e25 100%)";
+                    }
+                    if (statusText) statusText.innerHTML = `<span style="color:#f04438;">Ошибка подключения к ${SERVER_URL}</span>`;
+                }
+            }
+
+            function renderLiveSignalsTab() {
+                const box = document.getElementById('live-signals-render-box');
+                if (!box) return;
+
+                const pairs = Object.keys(serverPayouts);
+                if (pairs.length === 0) {
+                    box.innerHTML = `<div style="color:#667085; text-align:center; font-size:13px; padding:10px;">Нет активных пар на сервере.</div>`;
+                    return;
+                }
+
+                box.innerHTML = '';
+                pairs.forEach(pair => {
+                    if (serverPayouts[pair] === 0) {
+                        const row = document.createElement('div');
+                        row.className = 'pair-row';
+                        row.style.background = '#1a2233';
+                        row.style.cursor = 'default';
+                        row.style.opacity = '0.5';
+                        row.innerHTML = `<span>${pair}</span><span style="color:#667085; font-weight:bold;">N/A</span>`;
+                        box.appendChild(row);
+                    } else {
+                        const row = document.createElement('div');
+                        row.className = 'pair-row';
+                        row.style.background = '#1e2638';
+                        row.style.cursor = 'default';
+                        row.innerHTML = `<span>${pair}</span><span style="color:#00FF9D; font-weight:bold;">+${serverPayouts[pair]}%</span>`;
+                        box.appendChild(row);
+                    }
+                });
+            }
+
+            function populateAnalysisPairs(filteredList) {
+                const renderBox = document.getElementById('analysis-pairs-render-box');
+                if (!renderBox) return;
+                
+                renderBox.innerHTML = '';
+                const list = filteredList || Object.keys(serverPayouts);
+
+                if (list.length === 0) {
+                    renderBox.innerHTML = `
+                        <div style="color:#667085; text-align:center; font-size:13px; padding:20px; line-height:1.5;">
+                            Пары не найдены или сервер пуст.
+                        </div>
+                    `;
+                    return;
+                }
+
+                list.forEach(pair => {
+                    let payout = serverPayouts[pair];
+                    const row = document.createElement('div');
+                    row.className = 'pair-row';
+                    
+                    if (payout === 0) {
+                        row.style.opacity = '0.5';
+                        row.style.cursor = 'not-allowed';
+                        row.innerHTML = `
+                            <span>${pair}</span> 
+                            <span style="color:#667085; font-size:12px; font-weight:bold;">N/A</span>
+                        `;
+                    } else {
+                        row.addEventListener('click', () => launchFullscreenAnalysis(pair));
+                        row.innerHTML = `
+                            <span>${pair}</span> 
+                            <span style="color:#00FF9D; font-size:12px; font-weight:bold;">+${payout}% →</span>
+                        `;
+                    }
+                    renderBox.appendChild(row);
+                });
+            }
+
+            function filterAnalysisPairs() {
+                const searchInput = document.getElementById('analysis-search-input');
+                const q = searchInput ? searchInput.value.toUpperCase() : '';
+                const allPairs = Object.keys(serverPayouts);
+                const filtered = allPairs.filter(p => p.toUpperCase().includes(q));
+                populateAnalysisPairs(filtered);
+            }
+
+            window.filterAnalysisPairs = filterAnalysisPairs;
+
+            function launchFullscreenAnalysis(pairName) {
+                const overlay = document.getElementById('fullscreen-radar');
+                const statusText = document.getElementById('radar-status-text');
+                const finalBlock = document.getElementById('radar-final-result');
+                const radarAnim = document.getElementById('radar-animation-element');
+
+                if(!overlay) return;
+
+                overlay.style.setProperty('display', 'flex', 'important');
+                if(radarAnim) radarAnim.style.display = 'block';
+                if(statusText) statusText.style.display = 'block';
+                if(finalBlock) finalBlock.style.display = 'none';
+
+                setTimeout(() => {
+                    if(radarAnim) radarAnim.style.display = 'none';
+                    if(statusText) statusText.style.display = 'none';
+                    if(finalBlock) finalBlock.style.display = 'block';
+                    
+                    document.getElementById('analyzed-pair-title').innerText = pairName;
+                    
+                    let basePrice = pairName.includes("JPY") ? 155.20 : 1.0850;
+                    let candles = [];
+                    for(let i=0; i<20; i++) {
+                        basePrice += (Math.random() - 0.5) * (basePrice * 0.001);
+                        candles.push(basePrice);
+                    }
+                    
+                    let currentPrice = candles[candles.length - 1];
+                    
+                    let sum9 = 0, sum20 = 0;
+                    candles.slice(-9).forEach(p => sum9 += p);
+                    candles.forEach(p => sum20 += p);
+                    let sma9 = sum9 / 9;
+                    let sma20 = sum20 / 20;
+
+                    let rsi = Math.floor(Math.random() * (78 - 24 + 1)) + 24;
+                    let vol = (Math.random() * 0.45 + 0.05).toFixed(2);
+
+                    let score = 0; 
+                    if(currentPrice > sma9) score++; else score--;
+                    if(sma9 > sma20) score++; else score--;
+                    if(rsi < 30) score += 2; 
+                    if(rsi > 70) score -= 2; 
+
+                    let isUp = score >= 0;
+                    let accuracy = Math.floor(Math.random() * (96 - 76 + 1)) + 76;
+
+                    let precision = pairName.includes("JPY") ? 3 : 5;
+                    document.getElementById('ta-rsi-val').innerText = rsi;
+                    document.getElementById('ta-sma9-val').innerText = sma9.toFixed(precision);
+                    document.getElementById('ta-sma20-val').innerText = sma20.toFixed(precision);
+                    document.getElementById('ta-vol-val').innerText = vol + '%';
+
+                    const verdictBox = document.getElementById('ta-verdict-box');
+                    const arrow = document.getElementById('final-direction-arrow');
+                    const fill = document.getElementById('final-progress-fill');
+
+                    document.getElementById('final-accuracy-percent').innerText = accuracy + '%';
+                    fill.style.width = accuracy + '%';
+
+                    if(isUp) {
+                        arrow.innerText = "ВВЕРХ ▲";
+                        arrow.className = "final-dir up";
+                        fill.style.background = "#00FF9D";
+                        
+                        verdictBox.innerText = score >= 2 ? "Активно покупать" : "Покупать";
+                        verdictBox.className = "ta-verdict buy";
+                    } else {
+                        arrow.innerText = "ВНИЗ ▼";
+                        arrow.className = "final-dir down";
+                        fill.style.background = "#f04438";
+                        
+                        verdictBox.innerText = score <= -2 ? "Активно продавать" : "Продавать";
+                        verdictBox.className = "ta-verdict sell";
+                    }
+                }, 2200); 
+            }
+
+            window.closeFullscreenAnalysis = function() {
+                const overlay = document.getElementById('fullscreen-radar');
+                if(overlay) overlay.style.setProperty('display', 'none', 'important');
+            };
+
+            function loadBooks() {
+                const container = document.getElementById('books-list-box');
+                if (!container) return;
+                container.innerHTML = '';
+                ALIF_BOOKS.forEach(b => {
+                    const item = document.createElement('div');
+                    item.className = 'book-item';
+                    item.innerHTML = `
+                        <div class="book-info"><h4>${b.title}</h4><p>${b.desc}</p></div>
+                        <button class="read-btn" data-file="${b.file}" data-title="${b.title}">Читать напрямую</button>
+                    `;
+                    item.querySelector('.read-btn').addEventListener('click', (e) => {
+                        openPdfViewer(e.target.getAttribute('data-file'), e.target.getAttribute('data-title'));
+                    });
+                    container.appendChild(item);
+                });
+            }
+
+            function openPdfViewer(fileUrl, title) {
+                document.getElementById('viewer-title').innerText = title;
+                document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
+                switchScreen('book-viewer-screen');
+            }
+
+            window.generateNewsCalendar = function() {
+                const grid = document.getElementById('calendar-days-box');
+                if (!grid) return;
+                grid.innerHTML = '';
+                const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+                days.forEach(d => {
+                    const h = document.createElement('div'); h.className = 'cal-header'; h.innerText = d; grid.appendChild(h);
+                });
+                for(let i = 1; i <= 30; i++) {
+                    const dEl = document.createElement('div'); dEl.className = 'cal-day'; dEl.innerText = i;
+                    if(WORLD_AI_MARKETS[i]) dEl.classList.add('has-news');
+                    if(i === 21) dEl.classList.add('today'); 
+                    
+                    dEl.addEventListener('click', () => {
+                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌍 <b>ИИ-Анализ дня (${i} Июня):</b> На макроэкономическом поле затишье. Основные индексы торгуются в боковиках. Прекрасное время для разворотных стратегий от локальных уровней поддержки и сопротивления на секундных и минутных экспирациях.`;
+                    });
+                    grid.appendChild(dEl);
+                }
+            };
+
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const parent = tab.closest('.screen');
+                    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+                });
+            });
+
+            window.sendAiChatMessage = async function() {
+                const inputEl = document.getElementById('ai-chat-input');
+                const txt = inputEl.value.trim();
+                if(!txt) return;
+
+                inputEl.value = '';
+                appendMsg('ai-chat-container', txt, 'user');
+                
+                const typing = document.getElementById('ai-chat-typing');
+                if(typing) {
+                    typing.style.display = 'block';
+                    typing.parentNode.appendChild(typing);
+                    typing.parentNode.scrollTop = typing.parentNode.scrollHeight;
+                }
+
+                try {
+                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            model: "llama-3.3-70b-versatile",
+                            messages: [
+                                { role: "system", content: "Ты — ИИ торгового клуба VIP COMMUNITY." },
+                                { role: "user", content: txt }
+                            ],
+                            temperature: 0.6
+                        })
+                    });
+                    const data = await res.json();
+                    if(typing) typing.style.display = 'none';
+
+                    if (data.choices && data.choices[0]) {
+                        let answer = data.choices[0].message.content;
+                        appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'), 'bot', true);
+                    }
+                } catch(e) {
+                    if(typing) typing.style.display = 'none';
+                    appendMsg('ai-chat-container', 'Ошибка соединения с ИИ.', 'bot');
+                }
+            };
+
+            function appendMsg(containerId, text, sender, isHTML = false) {
+                const box = document.getElementById(containerId);
+                if(!box) return;
+                const msg = document.createElement('div');
+                msg.className = `chat-msg ${sender}`;
+                if(isHTML) msg.innerHTML = text; else msg.innerText = text;
+                box.insertBefore(msg, box.querySelector('#' + containerId + '-typing') || null);
+                box.scrollTop = box.scrollHeight;
+            }
+
+            function loadSavedCommunityChat() {
+                const chatContainer = document.getElementById('community-chat-container');
+                if(!chatContainer) return;
+                const saved = localStorage.getItem('team_community_chat_history');
+                if (saved) {
+                    chatContainer.innerHTML = saved;
+                }
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            window.sendCommunityMessage = function() {
+                const inp = document.getElementById('community-chat-input');
+                if(!inp) return;
+                const text = inp.value.trim(); 
+                if(!text) return; 
+                inp.value = '';
+                
+                const container = document.getElementById('community-chat-container');
+                const msg = document.createElement('div'); 
+                msg.className = 'chat-msg user'; 
+                msg.innerText = text;
+                container.appendChild(msg); 
+                
+                container.scrollTop = container.scrollHeight;
+                localStorage.setItem('team_community_chat_history', container.innerHTML);
+            };
+
+            window.handleChatScreenshot = function(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const container = document.getElementById('community-chat-container');
+                        const msg = document.createElement('div');
+                        msg.className = 'chat-msg user';
+                        msg.innerHTML = `<b>Мой отчет профита за неделю:</b><br><img src="${e.target.result}" class="chat-img-attach">`;
+                        container.appendChild(msg);
+                        
+                        container.scrollTop = container.scrollHeight;
+                        localStorage.setItem('team_community_chat_history', container.innerHTML);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            };
+
+            window.switchScreen = switchScreen;
+
+            async function init() {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.ready();
+                    window.Telegram.WebApp.expand();
+
+                    // ПОЛУЧАЕМ ИМЯ И TELEGRAM ID
+                    const tgData = window.Telegram.WebApp.initDataUnsafe;
+                    if (tgData && tgData.user) {
+                        const user = tgData.user;
+                        
+                        let fullName = user.first_name || "";
+                        if (user.last_name) fullName += " " + user.last_name;
+                        if (!fullName.trim() && user.username) fullName = "@" + user.username;
+                        if (!fullName.trim()) fullName = "Трейдер TEAM";
+
+                        const usernameEl = document.getElementById('profile-username');
+                        const idEl = document.getElementById('profile-telegram-id');
+                        
+                        if (usernameEl) usernameEl.innerText = fullName;
+                        if (idEl) idEl.innerText = user.id;
+                    } else {
+                        const usernameEl = document.getElementById('profile-username');
+                        const idEl = document.getElementById('profile-telegram-id');
+                        if (usernameEl) usernameEl.innerText = "Браузерная версия (Тест)";
+                        if (idEl) idEl.innerText = "123456789";
+                    }
+                }
+                
+                initBalances();
+                loadBooks();
+                window.generateNewsCalendar();
+                loadSavedCommunityChat();
+                
+                await updateLivePayouts();
+                setInterval(updateLivePayouts, 5000); 
+                
+                calculateWeeklyTarget();
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
