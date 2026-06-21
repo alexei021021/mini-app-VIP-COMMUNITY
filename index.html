@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP COMMUNITY</title>
+    <title>ALIFA VIP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
@@ -135,7 +135,7 @@
 
         <div class="screen active" id="menu-screen">
             <div class="welcome">Welcome</div>
-            <div class="brand-title">VIP COMMUNITY</div>
+            <div class="brand-title">ALIFA VIP</div>
             
             <div class="balance-card">
                 <div class="balance-header">
@@ -162,7 +162,7 @@
                 </div>
                 <div class="card" data-target="bot-selector-screen">
                     <div class="icon-circle">🤖</div>
-                    <div class="card-title">ALIF AI Бот</div>
+                    <div class="card-title">ALIFA VIP AI Бот</div>
                 </div>
                 <div class="card" data-target="signals-screen">
                     <div class="icon-circle">📊</div>
@@ -182,7 +182,7 @@
                 </div>
                 <div class="card" data-target="chat-screen" style="grid-column: span 2; aspect-ratio: unset; padding: 20px 15px;">
                     <div class="icon-circle" style="margin-bottom: 8px;">💬</div>
-                    <div class="card-title">Чат сообщества TEAM</div>
+                    <div class="card-title">Чат Команды</div>
                 </div>
             </div>
         </div>
@@ -274,7 +274,7 @@
         </div>
 
         <div class="screen" id="bot-selector-screen">
-            <h2>🤖 ALIF AI Бот</h2>
+            <h2>🤖 ALIFA VIP AI Бот</h2>
             <div class="ai-mode-selection">
                 <div class="mode-btn" onclick="switchScreen('bot-chat-screen')">
                     <div class="mode-icon">💬</div>
@@ -297,7 +297,7 @@
         <div class="screen" id="bot-chat-screen">
             <h2>💬 Общение с ИИ</h2>
             <div class="chat-box" id="ai-chat-container">
-                <div class="chat-msg bot">Привет! Я искусственный интеллект сообщества TEAM. Какую тему разберем сегодня?</div>
+                <div class="chat-msg bot">Привет! Я искусственный интеллект Команды. Какую тему разберем сегодня?</div>
                 <div class="chat-msg bot" id="ai-chat-typing" style="display:none; color:#667085;">ИИ обдумывает ответ...</div>
             </div>
             <div class="input-area">
@@ -317,7 +317,7 @@
         </div>
 
         <div class="screen" id="education-screen">
-            <h2>📘 Библиотека TEAM</h2>
+            <h2>📘 Библиотека Команды</h2>
             <div class="screen-content" style="max-height: 60vh; overflow-y: auto;" id="books-list-box"></div>
             <button class="back-btn">← Назад в меню</button>
         </div>
@@ -356,9 +356,9 @@
         </div>
 
         <div class="screen" id="chat-screen">
-            <h2>💬 Чат TEAM</h2>
+            <h2>💬 Чат Команды</h2>
             <div class="chat-box" id="community-chat-container">
-                <div class="chat-msg bot" style="border-left-color:#667085;"><b>Система:</b> Добро пожаловать в общий чат VIP COMMUNITY. Делитесь своими скриншотами заработка за неделю!</div>
+                <div class="chat-msg bot" style="border-left-color:#667085;"><b>Система:</b> Добро пожаловать в общий чат ALIFA VIP. Делитесь своими скриншотами заработка за неделю!</div>
             </div>
             <div class="input-area">
                 <label class="attach-btn" for="chat-file-input">
@@ -844,7 +844,7 @@
                         body: JSON.stringify({
                             model: "llama-3.3-70b-versatile",
                             messages: [
-                                { role: "system", content: "Ты — ИИ торгового клуба VIP COMMUNITY." },
+                                { role: "system", content: "Ты — ИИ торговой Команды ALIFA VIP." },
                                 { role: "user", content: txt }
                             ],
                             temperature: 0.6
@@ -921,7 +921,7 @@
 
             async function init() {
                 let userId = null;
-                let fullName = "Трейдер TEAM";
+                let fullName = "Трейдер Команды";
 
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
