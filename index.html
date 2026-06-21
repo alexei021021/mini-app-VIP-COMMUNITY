@@ -378,9 +378,18 @@
             let serverPayouts = {}; 
 
             // Книги: Используем Google Docs Viewer для открытия напрямую в iframe внутри Mini App
+            // ПРИМЕЧАНИЕ: Файлы (file property) должны быть доступны по прямым ссылкам
             const ALIF_BOOKS = [
-                { title: "Торговый алгоритм «Кукловод»", desc: "Концепция умных денег и механика маркетмейкера", file: "https://raw.githubusercontent.com/w3c/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf" },
-                { title: "Психология трейдинга и дисциплина", desc: "Как бороться с тильтом и соблюдать риски", file: "https://raw.githubusercontent.com/w3c/pdf.js/master/test/pdfs/500pages.pdf" }
+                { title: "Как играть и выигрывать на бирже", desc: "Классика биржевой торговли", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
+                { title: "Капитал в XXI веке", desc: "Экономическое исследование", file: "Kapital_v_XXI_veke.pdf" },
+                { title: "Малая энциклопедия трейдера", desc: "Базовые понятия рынка", file: "Malaya_enciklopediya_trejdera.pdf" },
+                { title: "Японские свечи", desc: "Технический анализ финансовых рынков", file: "Yaponskie_svechi_Nison.pdf" },
+                { title: "Пособие по Эллиоту", desc: "Волновая теория", file: "Posobie_po_Elliotu.pdf" },
+                { title: "Психология трейдинга", desc: "Работа с мышлением", file: "Psihologiya_trejdinga.pdf" },
+                { title: "Путь Черепах", desc: "История обучения трейдеров", file: "Put_Cherepah.pdf" },
+                { title: "Торговый хаос", desc: "Метод Билла Вильямса", file: "Torgovyj_haos.pdf" },
+                { title: "Торговый алгоритм", desc: "Механика рынка", file: "Torgovyj_algoritm.pdf" },
+                { title: "Rossman R.", desc: "Справочные материалы", file: "Rossman_R.pdf" }
             ];
 
             // Глобальный ИИ-анализ рынков по дням для Календаря
@@ -461,7 +470,6 @@
                 updateProfileAiHint();
             };
 
-            // ИИ-подсказка в личном кабинете на базе суммы
             function updateProfileAiHint() {
                 const hintEl = document.getElementById('ai-profile-hint');
                 if(!hintEl) return;
@@ -469,15 +477,14 @@
                 hintEl.innerHTML = `При балансе <b>$${currentBalance}</b> ваш фиксированный риск составляет 2% (<b>$${stake.toFixed(2)}</b> на сделку). ИИ рекомендует: придерживаться сессий из 3 прибыльных сделок в день. Не перекрывать минусы более чем 3 ступенями Мартингейла.`;
             }
 
-            // ИИ расчет сделок до конца недели во вкладке целей
             window.calculateWeeklyTarget = function() {
                 const targetInput = document.getElementById('user-weekly-target');
                 const hintEl = document.getElementById('ai-target-hint');
                 if (!targetInput || !hintEl) return;
 
                 let targetSum = parseFloat(targetInput.value) || 0;
-                let singleStake = currentBalance * 0.02; // 2%
-                let averagePayoutPercent = 82; // средний процент выплат
+                let singleStake = currentBalance * 0.02; 
+                let averagePayoutPercent = 82; 
                 let profitPerTrade = singleStake * (averagePayoutPercent / 100);
 
                 if (targetSum <= 0) {
@@ -708,6 +715,7 @@
 
             function openPdfViewer(fileUrl, title) {
                 document.getElementById('viewer-title').innerText = title;
+                // Предполагаем, что файл доступен в корне или по полному URL
                 document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
                 switchScreen('book-viewer-screen');
             }
@@ -844,7 +852,6 @@
                     window.Telegram.WebApp.ready();
                     window.Telegram.WebApp.expand();
 
-                    // ПОЛУЧАЕМ ИМЯ И TELEGRAM ID
                     const tgData = window.Telegram.WebApp.initDataUnsafe;
                     if (tgData && tgData.user) {
                         const user = tgData.user;
