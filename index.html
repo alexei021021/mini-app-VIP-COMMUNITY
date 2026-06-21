@@ -45,7 +45,7 @@
         #menu-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
         #profile-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=1080&q=80'); }
         #bot-selector-screen, #bot-chat-screen, #bot-analysis-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
-        #signals-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1080&q=80'); }
+        #news-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1080&q=80'); }
         #education-screen, #book-viewer-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1080&q=80'); }
         #sessions-screen, #calendar-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1608222284001-a482ccdf0cd5?auto=format&fit=crop&w=1080&q=80'); }
         #chat-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1080&q=80'); }
@@ -57,7 +57,7 @@
         /* Типографика */
         .welcome { font-size: 12px; letter-spacing: 4px; color: var(--neon-green); margin-bottom: 4px; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(0, 255, 170, 0.4); text-align: center; }
         .brand-title { font-size: 34px; font-weight: 900; letter-spacing: 1px; margin-bottom: 24px; color: #ffffff; text-align: center; text-transform: uppercase; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h2 { font-size: 24px; margin-bottom: 20px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 170, 0.3); }
+        h2 { font-size: 24px; margin-bottom: 20px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 170, 0.3); text-align: center; }
 
         /* Основные блоки (круглые/овальные) */
         .glass-box {
@@ -65,7 +65,7 @@
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
-            border-radius: 40px; /* Сильное скругление */
+            border-radius: 40px; 
             padding: 24px;
             margin-bottom: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.02);
@@ -114,14 +114,6 @@
         .back-btn { width: 100%; padding: 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s ease; margin-top: 10px; backdrop-filter: blur(10px); }
         .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-green); }
 
-        /* Вкладки */
-        .tabs-header { display: flex; gap: 12px; margin-bottom: 16px; }
-        .tab-btn { flex: 1; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: #8592ad; border-radius: 50px; font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; text-align: center; transition: all 0.3s; }
-        .tab-btn.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 170, 0.4); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeUp 0.3s ease forwards; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         /* Списки и Поиск */
         .ai-mode-selection { display: flex; flex-direction: column; gap: 16px; }
         .mode-btn { background: var(--glass-bg); border: 1px solid rgba(0, 255, 170, 0.2); border-radius: 35px; padding: 22px; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 18px; backdrop-filter: blur(10px); }
@@ -137,6 +129,14 @@
         .pairs-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-right: 4px; }
         .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
         .pair-row:active { border-color: var(--neon-green); background: rgba(0,255,170,0.1); transform: scale(0.98); }
+
+        /* Новости ИИ */
+        .news-item { background: rgba(0,0,0,0.4); border-radius: 25px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--neon-purple); animation: newsPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes newsPop { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .news-time { font-size: 11px; color: var(--neon-green); font-weight: 800; margin-bottom: 6px; letter-spacing: 1px; }
+        .news-text { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
+        .news-text .highlight { color: var(--neon-green); font-weight: 800; }
+        .news-text .alert { color: var(--neon-red); font-weight: 800; }
 
         /* Чат */
         .chat-box { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); border-radius: 35px; padding: 16px; overflow-y: auto; border: 1px solid var(--glass-border); margin-bottom: 12px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); }
@@ -162,6 +162,7 @@
         .radar-status { font-size: 16px; color: var(--neon-green); text-align: center; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px rgba(0,255,170,0.5); }
         
         .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .final-dir { font-size: 48px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
         .final-dir.up { color: var(--neon-green); text-shadow: 0 0 40px rgba(0,255,170,0.6); }
         .final-dir.down { color: var(--neon-red); text-shadow: 0 0 40px rgba(255,46,99,0.6); }
@@ -197,8 +198,6 @@
         .cal-day.today { background: var(--neon-green) !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,170,0.5); }
         .cal-day.has-news::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 8px var(--neon-red); }
         .news-display-box { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 25px; font-size: 13px; font-weight: 600; min-height: 60px; border-left: 4px solid var(--neon-purple); margin-top: 16px; line-height: 1.5; }
-        
-        .pattern-img { width: 100%; border-radius: 20px; margin-top: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
 
         /* Админ-панель */
         .admin-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
@@ -210,7 +209,7 @@
 
     <div class="container">
         <div class="screen" id="access-denied-screen">
-            <h2 style="color: var(--neon-red); justify-content: center; font-size: 32px; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
+            <h2 style="color: var(--neon-red); text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
             <div class="glass-box" style="text-align: center;">
                 <p style="color: #a4b1cd; font-size: 14px; line-height: 1.6; margin-bottom: 24px; font-weight: 600;">Система безопасности PRO AI не распознала ваш Telegram ID в реестре закрытого клуба.</p>
                 <div class="info-item" style="border-left-color: var(--neon-red); background: rgba(0,0,0,0.5);">
@@ -252,9 +251,9 @@
                     <div class="icon-circle">🧠</div>
                     <div class="card-title">Нейросеть</div>
                 </div>
-                <div class="card" data-target="signals-screen">
-                    <div class="icon-circle">📡</div>
-                    <div class="card-title">Сигналы PRO</div>
+                <div class="card" data-target="news-screen">
+                    <div class="icon-circle" style="color: var(--neon-purple);">📰</div>
+                    <div class="card-title">ИИ Новости</div>
                 </div>
                 <div class="card" data-target="education-screen">
                     <div class="icon-circle">📚</div>
@@ -319,37 +318,10 @@
             <button class="back-btn" onclick="switchScreen('profile-screen')">← ВЕРНУТЬСЯ</button>
         </div>
 
-        <div class="screen" id="signals-screen">
-            <h2>📡 PRO СИГНАЛЫ</h2>
-            <div class="tabs-header">
-                <div class="tab-btn active" data-tab="live-signals">ПОТОК</div>
-                <div class="tab-btn" data-tab="patterns-guide" onclick="window.scrollTo(0,0)">ПАТТЕРНЫ</div>
-            </div>
-            <div class="tab-content active" id="live-signals">
-                <div class="glass-box" style="display: flex; flex-direction: column; gap: 10px;" id="live-signals-render-box">
-                    <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px; font-weight:600;">Ожидание коннекта к пулу данных...</div>
-                </div>
-            </div>
-            <div class="tab-content" id="patterns-guide">
-                <div class="glass-box" style="max-height: 55vh; overflow-y: auto;">
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <div class="info-item">
-                            <h4>Бычий Флаг</h4>
-                            <p>Модель продолжения восходящего тренда.</p>
-                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
-                        </div>
-                        <div class="info-item">
-                            <h4>Голова и Плечи</h4>
-                            <p>Сильнейшая разворотная модель на вершине.</p>
-                            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
-                        </div>
-                        <div class="info-item" style="margin-bottom:0;">
-                            <h4>Двойное Дно</h4>
-                            <p>Разворот тренда от сильного уровня поддержки.</p>
-                            <img src="https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=400&q=80" class="pattern-img" alt="Паттерн">
-                        </div>
-                    </div>
-                </div>
+        <div class="screen" id="news-screen">
+            <h2>📰 ИИ НОВОСТИ РЫНКА</h2>
+            <div class="glass-box" style="max-height: 65vh; overflow-y: auto; padding-right: 10px;" id="ai-news-container">
+                <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px; font-weight:600;" id="news-waiting-text">Инициализация потока данных. Сбор котировок с мировых бирж...</div>
             </div>
             <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
         </div>
@@ -429,7 +401,7 @@
         <div class="screen" id="calendar-screen">
             <h2>📅 МАКРО-ДАННЫЕ</h2>
             <div class="glass-box">
-                <div style="text-align:center; font-weight:900; font-size:18px; color:var(--neon-green); margin-bottom:16px; text-transform:uppercase; letter-spacing:2px;">Текущий Месяц</div>
+                <div id="calendar-month-title" style="text-align:center; font-weight:900; font-size:18px; color:var(--neon-green); margin-bottom:16px; text-transform:uppercase; letter-spacing:2px;">Загрузка...</div>
                 <div class="cal-grid" id="calendar-days-box"></div>
                 <div class="news-display-box" id="news-details-box">Синхронизация с глобальными экономическими сводками. Выберите дату для отчета ИИ.</div>
             </div>
@@ -570,15 +542,6 @@
                 { title: "Справочник Индикаторов", desc: "Математическое описание ТА", file: "Rossman_R.pdf" }
             ];
 
-            const WORLD_AI_MARKETS = {
-                1: "🌐 PRO-Сводка: Начало месяца. Азиатская сессия аккумулирует объемы. Индекс USD в фазе накопления, приоритет работы в каналах.",
-                2: "🌐 PRO-Сводка: Выход данных PMI в Еврозоне. GBP/USD тестирует критические уровни сопротивления. Вероятна смена локального тренда.",
-                5: "🔴 АЛЕРТ: Non-Farm Payrolls. Ожидается вливание аномальной ликвидности алгоритмами маркетмейкеров. Риск-менеджмент: STRICT 0.5%.",
-                12: "🌐 PRO-Сводка: Заседание ФРС (FOMC). XAU/USD (Золото) обновляет максимумы. Пары с JPY перепроданы, формируют разворотные структуры.",
-                18: "🌐 PRO-Сводка: Консолидация на рынке энергоносителей. AUD и CAD в узком флете. Идеальные условия для работы скальпинг-ботов на M1/M5.",
-                25: "🌐 PRO-Сводка: Экспирация квартальных опционов. Повышенный рыночный шум. Рекомендация: работа строго по тренду старшего ТФ."
-            };
-
             const cards = document.querySelectorAll('.card');
             const backButtons = document.querySelectorAll('.back-btn');
             const screens = document.querySelectorAll('.screen');
@@ -697,7 +660,6 @@
                         }
                         if (statusText) statusText.innerText = "Прямой шлюз с сервером Render: СТАБИЛЕН";
 
-                        renderLiveSignalsTab();
                         filterAnalysisPairs();
                     } else {
                         throw new Error("API Reject");
@@ -709,27 +671,6 @@
                     }
                     if (statusText) statusText.innerHTML = `<span style="color:var(--neon-red);">Потеря пакетов с хостом ${SERVER_URL}</span>`;
                 }
-            }
-
-            function renderLiveSignalsTab() {
-                const box = document.getElementById('live-signals-render-box');
-                if (!box) return;
-
-                const pairs = Object.keys(serverPayouts);
-                if (pairs.length === 0) {
-                    box.innerHTML = `<div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px;">Поток ликвидности пуст.</div>`;
-                    return;
-                }
-
-                box.innerHTML = '';
-                pairs.forEach(pair => {
-                    const row = document.createElement('div');
-                    row.className = 'pair-row';
-                    row.style.background = 'rgba(0,0,0,0.5)';
-                    row.style.cursor = 'default';
-                    row.innerHTML = `<span>${pair}</span><span style="color:var(--neon-green); font-weight:900;">+${serverPayouts[pair]}%</span>`;
-                    box.appendChild(row);
-                });
             }
 
             function populateAnalysisPairs(filteredList) {
@@ -876,35 +817,102 @@
                 switchScreen('book-viewer-screen');
             }
 
+            // ============================================
+            // ИИ НОВОСТИ (Авто-обновление)
+            // ============================================
+            const AI_NEWS_TEMPLATES = [
+                "🔴 <span class='alert'>АЛЕРТ:</span> Крупный перевод {amount} на неизвестный кошелек. Возможна высокая волатильность на рынке.",
+                "🌐 <span class='highlight'>PRO-Сводка:</span> Индекс доллара (DXY) тестирует критический уровень. Ожидаем реакцию на мажорах.",
+                "🟢 <span class='highlight'>ИНСАЙД:</span> {pair} показывает аномальный объем на покупку в стакане. Рекомендуется поиск точек входа в LONG.",
+                "🤖 <span class='highlight'>ИИ АНАЛИЗ:</span> Нейросеть фиксирует перепроданность по {pair}. Готовимся к развороту тренда.",
+                "📊 <span class='highlight'>МАКРО:</span> Вливание ликвидности от институциональных инвесторов. Снизить риски на сделку до 1%."
+            ];
+            
+            const PAIRS_MOCK = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "XAU/USD", "BTC/USD"];
+            const AMOUNTS_MOCK = ["15,000 BTC", "400,000 ETH", "$1.2 Млрд", "500,000 SOL"];
+
+            function generateAiNews() {
+                const container = document.getElementById('ai-news-container');
+                const waitingText = document.getElementById('news-waiting-text');
+                if (!container) return;
+                
+                if(waitingText) waitingText.style.display = 'none';
+
+                let template = AI_NEWS_TEMPLATES[Math.floor(Math.random() * AI_NEWS_TEMPLATES.length)];
+                let pair = PAIRS_MOCK[Math.floor(Math.random() * PAIRS_MOCK.length)];
+                let amount = AMOUNTS_MOCK[Math.floor(Math.random() * AMOUNTS_MOCK.length)];
+                
+                let newsText = template.replace("{pair}", `<span class="highlight">${pair}</span>`).replace("{amount}", amount);
+                
+                let now = new Date();
+                let timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+                const newsItem = document.createElement('div');
+                newsItem.className = 'news-item';
+                newsItem.innerHTML = `
+                    <div class="news-time">⌚ ${timeStr}</div>
+                    <div class="news-text">${newsText}</div>
+                `;
+                
+                container.insertBefore(newsItem, container.firstChild);
+                
+                // Keep only last 15 news items to prevent DOM bloat
+                if(container.children.length > 15) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+
+            // ============================================
+            // ДИНАМИЧЕСКИЙ КАЛЕНДАРЬ
+            // ============================================
             window.generateNewsCalendar = function() {
                 const grid = document.getElementById('calendar-days-box');
+                const title = document.getElementById('calendar-month-title');
                 if (!grid) return;
+                
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth(); // 0-11
+                const todayDate = now.getDate();
+                
+                // Кол-во дней в текущем месяце
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                
+                if(title) title.innerText = `${monthNames[month]} ${year}`;
                 grid.innerHTML = '';
+                
                 const days = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'];
                 days.forEach(d => {
                     const h = document.createElement('div'); h.className = 'cal-header'; h.innerText = d; grid.appendChild(h);
                 });
-                for(let i = 1; i <= 30; i++) {
-                    const dEl = document.createElement('div'); dEl.className = 'cal-day'; dEl.innerText = i;
-                    if(WORLD_AI_MARKETS[i]) dEl.classList.add('has-news');
-                    if(i === 21) dEl.classList.add('today'); 
+                
+                // Простые макро-сводки для ИИ в зависимости от дня
+                const AI_MACRO_MOCK = [
+                    "Ожидание процентной ставки. Торгуем аккуратно.",
+                    "Выход Non-Farm Payrolls. Высокая волатильность.",
+                    "Нейтральный макроэкономический фон.",
+                    "Заседание ЦБ. Возможны сильные импульсы.",
+                    "Инфляционные данные CPI. Работать только по тренду."
+                ];
+
+                for(let i = 1; i <= daysInMonth; i++) {
+                    const dEl = document.createElement('div'); 
+                    dEl.className = 'cal-day'; 
+                    dEl.innerText = i;
+                    
+                    // Случайные новости на днях (чтобы календарь выглядел живым)
+                    let hasNews = Math.random() > 0.7;
+                    if(hasNews) dEl.classList.add('has-news');
+                    if(i === todayDate) dEl.classList.add('today'); 
                     
                     dEl.addEventListener('click', () => {
-                        document.getElementById('news-details-box').innerHTML = WORLD_AI_MARKETS[i] || `🌐 <b>ИНДЕКС ДНЯ (${i}):</b> Нейтральный фон. Маркетмейкеры в фазе ожидания. Отработка классического ТА от уровней.`;
+                        let mockData = AI_MACRO_MOCK[Math.floor(Math.random() * AI_MACRO_MOCK.length)];
+                        document.getElementById('news-details-box').innerHTML = `🌐 <b>ИНДЕКС ДНЯ (${i} ${monthNames[month]}):</b> ${hasNews ? mockData : 'Новостной фон пуст. Идеальные условия для отработки технического анализа.'}`;
                     });
                     grid.appendChild(dEl);
                 }
             };
-
-            document.querySelectorAll('.tab-btn').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const parent = tab.closest('.screen');
-                    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
-                });
-            });
 
             window.sendAiChatMessage = async function() {
                 const inputEl = document.getElementById('ai-chat-input');
@@ -1060,7 +1068,12 @@
                 window.generateNewsCalendar();
                 loadSavedCommunityChat();
                 await updateLivePayouts();
+                
+                // Запуск интервалов
                 setInterval(updateLivePayouts, 5000); 
+                generateAiNews(); // Первая новость сразу
+                setInterval(generateAiNews, 15000); // Каждые 15 секунд новая новость
+                
                 calculateWeeklyTarget();
             }
 
