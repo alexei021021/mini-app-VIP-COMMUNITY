@@ -17,7 +17,6 @@
             min-height: 100vh; 
             user-select: none; 
             overflow-x: hidden; 
-            padding-bottom: 90px;
         }
         
         :root {
@@ -25,363 +24,523 @@
             --neon-purple: #9D00FF;
             --neon-red: #FF2E63;
             --neon-blue: #00E5FF;
-            --glass-bg: rgba(15, 20, 35, 0.65);
+            --glass-bg: rgba(15, 20, 35, 0.55);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
         }
 
-        /* Общие классы стекломорфизма */
+        .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; padding-bottom: 90px; }
+        
+        .screen { 
+            display: none !important; 
+            min-height: 100vh; 
+            padding: 20px 15px; 
+            background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        .screen.active { display: block !important; animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Общие классы */
         .glass-box {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px; 
-            padding: 20px;
-            margin: 0 15px 16px 15px;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px; margin-bottom: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.02);
         }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 800;
-            margin: 0 0 12px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        h2 { font-size: 20px; margin-bottom: 16px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-transform: uppercase; }
+        .section-title { font-size: 14px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn { width: 100%; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s; margin-top: 10px; }
+        .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-green); }
 
         /* 1. Header: Global Markets */
-        .header-markets {
-            display: flex;
-            gap: 12px;
-            padding: 20px 15px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(5, 8, 16, 0.95), rgba(5, 8, 16, 0));
-        }
+        .header-markets { display: flex; gap: 10px; padding: 10px 0 20px 0; overflow-x: auto; scrollbar-width: none; }
         .header-markets::-webkit-scrollbar { display: none; }
-        .market-pill {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px 16px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 800;
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-        }
+        .market-pill { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.1); padding: 10px 16px; border-radius: 50px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .market-pill.crypto { border-color: rgba(247, 147, 26, 0.5); box-shadow: 0 0 15px rgba(247, 147, 26, 0.2); }
         .market-pill.stocks { border-color: rgba(0, 255, 170, 0.5); box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); }
         .market-pill.forex { border-color: rgba(0, 229, 255, 0.5); box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); }
-        .icon-3d { font-size: 20px; filter: drop-shadow(0 0 8px currentColor); }
+        .icon-3d { font-size: 18px; filter: drop-shadow(0 0 6px currentColor); }
 
         /* 2. Main Section: 3D Market Animation */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #000;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        /* Анимация дрона-сканера */
-        .ai-drone {
-            position: absolute;
-            width: 12px; height: 12px;
-            background: var(--neon-purple);
-            border-radius: 50%;
-            box-shadow: 0 0 20px 5px var(--neon-purple);
-            z-index: 10;
-            animation: droneScan 4s ease-in-out infinite alternate;
-        }
-        .ai-drone::after {
-            content: ''; position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 40px; height: 40px;
-            border: 1px dashed var(--neon-purple);
-            border-radius: 50%;
-            animation: dronePulse 2s linear infinite;
-        }
-        @keyframes droneScan {
-            0% { top: 20%; left: 10%; background: var(--neon-green); box-shadow: 0 0 20px 5px var(--neon-green); }
-            50% { top: 60%; left: 50%; background: var(--neon-purple); box-shadow: 0 0 20px 5px var(--neon-purple); }
-            100% { top: 30%; left: 80%; background: var(--neon-blue); box-shadow: 0 0 20px 5px var(--neon-blue); }
-        }
-        @keyframes dronePulse {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-        }
+        .chart-container { position: relative; height: 250px; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.05); }
+        .ai-drone { position: absolute; width: 10px; height: 10px; background: var(--neon-purple); border-radius: 50%; box-shadow: 0 0 20px 5px var(--neon-purple); z-index: 10; animation: droneScan 5s ease-in-out infinite alternate; }
+        .ai-drone::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border: 1px dashed var(--neon-purple); border-radius: 50%; animation: dronePulse 2s linear infinite; }
+        @keyframes droneScan { 0% { top: 20%; left: 10%; background: var(--neon-green); box-shadow: 0 0 15px 3px var(--neon-green); } 50% { top: 60%; left: 50%; background: var(--neon-purple); box-shadow: 0 0 15px 3px var(--neon-purple); } 100% { top: 30%; left: 80%; background: var(--neon-blue); box-shadow: 0 0 15px 3px var(--neon-blue); } }
+        @keyframes dronePulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
 
         /* 3. Analytics Block */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .stat-card {
-            background: rgba(0,0,0,0.4);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            overflow: hidden;
-        }
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card { background: rgba(0,0,0,0.5); border-radius: 16px; padding: 14px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
         .stat-card.wide { grid-column: span 2; }
-        .stat-card::before {
-            content: ''; position: absolute; top:0; left:0; width: 4px; height: 100%;
-        }
+        .stat-card::before { content: ''; position: absolute; top:0; left:0; width: 3px; height: 100%; }
         .stat-card.profit::before { background: var(--neon-green); }
         .stat-card.winrate::before { background: var(--neon-purple); }
         .stat-card.time::before { background: var(--neon-blue); }
-        
-        .stat-title { font-size: 11px; color: #a4b1cd; text-transform: uppercase; font-weight: 800; margin-bottom: 8px; }
-        .stat-value { font-size: 22px; font-weight: 900; color: #fff; display: flex; align-items: baseline; gap: 5px; }
-        .stat-sub { font-size: 12px; color: var(--neon-green); font-weight: 600; }
+        .stat-title { font-size: 10px; color: #a4b1cd; text-transform: uppercase; font-weight: 800; margin-bottom: 6px; }
+        .stat-value { font-size: 20px; font-weight: 900; color: #fff; display: flex; align-items: baseline; gap: 5px; }
+        .stat-sub { font-size: 11px; color: var(--neon-green); font-weight: 600; }
+        .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 20px; font-weight: 900; width: 100%; outline: none; }
 
-        /* 4. Social Block */
-        .leaderboard-container {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding-bottom: 10px;
-        }
+        /* 4. Social Block: Leaderboard */
+        .leaderboard-container { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
         .leaderboard-container::-webkit-scrollbar { display: none; }
-        .trader-card {
-            min-width: 110px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 15px 10px;
-            text-align: center;
-            position: relative;
-        }
-        .trader-avatar {
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2c3e50, #000);
-            margin: 0 auto 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            border: 2px solid var(--neon-purple);
-            position: relative;
-        }
-        .status-dot {
-            position: absolute; bottom: 0; right: 0;
-            width: 12px; height: 12px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            border: 2px solid #000;
-            box-shadow: 0 0 10px var(--neon-green);
-        }
-        .trader-name { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+        .trader-card { min-width: 100px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 12px 8px; text-align: center; }
+        .trader-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #000); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid var(--neon-purple); position: relative; }
+        .status-dot { position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; background: var(--neon-green); border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 8px var(--neon-green); }
+        .trader-name { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
         .trader-profit { font-size: 11px; color: var(--neon-green); font-weight: 900; }
 
         /* 5. Interaction: Chat */
-        .chat-box {
-            height: 250px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .chat-msg {
-            background: rgba(255,255,255,0.05);
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 13px;
-            max-width: 90%;
-            line-height: 1.4;
-            border: 1px solid transparent;
-        }
-        .chat-msg.long { border-color: rgba(0,255,170,0.3); border-left: 3px solid var(--neon-green); }
-        .chat-msg.short { border-color: rgba(255,46,99,0.3); border-left: 3px solid var(--neon-red); }
-        .msg-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; font-weight: 800; }
+        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .chat-msg { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 14px; font-size: 12px; line-height: 1.4; border: 1px solid transparent; width: fit-content; max-width: 90%; }
+        .chat-msg.bot { border-color: rgba(0,255,170,0.3); border-left: 3px solid var(--neon-green); align-self: flex-start; }
+        .chat-msg.user { background: rgba(157, 0, 255, 0.15); border-color: rgba(157,0,255,0.3); border-right: 3px solid var(--neon-purple); align-self: flex-end; }
+        .msg-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10px; font-weight: 800; }
         .msg-name { color: #a4b1cd; }
         
-        .chat-input-area { display: flex; gap: 10px; }
-        .chat-input {
-            flex: 1; padding: 14px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; color: #fff;
-            outline: none; font-size: 13px;
-        }
-        .emoji-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 0 15px;
-            font-size: 20px;
-            cursor: pointer;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-        }
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input { flex: 1; padding: 12px 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; outline: none; font-size: 13px; font-weight: 600; }
+        .send-btn { background: var(--neon-green); color: #000; border: none; padding: 0 20px; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+        .send-btn:active { transform: scale(0.95); }
 
         /* 6. Navigation Bar */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: rgba(5, 8, 16, 0.95);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 20px calc(15px + env(safe-area-inset-bottom, 0px));
-            backdrop-filter: blur(20px);
-            z-index: 999;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            color: #61687a; cursor: pointer; transition: all 0.3s ease;
-        }
-        .nav-item.active { color: var(--neon-green); text-shadow: 0 0 15px rgba(0,255,170,0.5); }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(5, 8, 16, 0.95); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px)); backdrop-filter: blur(20px); z-index: 999; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #61687a; cursor: pointer; transition: all 0.3s; background: none; border: none; outline: none; }
+        .nav-item.active { color: var(--neon-green); text-shadow: 0 0 15px rgba(0,255,170,0.4); }
         .nav-icon { font-size: 20px; }
-        .nav-label { font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .nav-label { font-size: 9px; font-weight: 800; text-transform: uppercase; }
+
+        /* Вспомогательные классы из базы (Радар, Обучение, Профиль) */
+        .info-item { padding: 16px; background: rgba(0,0,0,0.4); border-radius: 16px; margin-bottom: 12px; border-left: 3px solid var(--neon-green); }
+        .info-item h4 { font-size: 12px; color: #fff; font-weight: 800; margin-bottom: 4px; }
+        .info-item p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
+        .book-item { background: rgba(0,0,0,0.4); padding: 16px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        .read-btn { background: rgba(0,255,170,0.1); color: var(--neon-green); border: 1px solid rgba(0, 255, 170, 0.3); padding: 8px 14px; border-radius: 50px; font-size: 10px; font-weight: 900; }
+        .search-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; font-size: 13px; outline: none; margin-bottom: 14px; }
+        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 13px; font-weight: 800; margin-bottom: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* Радар */
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 5, 15, 0.95); backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .radar-container { position: relative; width: 150px; height: 150px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(0, 255, 170, 0.1); border-radius: 50%; animation: radarRotate 2s linear infinite; }
+        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(0,255,170,0.5)); transform-origin: bottom left; border-top-right-radius: 100px; }
+        .radar-core { position: absolute; width: 30px; height: 30px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 30px var(--neon-green); animation: pulse 1s ease-in-out infinite alternate; }
+        @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(0.8); } 100% { transform: scale(1.2); } }
+        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; }
+        .final-dir { font-size: 36px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
+        .final-dir.up { color: var(--neon-green); text-shadow: 0 0 30px rgba(0,255,170,0.5); }
+        .final-dir.down { color: var(--neon-red); text-shadow: 0 0 30px rgba(255,46,99,0.5); }
 
     </style>
 </head>
 <body>
 
-    <header class="header-markets">
-        <div class="market-pill crypto">
-            <span class="icon-3d">🪙</span> BTC/USD <span style="color:var(--neon-green);">+2.4%</span>
-        </div>
-        <div class="market-pill stocks">
-            <span class="icon-3d">🐂</span> S&P 500 <span style="color:var(--neon-green);">+0.8%</span>
-        </div>
-        <div class="market-pill forex">
-            <span class="icon-3d">🌐</span> EUR/USD <span style="color:var(--neon-red);">-0.1%</span>
-        </div>
-    </header>
-
-    <div class="glass-box">
-        <h2 class="section-title"><span style="color: var(--neon-purple);">🧠</span> AI Visual Chart (1M)</h2>
-        <div class="chart-container">
-            <div class="ai-drone"></div>
-            <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-                {
-                "interval": "1m",
-                "width": "100%",
-                "isTransparent": true,
-                "height": "100%",
-                "symbol": "BITSTAMP:BTCUSD",
-                "showIntervalTabs": false,
-                "displayMode": "single",
-                "locale": "ru",
-                "colorTheme": "dark"
-                }
-                </script>
+    <div class="container">
+        
+        <div class="screen" id="access-denied-screen">
+            <h2 style="color: var(--neon-red); justify-content: center; font-size: 28px; text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
+            <div class="glass-box" style="text-align: center;">
+                <p style="color: #a4b1cd; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Система безопасности PRO AI не распознала ваш Telegram ID.</p>
+                <div class="info-item" style="border-left-color: var(--neon-red); background: rgba(0,0,0,0.5);">
+                    <h4>ВАШ ID-КЛЮЧ:</h4>
+                    <p id="denied-telegram-id" style="font-size: 20px; color: var(--neon-red); font-weight: 900; letter-spacing: 2px;">Определяется...</p>
+                </div>
             </div>
+        </div>
+
+        <div class="screen active" id="dashboard-screen">
+            <div class="header-markets">
+                <div class="market-pill crypto"><span class="icon-3d">🪙</span> BTC/USD <span style="color:var(--neon-green);">+2.4%</span></div>
+                <div class="market-pill stocks"><span class="icon-3d">🐂</span> S&P 500 <span style="color:var(--neon-green);">+0.8%</span></div>
+                <div class="market-pill forex"><span class="icon-3d">🌐</span> EUR/USD <span style="color:var(--neon-red);">-0.1%</span></div>
+            </div>
+
+            <div class="glass-box" style="padding: 16px;">
+                <h2 class="section-title"><span style="color: var(--neon-purple);">🧠</span> AI Visual Chart (1M)</h2>
+                <div class="chart-container">
+                    <div class="ai-drone"></div>
+                    <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                        { "interval": "1m", "width": "100%", "isTransparent": true, "height": "100%", "symbol": "BITSTAMP:BTCUSD", "showIntervalTabs": false, "displayMode": "single", "locale": "ru", "colorTheme": "dark" }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-box" style="padding: 16px;">
+                <h2 class="section-title">📊 Депозит & Аналитика</h2>
+                <div class="analytics-grid">
+                    <div class="stat-card wide profit">
+                        <div class="stat-title">Ваш Депозит ($)</div>
+                        <div class="stat-value">
+                            <span style="color: var(--neon-green); font-size: 16px;">$</span>
+                            <input type="number" id="main-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
+                        </div>
+                        <div class="stat-sub" id="ai-weekly-forecast">Цель (неделя): $600.00</div>
+                    </div>
+                    <div class="stat-card winrate">
+                        <div class="stat-title">ИИ Риск (2%)</div>
+                        <div class="stat-value" style="color: var(--neon-purple);" id="ai-calc-stake">$20.00</div>
+                    </div>
+                    <div class="stat-card time">
+                        <div class="stat-title">Win Rate ИИ</div>
+                        <div class="stat-value" style="color: var(--neon-blue);">89.5%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-box" style="padding: 16px;">
+                <h2 class="section-title">🏆 Топ Трейдеры (1H)</h2>
+                <div class="leaderboard-container">
+                    <div class="trader-card"><div class="trader-avatar">👨‍💻<div class="status-dot"></div></div><div class="trader-name">Alex_Pro</div><div class="trader-profit">+2.20%</div></div>
+                    <div class="trader-card"><div class="trader-avatar">👩‍🚀<div class="status-dot"></div></div><div class="trader-name">CryptoQueen</div><div class="trader-profit">+1.85%</div></div>
+                    <div class="trader-card"><div class="trader-avatar">🥷<div class="status-dot" style="background:var(--neon-red);"></div></div><div class="trader-name">NinjaFX</div><div class="trader-profit">+1.40%</div></div>
+                    <div class="trader-card"><div class="trader-avatar">🐺<div class="status-dot"></div></div><div class="trader-name">WallStWolf</div><div class="trader-profit">+1.15%</div></div>
+                </div>
+            </div>
+
+            <div class="glass-box" style="padding: 16px; margin-bottom: 20px;">
+                <h2 class="section-title">💬 Live Feed & AI Bot</h2>
+                <div class="chat-box" id="ai-chat-container">
+                    <div class="chat-msg bot">
+                        <div class="msg-header"><span class="msg-name">SYSTEM AI PRO</span></div>
+                        Система активирована. Я готов провести анализ рынка или скорректировать твою торговую систему.
+                    </div>
+                    <div class="chat-msg bot" id="ai-chat-typing" style="display:none; background:transparent; border:none;">Обработка запроса...</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="ai-chat-input" class="chat-input" placeholder="Спросить ИИ или чат...">
+                    <button class="send-btn" onclick="sendAiChatMessage()">Отправить</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="bot-analysis-screen">
+            <h2 style="margin-top: 10px;">🔍 AI СКАНЕР PRO</h2>
+            <div class="glass-box">
+                <input type="text" id="analysis-search-input" class="search-input" placeholder="Ввод тикера (например, EUR/USD)..." oninput="window.filterAnalysisPairs()">
+                <div class="pairs-list" id="analysis-pairs-render-box"></div>
+            </div>
+        </div>
+
+        <div class="screen" id="education-screen">
+            <h2 style="margin-top: 10px;">📚 БАЗА ЗНАНИЙ</h2>
+            <div class="glass-box" style="max-height: 70vh; overflow-y: auto;" id="books-list-box"></div>
+        </div>
+
+        <div class="screen" id="book-viewer-screen">
+            <h2 id="viewer-title" style="font-size: 14px; text-transform: uppercase;">Чтение</h2>
+            <div class="glass-box" style="padding: 10px;">
+                <iframe id="book-frame" style="width:100%; height:60vh; border:none; border-radius:15px; background:#fff;" src=""></iframe>
+            </div>
+            <button class="back-btn" onclick="switchNavTab('education-screen'); document.getElementById('book-frame').src='';">← ЗАКРЫТЬ ДОКУМЕНТ</button>
+        </div>
+
+        <div class="screen" id="profile-screen">
+            <h2 style="margin-top: 10px;">👤 ПРОФИЛЬ</h2>
+            <div class="glass-box">
+                <div class="info-item"><h4>Позывной</h4><p id="profile-username">Загрузка...</p></div>
+                <div class="info-item"><h4>Telegram ID</h4><p id="profile-telegram-id">Загрузка...</p></div>
+                <div class="info-item">
+                    <h4>Рабочий капитал ($)</h4>
+                    <input type="number" id="profile-pocket-input" class="search-input" value="1000" oninput="syncBalances(this.value)" style="margin-top:8px; margin-bottom:0;">
+                </div>
+                
+                <div id="admin-link-box" style="display: none; margin-top: 20px;">
+                    <div style="border-top: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;"></div>
+                    <h4 style="color:var(--neon-purple); font-size:12px; margin-bottom:10px; font-weight:800;">АДМИН-ПАНЕЛЬ:</h4>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="new-user-id" placeholder="ID трейдера" class="search-input" style="margin-bottom:0;">
+                        <button onclick="addAllowedUser()" class="send-btn" style="background:var(--neon-purple);">ADD</button>
+                    </div>
+                    <div id="admin-users-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fullscreen-overlay" id="fullscreen-radar">
+        <div class="radar-container" id="radar-animation-element">
+            <div class="radar-sweep"></div><div class="radar-core"></div>
+        </div>
+        <div style="font-size: 14px; color: var(--neon-green); font-weight: 800; letter-spacing: 2px;" id="radar-status-text">СКАНИРОВАНИЕ РЫНКА...</div>
+        
+        <div class="analysis-final glass-box" id="radar-final-result" style="background: rgba(10,15,25,0.95); border: 1px solid var(--neon-green);">
+            <div style="color: #a4b1cd; font-size: 12px; text-transform: uppercase; font-weight:800;" id="analyzed-pair-title">EUR/USD</div>
+            <div class="final-dir" id="final-direction-arrow">ВВЕРХ ▲</div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">УВЕРЕННОСТЬ ИИ: <strong id="final-accuracy-percent" style="color:var(--neon-green);">89%</strong></div>
+            
+            <div style="background: rgba(0,0,0,0.4); border-radius: 20px; padding: 16px; margin-top: 20px; text-align: left;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:12px;"><span style="color:#a4b1cd;">RSI (14)</span><strong style="color:#fff;" id="ta-rsi-val">0</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:12px;"><span style="color:#a4b1cd;">SMA (9)</span><strong style="color:#fff;" id="ta-sma9-val">0</strong></div>
+                <div style="display:flex; justify-content:space-between; font-size:12px;"><span style="color:#a4b1cd;">Волатильность</span><strong style="color:#fff;" id="ta-vol-val">0%</strong></div>
+            </div>
+
+            <button class="back-btn" style="background:var(--neon-green); color:#000; border:none;" onclick="window.closeFullscreenAnalysis()">ЗАКРЫТЬ СКАНЕР</button>
         </div>
     </div>
 
-    <div class="glass-box">
-        <h2 class="section-title">📊 Your Performance</h2>
-        <div class="analytics-grid">
-            <div class="stat-card wide profit">
-                <div class="stat-title">Daily Profit/Loss</div>
-                <div class="stat-value">$1,240.50 <span class="stat-sub">▲ +14.2%</span></div>
-            </div>
-            <div class="stat-card winrate">
-                <div class="stat-title">Win Rate (40S)</div>
-                <div class="stat-value" style="color: var(--neon-purple);">82.5%</div>
-            </div>
-            <div class="stat-card time">
-                <div class="stat-title">Avg. Duration</div>
-                <div class="stat-value" style="color: var(--neon-blue);">45s</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="glass-box">
-        <h2 class="section-title">🏆 Top Traders (1H)</h2>
-        <div class="leaderboard-container">
-            <div class="trader-card">
-                <div class="trader-avatar">👨‍💻<div class="status-dot"></div></div>
-                <div class="trader-name">Alex_Pro</div>
-                <div class="trader-profit">+2.20%</div>
-            </div>
-            <div class="trader-card">
-                <div class="trader-avatar">👩‍🚀<div class="status-dot"></div></div>
-                <div class="trader-name">CryptoQueen</div>
-                <div class="trader-profit">+1.85%</div>
-            </div>
-            <div class="trader-card">
-                <div class="trader-avatar">🥷<div class="status-dot" style="background:var(--neon-red); box-shadow:none;"></div></div>
-                <div class="trader-name">NinjaFX</div>
-                <div class="trader-profit">+1.40%</div>
-            </div>
-            <div class="trader-card">
-                <div class="trader-avatar">🐺<div class="status-dot"></div></div>
-                <div class="trader-name">WallStWolf</div>
-                <div class="trader-profit">+1.15%</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="glass-box">
-        <h2 class="section-title">💬 Live Feed</h2>
-        <div class="chat-box">
-            <div class="chat-msg long">
-                <div class="msg-header"><span class="msg-name">Alex_Pro</span> <span style="color:var(--neon-green);">LONG 🚀</span></div>
-                Вход по BTC/USD идеальный! Дрон ИИ четко отработал поддержку.
-            </div>
-            <div class="chat-msg short">
-                <div class="msg-header"><span class="msg-name">NinjaFX</span> <span style="color:var(--neon-red);">SHORT 🐻</span></div>
-                Скальпирую EUR/USD вниз на 1м таймфрейме. Полет нормальный.
-            </div>
-            <div class="chat-msg long">
-                <div class="msg-header"><span class="msg-name">SYSTEM AI</span> <span style="color:var(--neon-purple);">ALERT ⚡</span></div>
-                Обнаружен крупный объем кластеров на S&P 500. Готовьтесь к пробою.
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" placeholder="Share your trade...">
-            <button class="emoji-btn">🚀</button>
-            <button class="emoji-btn">🐂</button>
-        </div>
-    </div>
-
-    <nav class="bottom-bar">
-        <div class="nav-item">
-            <span class="nav-icon">📊</span>
-            <span class="nav-label">Markets</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">🎓</span>
-            <span class="nav-label">Learn</span>
-        </div>
-        <div class="nav-item active">
-            <span class="nav-icon">📈</span>
-            <span class="nav-label">Analytics</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-label">Signals</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">👤</span>
-            <span class="nav-label">Profile</span>
-        </div>
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchNavTab('dashboard-screen', this)">
+            <span class="nav-icon">📊</span><span class="nav-label">Markets</span>
+        </button>
+        <button class="nav-item" onclick="switchNavTab('bot-analysis-screen', this)">
+            <span class="nav-icon">📈</span><span class="nav-label">Analytics</span>
+        </button>
+        <button class="nav-item" onclick="switchNavTab('education-screen', this)">
+            <span class="nav-icon">🎓</span><span class="nav-label">Learn</span>
+        </button>
+        <button class="nav-item" onclick="switchNavTab('profile-screen', this)">
+            <span class="nav-icon">👤</span><span class="nav-label">Profile</span>
+        </button>
     </nav>
 
+    <script>
+        // ============================================
+        // ЛОГИКА БЕЗОПАСНОСТИ И АДМИНКИ
+        // ============================================
+        const MASTER_ADMIN = "5817328317";
+        const ADMIN_LIST = [644265574, 5211910606, 987654321];
+
+        function getAllowedUsers() { return JSON.parse(localStorage.getItem('allowed_users') || "[]"); }
+        
+        async function checkAccess(userId) {
+            if (userId === MASTER_ADMIN || ADMIN_LIST.includes(Number(userId)) || getAllowedUsers().includes(userId)) return true;
+            // Для локального теста без сервера пускаем всех
+            return true; 
+        }
+
+        window.addAllowedUser = function() {
+            const idInput = document.getElementById('new-user-id');
+            const id = idInput.value.trim();
+            if (!id) return;
+            let users = getAllowedUsers();
+            if (!users.includes(id) && id !== MASTER_ADMIN) {
+                users.push(id); localStorage.setItem('allowed_users', JSON.stringify(users)); renderAdminList();
+            }
+            idInput.value = '';
+        };
+
+        window.removeUser = function(id) {
+            let users = getAllowedUsers().filter(u => u !== String(id));
+            localStorage.setItem('allowed_users', JSON.stringify(users)); renderAdminList();
+        };
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-users-list');
+            if(!list) return;
+            list.innerHTML = '';
+            getAllowedUsers().forEach(id => {
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.5); padding:10px 15px; border-radius:15px; font-size:12px;"><span>USER: ${id}</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="removeUser('${id}')">X</span></div>`;
+            });
+        }
+
+        // ============================================
+        // ОСНОВНАЯ ЛОГИКА
+        // ============================================
+        let currentBalance = parseFloat(localStorage.getItem('pocket_balance')) || 1000;
+        const GROQ_API_KEY = "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";
+
+        // Навигация
+        window.switchNavTab = function(screenId, btnElement = null) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+
+            if (btnElement) {
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            if (screenId === 'bot-analysis-screen') window.filterAnalysisPairs();
+        };
+
+        // Балансы
+        function initBalances() {
+            document.getElementById('main-pocket-input').value = currentBalance;
+            document.getElementById('profile-pocket-input').value = currentBalance;
+            calculateStake(currentBalance);
+        }
+
+        function calculateStake(balance) {
+            let stake = balance * 0.02;
+            let weekProfit = balance * 0.60;
+            document.getElementById('ai-calc-stake').innerText = `$${stake.toFixed(2)}`;
+            document.getElementById('ai-weekly-forecast').innerText = `Цель (неделя): $${weekProfit.toFixed(2)}`;
+        }
+
+        window.syncBalances = function(val) {
+            let parsed = parseFloat(val) || 0;
+            currentBalance = parsed;
+            localStorage.setItem('pocket_balance', parsed);
+            
+            const mainIn = document.getElementById('main-pocket-input');
+            const profIn = document.getElementById('profile-pocket-input');
+            if(mainIn && mainIn.value != val) mainIn.value = val;
+            if(profIn && profIn.value != val) profIn.value = val;
+            calculateStake(parsed);
+        };
+
+        // AI Chat (Groq)
+        window.sendAiChatMessage = async function() {
+            const inputEl = document.getElementById('ai-chat-input');
+            const txt = inputEl.value.trim();
+            if(!txt) return;
+
+            inputEl.value = '';
+            appendMsg('ai-chat-container', txt, 'user', 'Вы');
+            
+            const typing = document.getElementById('ai-chat-typing');
+            typing.style.display = 'block';
+            typing.parentNode.appendChild(typing);
+            typing.parentNode.scrollTop = typing.parentNode.scrollHeight;
+
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: "Ты ИИ-аналитик клуба VIP COMMUNITY PRO. Отвечай кратко." },
+                            { role: "user", content: txt }
+                        ],
+                        temperature: 0.5
+                    })
+                });
+                const data = await res.json();
+                typing.style.display = 'none';
+
+                if (data.choices && data.choices[0]) {
+                    let answer = data.choices[0].message.content;
+                    appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--neon-green);">$1</b>').replace(/\n/g, '<br>'), 'bot', 'SYSTEM AI PRO', true);
+                }
+            } catch(e) {
+                typing.style.display = 'none';
+                appendMsg('ai-chat-container', 'Ошибка сети.', 'bot', 'SYSTEM AI PRO');
+            }
+        };
+
+        function appendMsg(containerId, text, senderClass, name, isHTML = false) {
+            const box = document.getElementById(containerId);
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${senderClass}`;
+            
+            let color = senderClass === 'bot' ? 'var(--neon-green)' : 'var(--neon-purple)';
+            let header = `<div class="msg-header"><span style="color:${color};">${name}</span></div>`;
+            
+            msg.innerHTML = header + (isHTML ? text : text);
+            box.insertBefore(msg, box.querySelector('#ai-chat-typing'));
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // Сканер (Радар)
+        const ALL_PAIRS = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CHF", "BTC/USD", "ETH/USD", "XAU/USD"];
+        
+        window.filterAnalysisPairs = function() {
+            const q = document.getElementById('analysis-search-input').value.toUpperCase();
+            const box = document.getElementById('analysis-pairs-render-box');
+            box.innerHTML = '';
+            
+            ALL_PAIRS.filter(p => p.includes(q)).forEach(pair => {
+                const row = document.createElement('div');
+                row.className = 'pair-row';
+                row.onclick = () => launchFullscreenAnalysis(pair);
+                row.innerHTML = `<span>${pair}</span> <span style="color:var(--neon-green);">Анализ →</span>`;
+                box.appendChild(row);
+            });
+        };
+
+        function launchFullscreenAnalysis(pairName) {
+            const overlay = document.getElementById('fullscreen-radar');
+            const radarAnim = document.getElementById('radar-animation-element');
+            const statusText = document.getElementById('radar-status-text');
+            const finalBlock = document.getElementById('radar-final-result');
+
+            overlay.style.display = 'flex';
+            radarAnim.style.display = 'flex';
+            statusText.style.display = 'block';
+            finalBlock.style.display = 'none';
+
+            setTimeout(() => {
+                radarAnim.style.display = 'none';
+                statusText.style.display = 'none';
+                finalBlock.style.display = 'block';
+                
+                document.getElementById('analyzed-pair-title').innerText = pairName;
+                let isUp = Math.random() > 0.5;
+                let accuracy = Math.floor(Math.random() * 20) + 76;
+                
+                document.getElementById('ta-rsi-val').innerText = Math.floor(Math.random() * 50) + 25;
+                document.getElementById('ta-sma9-val').innerText = (Math.random() * 1.5).toFixed(4);
+                document.getElementById('ta-vol-val').innerText = (Math.random() * 0.4 + 0.1).toFixed(2) + '%';
+                document.getElementById('final-accuracy-percent').innerText = accuracy + '%';
+
+                const arrow = document.getElementById('final-direction-arrow');
+                if(isUp) {
+                    arrow.innerText = "LONG (ВВЕРХ) ▲"; arrow.className = "final-dir up";
+                } else {
+                    arrow.innerText = "SHORT (ВНИЗ) ▼"; arrow.className = "final-dir down";
+                }
+            }, 2500);
+        }
+        window.closeFullscreenAnalysis = () => document.getElementById('fullscreen-radar').style.display = 'none';
+
+        // База знаний
+        const PRO_BOOKS = [
+            { title: "Алгоритмика Рынков", file: "book1.pdf" },
+            { title: "Прайс Экшен PRO", file: "book2.pdf" },
+            { title: "Механика Ликвидности", file: "book3.pdf" }
+        ];
+        function loadBooks() {
+            const box = document.getElementById('books-list-box');
+            PRO_BOOKS.forEach(b => {
+                box.innerHTML += `<div class="book-item">
+                    <h4 style="font-size:13px; color:#fff;">${b.title}</h4>
+                    <button class="read-btn" onclick="openPdf('${b.title}')">ОТКРЫТЬ</button>
+                </div>`;
+            });
+        }
+        window.openPdf = function(title) {
+            document.getElementById('viewer-title').innerText = title;
+            switchNavTab('book-viewer-screen');
+        };
+
+        // Инит
+        document.addEventListener('DOMContentLoaded', async () => {
+            let userId = null; let fullName = "GUEST_PRO";
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand();
+                window.Telegram.WebApp.setHeaderColor('#050810');
+                if (window.Telegram.WebApp.initDataUnsafe?.user) {
+                    userId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
+                    fullName = window.Telegram.WebApp.initDataUnsafe.user.first_name;
+                }
+            }
+
+            if (userId) {
+                document.getElementById('denied-telegram-id').innerText = userId;
+                if (userId === MASTER_ADMIN) {
+                    document.getElementById('admin-link-box').style.display = 'block';
+                    renderAdminList();
+                }
+                if (!(await checkAccess(userId))) {
+                    document.getElementById('dashboard-screen').classList.remove('active');
+                    document.getElementById('access-denied-screen').classList.add('active');
+                    document.querySelector('.bottom-nav').style.display = 'none';
+                    return; 
+                }
+            }
+            
+            document.getElementById('profile-username').innerText = fullName;
+            document.getElementById('profile-telegram-id').innerText = userId || "Локальный тест";
+            
+            initBalances();
+            loadBooks();
+        });
+    </script>
 </body>
 </html>
