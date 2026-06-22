@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP PRO AI - Global Markets</title>
+    <title>VIP COMMUNITY PRO AI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
@@ -12,534 +12,920 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: 'Montserrat', -apple-system, sans-serif; 
-            background-color: #050810; 
+            background-color: #0d1117; 
             color: #ffffff; 
             min-height: 100vh; 
             user-select: none; 
             overflow-x: hidden; 
         }
         
+        /* Новая измененная цветовая палитра интерфейса */
         :root {
-            --neon-green: #00FFAA;
-            --neon-purple: #9D00FF;
-            --neon-red: #FF2E63;
-            --neon-blue: #00E5FF;
-            --glass-bg: rgba(15, 20, 35, 0.55);
+            --neon-green: #390099; /* Измененный цвет интерфейса на глубокий премиальный фиолетовый */
+            --neon-accent: #ff0055; /* Розовый неоновый акцент */
+            --neon-purple: #00b4d8; /* Голубой неон вместо старого фиолетового */
+            --neon-red: #ff4d4d;
+            --glass-bg: rgba(22, 28, 45, 0.65);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-blur: blur(16px);
+            --glass-blur: blur(20px);
+            --bot-analysis-color: #ffaa00; /* Полностью измененный цвет анализа бота на золотисто-янтарный */
         }
 
-        .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; padding-bottom: 90px; }
+        .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; }
         
         .screen { 
             display: none !important; 
             min-height: 100vh; 
-            padding: 20px 15px; 
-            background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80');
-            background-size: cover; background-position: center; background-attachment: fixed;
+            padding: 30px 20px; 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
-        .screen.active { display: block !important; animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #menu-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
+        #profile-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=1080&q=80'); }
+        #bot-selector-screen, #bot-chat-screen, #bot-analysis-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
+        #education-screen, #book-viewer-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1080&q=80'); }
+        #sessions-screen, #calendar-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1608222284001-a482ccdf0cd5?auto=format&fit=crop&w=1080&q=80'); }
+        #notes-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1080&q=80'); }
+        #news-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
+        #admin-panel-screen, #access-denied-screen { background-image: linear-gradient(rgba(20,5,10,0.9), rgba(20,5,10,0.95)), url('https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1080&q=80'); }
 
-        /* Общие классы */
+        .screen.active { display: block !important; animation: screenFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes screenFade { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .welcome { font-size: 12px; letter-spacing: 4px; color: var(--neon-accent); margin-bottom: 4px; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(255, 0, 85, 0.4); text-align: center; }
+        .brand-title { font-size: 34px; font-weight: 900; letter-spacing: 1px; margin-bottom: 24px; color: #ffffff; text-align: center; text-transform: uppercase; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { font-size: 24px; margin-bottom: 20px; color: var(--neon-purple); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 180, 216, 0.3); }
+
         .glass-box {
-            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px; margin-bottom: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px; 
+            padding: 24px;
+            margin-bottom: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.02);
         }
-        h2 { font-size: 20px; margin-bottom: 16px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-transform: uppercase; }
-        .section-title { font-size: 14px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .back-btn { width: 100%; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s; margin-top: 10px; }
-        .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-green); }
 
-        /* 1. Header: Global Markets */
-        .header-markets { display: flex; gap: 10px; padding: 10px 0 20px 0; overflow-x: auto; scrollbar-width: none; }
-        .header-markets::-webkit-scrollbar { display: none; }
-        .market-pill { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.1); padding: 10px 16px; border-radius: 50px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .market-pill.crypto { border-color: rgba(247, 147, 26, 0.5); box-shadow: 0 0 15px rgba(247, 147, 26, 0.2); }
-        .market-pill.stocks { border-color: rgba(0, 255, 170, 0.5); box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); }
-        .market-pill.forex { border-color: rgba(0, 229, 255, 0.5); box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); }
-        .icon-3d { font-size: 18px; filter: drop-shadow(0 0 6px currentColor); }
-
-        /* 2. Main Section: 3D Market Animation */
-        .chart-container { position: relative; height: 250px; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.05); }
-        .ai-drone { position: absolute; width: 10px; height: 10px; background: var(--neon-purple); border-radius: 50%; box-shadow: 0 0 20px 5px var(--neon-purple); z-index: 10; animation: droneScan 5s ease-in-out infinite alternate; }
-        .ai-drone::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border: 1px dashed var(--neon-purple); border-radius: 50%; animation: dronePulse 2s linear infinite; }
-        @keyframes droneScan { 0% { top: 20%; left: 10%; background: var(--neon-green); box-shadow: 0 0 15px 3px var(--neon-green); } 50% { top: 60%; left: 50%; background: var(--neon-purple); box-shadow: 0 0 15px 3px var(--neon-purple); } 100% { top: 30%; left: 80%; background: var(--neon-blue); box-shadow: 0 0 15px 3px var(--neon-blue); } }
-        @keyframes dronePulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
-
-        /* 3. Analytics Block */
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-card { background: rgba(0,0,0,0.5); border-radius: 16px; padding: 14px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
-        .stat-card.wide { grid-column: span 2; }
-        .stat-card::before { content: ''; position: absolute; top:0; left:0; width: 3px; height: 100%; }
-        .stat-card.profit::before { background: var(--neon-green); }
-        .stat-card.winrate::before { background: var(--neon-purple); }
-        .stat-card.time::before { background: var(--neon-blue); }
-        .stat-title { font-size: 10px; color: #a4b1cd; text-transform: uppercase; font-weight: 800; margin-bottom: 6px; }
-        .stat-value { font-size: 20px; font-weight: 900; color: #fff; display: flex; align-items: baseline; gap: 5px; }
-        .stat-sub { font-size: 11px; color: var(--neon-green); font-weight: 600; }
+        .balance-card { position: relative; overflow: hidden; border: 1px solid rgba(0, 180, 216, 0.3); box-shadow: 0 0 30px rgba(0, 180, 216, 0.15); }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .balance-info h5 { font-size: 11px; color: #a4b1cd; text-transform: uppercase; letter-spacing: 1px; }
+        .pocket-input-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 180, 216, 0.2); border-radius: 50px; padding: 8px 16px; margin-top: 8px; transition: all 0.3s; }
+        .pocket-input-wrapper:focus-within { border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(0, 180, 216, 0.3); }
+        .pocket-input-wrapper span { color: var(--neon-purple); font-weight: 900; font-size: 18px; }
         .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 20px; font-weight: 900; width: 100%; outline: none; }
-
-        /* 4. Social Block: Leaderboard */
-        .leaderboard-container { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
-        .leaderboard-container::-webkit-scrollbar { display: none; }
-        .trader-card { min-width: 100px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 12px 8px; text-align: center; }
-        .trader-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #000); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid var(--neon-purple); position: relative; }
-        .status-dot { position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; background: var(--neon-green); border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 8px var(--neon-green); }
-        .trader-name { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
-        .trader-profit { font-size: 11px; color: var(--neon-green); font-weight: 900; }
-
-        /* 5. Interaction: Chat */
-        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .chat-msg { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 14px; font-size: 12px; line-height: 1.4; border: 1px solid transparent; width: fit-content; max-width: 90%; }
-        .chat-msg.bot { border-color: rgba(0,255,170,0.3); border-left: 3px solid var(--neon-green); align-self: flex-start; }
-        .chat-msg.user { background: rgba(157, 0, 255, 0.15); border-color: rgba(157,0,255,0.3); border-right: 3px solid var(--neon-purple); align-self: flex-end; }
-        .msg-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10px; font-weight: 800; }
-        .msg-name { color: #a4b1cd; }
         
-        .chat-input-area { display: flex; gap: 8px; }
-        .chat-input { flex: 1; padding: 12px 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; outline: none; font-size: 13px; font-weight: 600; }
-        .send-btn { background: var(--neon-green); color: #000; border: none; padding: 0 20px; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+        .status-badge { background: linear-gradient(90deg, var(--neon-accent) 0%, #cc0044) 100%; color: #fff; padding: 6px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5); }
+        
+        .ai-management-box { background: linear-gradient(90deg, rgba(57,0,153,0.2) 0%, rgba(0,180,216,0.2) 100%); border: 1px solid rgba(0, 180, 216, 0.3); border-radius: 50px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        .ai-management-box strong { color: var(--neon-purple); font-size: 16px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 180, 216, 0.5); }
+        
+        .ai-forecast-box { background: linear-gradient(90deg, rgba(0,180,216,0.2) 0%, rgba(57,0,153,0.2) 100%); border: 1px solid rgba(57, 0, 153, 0.3); border-radius: 50px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
+        .ai-forecast-box strong { color: #fff; font-size: 16px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4); }
+
+        .server-status-info { font-size: 11px; text-align: center; margin-top: 12px; margin-bottom: 20px; color: #a4b1cd; font-weight: 600; letter-spacing: 1px; }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 10px; }
+        .card { 
+            background: var(--glass-bg); 
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            aspect-ratio: 1 / 1.1; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .card:active { transform: scale(0.92); border-color: var(--neon-purple); background: rgba(0, 180, 216, 0.1); box-shadow: 0 0 25px rgba(0, 180, 216, 0.3); }
+        
+        /* Идеально круглые иконки на кнопках */
+        .icon-circle { 
+            width: 64px; 
+            height: 64px; 
+            border-radius: 50% !important; 
+            background: linear-gradient(135deg, rgba(0,180,216,0.2) 0%, rgba(255,0,85,0.2) 100%); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin-bottom: 16px; 
+            font-size: 28px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5); 
+        }
+        .card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; text-align: center; }
+
+        .screen-content { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 24px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--glass-border); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .info-item { padding: 18px; background: rgba(0,0,0,0.3); border-radius: 16px; margin-bottom: 14px; border-left: 4px solid var(--neon-purple); position: relative; overflow: hidden; }
+        .info-item::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(90deg, rgba(0,180,216,0.05) 0%, transparent 100%); pointer-events: none; }
+        .info-item h4 { font-size: 14px; margin-bottom: 6px; color: #fff; font-weight: 800; }
+        .info-item p { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
+        
+        .back-btn { width: 100%; padding: 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s ease; margin-top: 10px; backdrop-filter: blur(10px); }
+        .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-purple); }
+
+        .ai-mode-selection { display: flex; flex-direction: column; gap: 16px; }
+        .mode-btn { background: var(--glass-bg); border: 1px solid rgba(0, 180, 216, 0.2); border-radius: 24px; padding: 22px; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 18px; backdrop-filter: blur(10px); }
+        .mode-btn:active { border-color: var(--neon-purple); background: rgba(0, 180, 216, 0.1); transform: scale(0.96); }
+        
+        /* Круглые иконки для режимов бота */
+        .mode-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 60px; height: 60px; border-radius: 50% !important; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,180,216,0.2); }
+        .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 4px; font-weight: 800; }
+        .mode-info p { font-size: 12px; color: #a4b1cd; line-height: 1.4; }
+
+        .search-box { background: var(--glass-bg); border-radius: 24px; padding: 14px; border: 1px solid var(--glass-border); margin-bottom: 14px; backdrop-filter: blur(10px); }
+        .search-input { width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; font-size: 14px; outline: none; font-weight: 600; transition: all 0.3s; }
+        .search-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(0, 180, 216, 0.2); }
+        
+        .pairs-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-right: 4px; }
+        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
+        .pair-row:active { border-color: var(--neon-purple); background: rgba(0,180,216,0.1); transform: scale(0.98); }
+
+        .chat-box { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); border-radius: 24px; padding: 16px; overflow-y: auto; border: 1px solid var(--glass-border); margin-bottom: 12px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); }
+        .chat-msg { max-width: 85%; padding: 14px 18px; border-radius: 20px; margin-bottom: 12px; font-size: 13px; line-height: 1.5; word-wrap: break-word; position: relative; font-weight: 600; }
+        .chat-msg.bot { background: rgba(30, 40, 60, 0.8); color: #fff; align-self: flex-start; border-bottom-left-radius: 5px; border: 1px solid rgba(0,180,216,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .chat-msg.user { background: var(--neon-purple); color: #fff; align-self: flex-end; border-bottom-right-radius: 5px; box-shadow: 0 4px 15px rgba(0,180,216,0.3); font-weight: 800; }
+        
+        .input-area { display: flex; gap: 10px; align-items: center; background: var(--glass-bg); padding: 10px; border-radius: 50px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .input-area input { flex: 1; padding: 14px 20px; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; font-weight: 600; }
+        .send-btn { background: var(--neon-purple); color: #fff; border: none; padding: 0 24px; height: 44px; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
         .send-btn:active { transform: scale(0.95); }
 
-        /* 6. Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(5, 8, 16, 0.95); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px)); backdrop-filter: blur(20px); z-index: 999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #61687a; cursor: pointer; transition: all 0.3s; background: none; border: none; outline: none; }
-        .nav-item.active { color: var(--neon-green); text-shadow: 0 0 15px rgba(0,255,170,0.4); }
-        .nav-icon { font-size: 20px; }
-        .nav-label { font-size: 9px; font-weight: 800; text-transform: uppercase; }
-
-        /* Вспомогательные классы из базы (Радар, Обучение, Профиль) */
-        .info-item { padding: 16px; background: rgba(0,0,0,0.4); border-radius: 16px; margin-bottom: 12px; border-left: 3px solid var(--neon-green); }
-        .info-item h4 { font-size: 12px; color: #fff; font-weight: 800; margin-bottom: 4px; }
-        .info-item p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
-        .book-item { background: rgba(0,0,0,0.4); padding: 16px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
-        .read-btn { background: rgba(0,255,170,0.1); color: var(--neon-green); border: 1px solid rgba(0, 255, 170, 0.3); padding: 8px 14px; border-radius: 50px; font-size: 10px; font-weight: 900; }
-        .search-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; font-size: 13px; outline: none; margin-bottom: 14px; }
-        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 13px; font-weight: 800; margin-bottom: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
-
-        /* Радар */
-        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 5, 15, 0.95); backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        .radar-container { position: relative; width: 150px; height: 150px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
-        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(0, 255, 170, 0.1); border-radius: 50%; animation: radarRotate 2s linear infinite; }
-        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(0,255,170,0.5)); transform-origin: bottom left; border-top-right-radius: 100px; }
-        .radar-core { position: absolute; width: 30px; height: 30px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 30px var(--neon-green); animation: pulse 1s ease-in-out infinite alternate; }
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(13, 17, 23, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .radar-container { position: relative; width: 200px; height: 200px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
+        
+        /* Полное изменение цвета анимации анализа бота на золотисто-янтарный */
+        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(255, 170, 0, 0.15); border-radius: 50%; animation: radarRotate 2s linear infinite; box-shadow: 0 0 50px rgba(255,170,0,0.1); }
+        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(255, 170, 0, 0.6)); transform-origin: bottom left; border-top-right-radius: 100px; }
+        .radar-line { position: absolute; width: 80%; height: 80%; border: 1px dashed rgba(255, 170, 0, 0.4); border-radius: 50%; animation: radarRotate 4s linear infinite reverse; }
+        .radar-core { position: absolute; width: 40px; height: 40px; background: var(--bot-analysis-color); border-radius: 50%; box-shadow: 0 0 40px var(--bot-analysis-color), 0 0 80px var(--bot-analysis-color); animation: pulse 1s ease-in-out infinite alternate; }
+        
         @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(0.8); } 100% { transform: scale(1.2); } }
-        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; }
-        .final-dir { font-size: 36px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
-        .final-dir.up { color: var(--neon-green); text-shadow: 0 0 30px rgba(0,255,170,0.5); }
-        .final-dir.down { color: var(--neon-red); text-shadow: 0 0 30px rgba(255,46,99,0.5); }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.2); opacity: 1; } }
+        .radar-status { font-size: 16px; color: var(--bot-analysis-color); text-align: center; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px rgba(255,170,0,0.5); }
+        
+        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .final-dir { font-size: 48px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
+        .final-dir.up { color: #00ffaa; text-shadow: 0 0 40px rgba(0,255,170,0.6); }
+        .final-dir.down { color: var(--neon-red); text-shadow: 0 0 40px rgba(255,46,99,0.6); }
+        .progress-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 50px; overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .progress-bar-fill { height: 100%; width: 0%; transition: width 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 20px currentColor; }
+        
+        .ta-dashboard { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 24px; text-align: left; margin-top: 20px; backdrop-filter: blur(10px); }
+        .ta-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); font-weight: 600; }
+        .ta-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .ta-label { color: #a4b1cd; }
+        .ta-val { font-weight: 900; color: #fff; }
+        .ta-verdict { font-size: 15px; font-weight: 900; text-transform: uppercase; text-align: center; padding: 14px; border-radius: 50px; margin-top: 16px; letter-spacing: 1px; }
+        .ta-verdict.buy { background: rgba(0, 255, 170, 0.15); color: #00ffaa; border: 1px solid rgba(0,255,170,0.3); }
+        .ta-verdict.sell { background: rgba(255, 46, 99, 0.15); color: var(--neon-red); border: 1px solid rgba(255,46,99,0.3); }
 
+        .book-item { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        .book-info h4 { font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
+        .book-info p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
+        .read-btn { background: rgba(0,180,216,0.1); color: var(--neon-purple); border: 1px solid rgba(0, 180, 216, 0.3); padding: 10px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+        .pdf-frame-box { width: 100%; height: 65vh; border: none; border-radius: 24px; background: #fff; }
+
+        .target-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 24px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05); }
+        .target-input { width: 100%; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,180,216,0.2); border-radius: 50px; color: #fff; font-size: 15px; outline: none; margin-bottom: 12px; font-weight: 800; text-align: center; transition: all 0.3s; }
+        .target-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(0,180,216,0.2); }
+        .ai-hint-label { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 13px; margin-top: 12px; font-weight: 800; }
+        .cal-header { color: var(--neon-accent); font-weight: 900; padding-bottom: 8px; }
+        .cal-day { padding: 12px 0; color: #fff; border-radius: 12px; position: relative; cursor: pointer; background: rgba(255,255,255,0.05); transition: all 0.2s; }
+        .cal-day:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
+        .cal-day.today { background: var(--neon-purple) !important; color: #fff !important; box-shadow: 0 0 15px rgba(0,180,216,0.5); }
+        .cal-day.has-news::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 8px var(--neon-red); }
+        
+        .news-display-box { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 20px; font-size: 13px; font-weight: 600; min-height: 60px; border-left: 4px solid var(--neon-accent); margin-top: 16px; line-height: 1.5; }
+        .pattern-img { width: 100%; border-radius: 20px; margin-top: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .admin-box { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 16px; }
+        .admin-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+        .admin-input { flex: 1; padding: 14px 18px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color:#fff; font-size:13px; outline:none; font-weight:600; }
+        .admin-input:focus { border-color: var(--neon-purple); }
+        .admin-btn { background: var(--neon-purple); color: #fff; border:none; padding: 0 20px; border-radius: 50px; font-weight:900; font-size:12px; text-transform:uppercase; cursor:pointer; }
+        .admin-list-container { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; }
+        .admin-user-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 50px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; font-weight:600; }
+        .del-user-btn { background: transparent; border: none; color: var(--neon-red); font-size: 18px; cursor: pointer; font-weight: 900; }
+
+        .payout-marquee { display: flex; gap: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: #a4b1cd; overflow: hidden; white-space: nowrap; padding: 8px 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .payout-track { display: inline-flex; animation: marquee 25s linear infinite; gap: 24px; }
+        @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+        .payout-item { display: flex; align-items: center; gap: 6px; }
+        .payout-user { color: #fff; }
+        .payout-amount { color: #00ffaa; font-weight: 900; }
+
+        #admin-link-box { display: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
         
-        <div class="screen" id="access-denied-screen">
-            <h2 style="color: var(--neon-red); justify-content: center; font-size: 28px; text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
-            <div class="glass-box" style="text-align: center;">
-                <p style="color: #a4b1cd; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Система безопасности PRO AI не распознала ваш Telegram ID.</p>
-                <div class="info-item" style="border-left-color: var(--neon-red); background: rgba(0,0,0,0.5);">
-                    <h4>ВАШ ID-КЛЮЧ:</h4>
-                    <p id="denied-telegram-id" style="font-size: 20px; color: var(--neon-red); font-weight: 900; letter-spacing: 2px;">Определяется...</p>
+        <div id="access-denied-screen" class="screen">
+            <div class="brand-title" style="margin-top: 40px; color: var(--neon-red);">ACCESS DENIED</div>
+            <div class="glass-box" style="text-align: center; border-color: var(--neon-red); padding: 40px 20px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
+                <p style="font-size: 15px; font-weight: 700; line-height: 1.6; margin-bottom: 24px; color: #e2e8f0;">
+                    Ваш аккаунт не авторизован в VIP системе.<br>Обратитесь к администратору сообщества.
+                </p>
+                <div style="font-size: 12px; color: #a4b1cd; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+                    Ваш ID: <span id="denied-telegram-id" style="color:#fff;">Загрузка...</span>
                 </div>
             </div>
         </div>
 
-        <div class="screen active" id="dashboard-screen">
-            <div class="header-markets">
-                <div class="market-pill crypto"><span class="icon-3d">🪙</span> BTC/USD <span style="color:var(--neon-green);">+2.4%</span></div>
-                <div class="market-pill stocks"><span class="icon-3d">🐂</span> S&P 500 <span style="color:var(--neon-green);">+0.8%</span></div>
-                <div class="market-pill forex"><span class="icon-3d">🌐</span> EUR/USD <span style="color:var(--neon-red);">-0.1%</span></div>
+        <div id="menu-screen" class="screen active">
+            <div class="welcome">AI trading system</div>
+            <div class="brand-title">VIP COMMUNITY</div>
+
+            <div class="payout-marquee">
+                <div class="payout-track" id="payout-track-container"></div>
             </div>
 
-            <div class="glass-box" style="padding: 16px;">
-                <h2 class="section-title"><span style="color: var(--neon-purple);">🧠</span> AI Visual Chart (1M)</h2>
-                <div class="chart-container">
-                    <div class="ai-drone"></div>
-                    <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-                        { "interval": "1m", "width": "100%", "isTransparent": true, "height": "100%", "symbol": "BITSTAMP:BTCUSD", "showIntervalTabs": false, "displayMode": "single", "locale": "ru", "colorTheme": "dark" }
-                        </script>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-box" style="padding: 16px;">
-                <h2 class="section-title">📊 Депозит & Аналитика</h2>
-                <div class="analytics-grid">
-                    <div class="stat-card wide profit">
-                        <div class="stat-title">Ваш Депозит ($)</div>
-                        <div class="stat-value">
-                            <span style="color: var(--neon-green); font-size: 16px;">$</span>
-                            <input type="number" id="main-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
+            <div class="glass-box balance-card">
+                <div class="balance-header">
+                    <div class="balance-info">
+                        <h5>Текущий баланс брокера</h5>
+                        <div class="pocket-input-wrapper">
+                            <span>$</span>
+                            <input type="number" id="pocket-balance" class="pocket-balance-input" value="1250" step="10">
                         </div>
-                        <div class="stat-sub" id="ai-weekly-forecast">Цель (неделя): $600.00</div>
                     </div>
-                    <div class="stat-card winrate">
-                        <div class="stat-title">ИИ Риск (2%)</div>
-                        <div class="stat-value" style="color: var(--neon-purple);" id="ai-calc-stake">$20.00</div>
-                    </div>
-                    <div class="stat-card time">
-                        <div class="stat-title">Win Rate ИИ</div>
-                        <div class="stat-value" style="color: var(--neon-blue);">89.5%</div>
-                    </div>
+                    <div class="status-badge">VIP CLIENT</div>
+                </div>
+                <div class="ai-management-box">
+                    <span>Управление рисками AI:</span>
+                    <strong id="ai-risk-verdict">LOW RISK</strong>
+                </div>
+                <div class="ai-forecast-box">
+                    <span>Рекомендуемая сделка:</span>
+                    <strong id="ai-allocation-verdict">$50.00</strong>
                 </div>
             </div>
 
-            <div class="glass-box" style="padding: 16px;">
-                <h2 class="section-title">🏆 Топ Трейдеры (1H)</h2>
-                <div class="leaderboard-container">
-                    <div class="trader-card"><div class="trader-avatar">👨‍💻<div class="status-dot"></div></div><div class="trader-name">Alex_Pro</div><div class="trader-profit">+2.20%</div></div>
-                    <div class="trader-card"><div class="trader-avatar">👩‍🚀<div class="status-dot"></div></div><div class="trader-name">CryptoQueen</div><div class="trader-profit">+1.85%</div></div>
-                    <div class="trader-card"><div class="trader-avatar">🥷<div class="status-dot" style="background:var(--neon-red);"></div></div><div class="trader-name">NinjaFX</div><div class="trader-profit">+1.40%</div></div>
-                    <div class="trader-card"><div class="trader-avatar">🐺<div class="status-dot"></div></div><div class="trader-name">WallStWolf</div><div class="trader-profit">+1.15%</div></div>
-                </div>
+            <div class="server-status-info">
+                POCKET OPTION API: <span style="color: #00ffaa; font-weight:900;">CONNECTED</span>
             </div>
 
-            <div class="glass-box" style="padding: 16px; margin-bottom: 20px;">
-                <h2 class="section-title">💬 Live Feed & AI Bot</h2>
-                <div class="chat-box" id="ai-chat-container">
-                    <div class="chat-msg bot">
-                        <div class="msg-header"><span class="msg-name">SYSTEM AI PRO</span></div>
-                        Система активирована. Я готов провести анализ рынка или скорректировать твою торговую систему.
-                    </div>
-                    <div class="chat-msg bot" id="ai-chat-typing" style="display:none; background:transparent; border:none;">Обработка запроса...</div>
+            <div class="grid">
+                <div class="card" onclick="switchScreen('bot-selector-screen')">
+                    <div class="icon-circle">🤖</div>
+                    <div class="card-title">AI Анализатор</div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="ai-chat-input" class="chat-input" placeholder="Спросить ИИ или чат...">
-                    <button class="send-btn" onclick="sendAiChatMessage()">Отправить</button>
+                <div class="card" onclick="switchScreen('sessions-screen')">
+                    <div class="icon-circle">📊</div>
+                    <div class="card-title">VIP Сессии</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="screen" id="bot-analysis-screen">
-            <h2 style="margin-top: 10px;">🔍 AI СКАНЕР PRO</h2>
-            <div class="glass-box">
-                <input type="text" id="analysis-search-input" class="search-input" placeholder="Ввод тикера (например, EUR/USD)..." oninput="window.filterAnalysisPairs()">
-                <div class="pairs-list" id="analysis-pairs-render-box"></div>
-            </div>
-        </div>
-
-        <div class="screen" id="education-screen">
-            <h2 style="margin-top: 10px;">📚 БАЗА ЗНАНИЙ</h2>
-            <div class="glass-box" style="max-height: 70vh; overflow-y: auto;" id="books-list-box"></div>
-        </div>
-
-        <div class="screen" id="book-viewer-screen">
-            <h2 id="viewer-title" style="font-size: 14px; text-transform: uppercase;">Чтение</h2>
-            <div class="glass-box" style="padding: 10px;">
-                <iframe id="book-frame" style="width:100%; height:60vh; border:none; border-radius:15px; background:#fff;" src=""></iframe>
-            </div>
-            <button class="back-btn" onclick="switchNavTab('education-screen'); document.getElementById('book-frame').src='';">← ЗАКРЫТЬ ДОКУМЕНТ</button>
-        </div>
-
-        <div class="screen" id="profile-screen">
-            <h2 style="margin-top: 10px;">👤 ПРОФИЛЬ</h2>
-            <div class="glass-box">
-                <div class="info-item"><h4>Позывной</h4><p id="profile-username">Загрузка...</p></div>
-                <div class="info-item"><h4>Telegram ID</h4><p id="profile-telegram-id">Загрузка...</p></div>
-                <div class="info-item">
-                    <h4>Рабочий капитал ($)</h4>
-                    <input type="number" id="profile-pocket-input" class="search-input" value="1000" oninput="syncBalances(this.value)" style="margin-top:8px; margin-bottom:0;">
+                <div class="card" onclick="switchScreen('education-screen')">
+                    <div class="icon-circle">📚</div>
+                    <div class="card-title">Академия</div>
                 </div>
-                
-                <div id="admin-link-box" style="display: none; margin-top: 20px;">
-                    <div style="border-top: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;"></div>
-                    <h4 style="color:var(--neon-purple); font-size:12px; margin-bottom:10px; font-weight:800;">АДМИН-ПАНЕЛЬ:</h4>
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="text" id="new-user-id" placeholder="ID трейдера" class="search-input" style="margin-bottom:0;">
-                        <button onclick="addAllowedUser()" class="send-btn" style="background:var(--neon-purple);">ADD</button>
-                    </div>
-                    <div id="admin-users-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                <div class="card" onclick="switchScreen('calendar-screen')">
+                    <div class="icon-circle">📅</div>
+                    <div class="card-title">Инвест Календарь</div>
+                </div>
+                <div class="card" onclick="switchScreen('notes-screen')">
+                    <div class="icon-circle">📝</div>
+                    <div class="card-title">Блокнот трейдера</div>
+                </div>
+                <div class="card" onclick="switchScreen('profile-screen')">
+                    <div class="icon-circle">👤</div>
+                    <div class="card-title">Профиль</div>
                 </div>
             </div>
-        </div>
-
-    </div>
-
-    <div class="fullscreen-overlay" id="fullscreen-radar">
-        <div class="radar-container" id="radar-animation-element">
-            <div class="radar-sweep"></div><div class="radar-core"></div>
-        </div>
-        <div style="font-size: 14px; color: var(--neon-green); font-weight: 800; letter-spacing: 2px;" id="radar-status-text">СКАНИРОВАНИЕ РЫНКА...</div>
-        
-        <div class="analysis-final glass-box" id="radar-final-result" style="background: rgba(10,15,25,0.95); border: 1px solid var(--neon-green);">
-            <div style="color: #a4b1cd; font-size: 12px; text-transform: uppercase; font-weight:800;" id="analyzed-pair-title">EUR/USD</div>
-            <div class="final-dir" id="final-direction-arrow">ВВЕРХ ▲</div>
-            <div style="font-size: 14px; font-weight: 800; color: #fff;">УВЕРЕННОСТЬ ИИ: <strong id="final-accuracy-percent" style="color:var(--neon-green);">89%</strong></div>
             
-            <div style="background: rgba(0,0,0,0.4); border-radius: 20px; padding: 16px; margin-top: 20px; text-align: left;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:12px;"><span style="color:#a4b1cd;">RSI (14)</span><strong style="color:#fff;" id="ta-rsi-val">0</strong></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:12px;"><span style="color:#a4b1cd;">SMA (9)</span><strong style="color:#fff;" id="ta-sma9-val">0</strong></div>
-                <div style="display:flex; justify-content:space-between; font-size:12px;"><span style="color:#a4b1cd;">Волатильность</span><strong style="color:#fff;" id="ta-vol-val">0%</strong></div>
+            <div id="admin-link-box" style="margin-top: 16px;">
+                <button class="back-btn" style="border-color: var(--neon-accent); color: var(--neon-accent); font-weight: 900;" onclick="switchScreen('admin-panel-screen')">⚙️ ПАНЕЛЬ РАЗРАБОТЧИКА</button>
+            </div>
+        </div>
+
+        <div id="profile-screen" class="screen">
+            <h2>👤 ВАШ ПРОФИЛЬ</h2>
+            <div class="screen-content" style="text-align: center;">
+                <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-purple), var(--neon-accent)); margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 40px; box-shadow: 0 0 25px rgba(0,180,216,0.4);">👑</div>
+                <h3 id="profile-username" style="font-size: 20px; font-weight: 900; margin-bottom: 8px;">Пользователь</h3>
+                <p style="font-size: 12px; color: var(--neon-purple); font-weight: 800; text-transform: uppercase; margin-bottom: 24px;">Ранг: PREMIUM INVESTOR</p>
+                
+                <div style="background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; text-align: left; font-size: 14px; font-weight: 600;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color:#a4b1cd;">Telegram ID:</span>
+                        <span id="profile-telegram-id" style="font-weight: 800;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color:#a4b1cd;">Статус доступа:</span>
+                        <span style="color: #00ffaa; font-weight: 800;">АКТИВЕН</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color:#a4b1cd;">AI Лицензия:</span>
+                        <span style="color: var(--neon-accent); font-weight: 800;">БЕЗЛИМИТ</span>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад в меню</button>
+        </div>
+
+        <div id="bot-selector-screen" class="screen">
+            <h2>🤖 ВЫБОР ИНТЕЛЛЕКТА</h2>
+            <div class="ai-mode-selection">
+                <div class="mode-btn" onclick="selectBotMode('Scalping AI', 'Анализ микро-трендов на таймфреймах M1-M5. Идеально для быстрых опционов.')">
+                    <div class="mode-icon">⚡</div>
+                    <div class="mode-info">
+                        <h4>Scalping AI Pro</h4>
+                        <p>Скальпинг стратегии высокой частоты</p>
+                    </div>
+                </div>
+                <div class="mode-btn" onclick="selectBotMode('Cluster AI', 'Объемный кластерный анализ горизонтальных уровней и плотности ордеров.')">
+                    <div class="mode-icon">🔮</div>
+                    <div class="mode-info">
+                        <h4>Cluster Volume AI</h4>
+                        <p>Анализ биржевых объемов и стакана</p>
+                    </div>
+                </div>
+                <div class="mode-btn" onclick="selectBotMode('Reversal Smart AI', 'Поиск разворотных точек и дивергенций на основе 14 математических индикаторов.')">
+                    <div class="mode-icon">🔄</div>
+                    <div class="mode-info">
+                        <h4>Reversal Smart AI</h4>
+                        <p>Разворотные паттерны и контр-тренд</p>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад</button>
+        </div>
+
+        <div id="bot-chat-screen" class="screen">
+            <h2 id="chat-bot-title">🤖 РОБОТ</h2>
+            
+            <div class="search-box">
+                <input type="text" id="pair-search" class="search-input" placeholder="Поиск валютной пары..." oninput="filterPairs()">
+                
+                <div class="pairs-list" id="pairs-list-container">
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/JPY')"><span>EUR/JPY</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/JPY')"><span>GBP/JPY</span><span style="color:#00ffaa">82%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/CHF')"><span>AUD/CHF</span><span style="color:#00ffaa">78%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/USD')"><span>AUD/USD</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CAD/CHF')"><span>CAD/CHF</span><span style="color:#00ffaa">77%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CAD/JPY')"><span>CAD/JPY</span><span style="color:#00ffaa">79%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CHF/JPY')"><span>CHF/JPY</span><span style="color:#00ffaa">81%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/AUD')"><span>EUR/AUD</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/CAD')"><span>EUR/CAD</span><span style="color:#00ffaa">79%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/CHF')"><span>EUR/CHF</span><span style="color:#00ffaa">78%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/GBP')"><span>EUR/GBP</span><span style="color:#00ffaa">82%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/USD')"><span>EUR/USD</span><span style="color:#00ffaa">85%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/AUD')"><span>GBP/AUD</span><span style="color:#00ffaa">79%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/CAD')"><span>GBP/CAD</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/CHF')"><span>GBP/CHF</span><span style="color:#00ffaa">79%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/USD')"><span>GBP/USD</span><span style="color:#00ffaa">83%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/CAD')"><span>USD/CAD</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/CHF')"><span>USD/CHF</span><span style="color:#00ffaa">79%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/JPY')"><span>USD/JPY</span><span style="color:#00ffaa">82%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/CAD')"><span>AUD/CAD</span><span style="color:#00ffaa">78%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/JPY')"><span>AUD/JPY</span><span style="color:#00ffaa">80%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/CAD OTC')"><span>AUD/CAD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/NZD OTC')"><span>AUD/NZD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('AUD/USD OTC')"><span>AUD/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('BHD/CNY OTC')"><span>BHD/CNY OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CAD/CHF OTC')"><span>CAD/CHF OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CAD/JPY OTC')"><span>CAD/JPY OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('CHF/NOK OTC')"><span>CHF/NOK OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/GBP OTC')"><span>EUR/GBP OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/HUF OTC')"><span>EUR/HUF OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('EUR/USD OTC')"><span>EUR/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/JPY OTC')"><span>GBP/JPY OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('GBP/USD OTC')"><span>GBP/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('LBP/USD OTC')"><span>LBP/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('NGN/USD OTC')"><span>NGN/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('TND/USD OTC')"><span>TND/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/ARS OTC')"><span>USD/ARS OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/BDT OTC')"><span>USD/BDT OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/BRL OTC')"><span>USD/BRL OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/CAD OTC')"><span>USD/CAD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/CHF OTC')"><span>USD/CHF OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/CLP OTC')"><span>USD/CLP OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/EGP OTC')"><span>USD/EGP OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/INR OTC')"><span>USD/INR OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/MYR OTC')"><span>USD/MYR OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/PHP OTC')"><span>USD/PHP OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/PKR OTC')"><span>USD/PKR OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/THB OTC')"><span>USD/THB OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('USD/VND OTC')"><span>USD/VND OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('YER/USD OTC')"><span>YER/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                    <div class="pair-row" onclick="startBotAnalysis('ZAR/USD OTC')"><span>ZAR/USD OTC</span><span style="color:#00ffaa">92%</span></div>
+                </div>
             </div>
 
-            <button class="back-btn" style="background:var(--neon-green); color:#000; border:none;" onclick="window.closeFullscreenAnalysis()">ЗАКРЫТЬ СКАНЕР</button>
+            <div class="chat-box" id="bot-chat-box"></div>
+            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">Изменить режим</button>
         </div>
-    </div>
 
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchNavTab('dashboard-screen', this)">
-            <span class="nav-icon">📊</span><span class="nav-label">Markets</span>
-        </button>
-        <button class="nav-item" onclick="switchNavTab('bot-analysis-screen', this)">
-            <span class="nav-icon">📈</span><span class="nav-label">Analytics</span>
-        </button>
-        <button class="nav-item" onclick="switchNavTab('education-screen', this)">
-            <span class="nav-icon">🎓</span><span class="nav-label">Learn</span>
-        </button>
-        <button class="nav-item" onclick="switchNavTab('profile-screen', this)">
-            <span class="nav-icon">👤</span><span class="nav-label">Profile</span>
-        </button>
-    </nav>
+        <div id="bot-analysis-screen" class="fullscreen-overlay">
+            <div id="radar-section" style="text-align: center;">
+                <div class="radar-container">
+                    <div class="radar-sweep"></div>
+                    <div class="radar-line"></div>
+                    <div class="radar-core"></div>
+                </div>
+                <div class="radar-status" id="radar-status-text">ПОДКЛЮЧЕНИЕ К РЫНКУ...</div>
+            </div>
+
+            <div class="analysis-final" id="analysis-final-box">
+                <h3 id="final-pair-title" style="font-size: 22px; font-weight: 900;">EUR/USD</h3>
+                <div id="final-direction" class="final-dir up">ВВЕРХ ↑</div>
+                
+                <div style="font-size: 13px; font-weight: 800; color: #a4b1cd;">УВЕРЕННОСТЬ АЛГОРИТМА: <span id="final-percentage" style="color:#fff;">87%</span></div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="final-progress-bar"></div>
+                </div>
+
+                <div class="ta-dashboard">
+                    <div class="ta-row"><span class="ta-label">RSI (14)</span><span class="ta-val" id="ta-rsi">Перепроданность</span></div>
+                    <div class="ta-row"><span class="ta-label">MACD (12, 26)</span><span class="ta-val" id="ta-macd">Бычье пересечение</span></div>
+                    <div class="ta-row"><span class="ta-label">Moving Averages</span><span class="ta-val" id="ta-ma">Активное покупать</span></div>
+                    <div class="ta-row"><span class="ta-label">Объемы рынка</span><span class="ta-val" id="ta-vol">Крупный покупатель</span></div>
+                    <div id="ta-verdict-badge" class="ta-verdict buy">STRONG BUY</div>
+                </div>
+
+                <button class="back-btn" style="margin-top: 24px; background: var(--bot-analysis-color); color: #000; border: none;" onclick="closeAnalysis()">Закрыть анализ</button>
+            </div>
+        </div>
+
+        <div id="sessions-screen" class="screen">
+            <h2>📊 ЖИВЫЕ ТОРГОВЫЕ СЕССИИ</h2>
+            <div id="ai-news-feed" style="display: flex; flex-direction: column; gap: 14px;"></div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад в меню</button>
+        </div>
+
+        <div id="education-screen" class="screen">
+            <h2>📚 VIP АКАДЕМИЯ ТРЕЙДИНГА</h2>
+            <div class="screen-content" id="books-list-container" style="padding: 16px;"></div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад в меню</button>
+        </div>
+
+        <div id="book-viewer-screen" class="screen">
+            <h2 id="viewer-book-title">📖 КНИГА</h2>
+            <div id="pdf-container"></div>
+            <button class="back-btn" onclick="switchScreen('education-screen')">Закрыть книгу</button>
+        </div>
+
+        <div id="calendar-screen" class="screen">
+            <h2>📅 ИНВЕСТИЦИОННЫЙ КАЛЕНДАРЬ</h2>
+            <div class="screen-content">
+                <div style="font-size: 16px; font-weight: 900; text-align: center; color: var(--neon-accent); margin-bottom: 12px;" id="current-month-year">ИЮНЬ 2026</div>
+                <div class="cal-grid" id="calendar-grid-box"></div>
+                <div class="news-display-box" id="calendar-news-box">Нажмите на день с красной меткой, чтобы посмотреть экономические события.</div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад в меню</button>
+        </div>
+
+        <div id="notes-screen" class="screen">
+            <h2>📝 БЛОКНОТ СТРАТЕГИЙ</h2>
+            <div class="target-box">
+                <div class="ai-hint-label" style="margin-bottom: 8px; text-align: center;">Финансовая цель на день ($)</div>
+                <input type="number" id="target-gain-input" class="target-input" value="100" oninput="calculateTradingPlan()">
+                <div class="ai-hint-label" id="ai-plan-hint" style="text-align: center; color: var(--neon-purple);">Загрузка рекомендаций ИИ...</div>
+            </div>
+
+            <div class="screen-content" style="padding: 16px;">
+                <div class="input-area" style="margin-bottom: 14px;">
+                    <input type="text" id="note-input" placeholder="Добавить торговую заметку...">
+                    <button class="send-btn" onclick="addNote()">+</button>
+                </div>
+                <div id="notes-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;"></div>
+            </div>
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Назад в меню</button>
+        </div>
+
+        <div id="admin-panel-screen" class="screen">
+            <h2>⚙️ MANAGEMENT CONTROL</h2>
+            
+            <div class="admin-box">
+                <div class="ai-hint-label" style="margin-bottom: 8px;">Добавить Telegram ID пользователя</div>
+                <div class="admin-input-row">
+                    <input type="number" id="admin-user-id" class="admin-input" placeholder="Например: 12345678">
+                    <button class="admin-btn" onclick="addUser()">Добавить</button>
+                </div>
+            </div>
+
+            <div class="admin-box">
+                <div class="ai-hint-label" style="margin-bottom: 10px;">Список пользователей системы</div>
+                <div class="admin-list-container" id="admin-users-list"></div>
+            </div>
+
+            <button class="back-btn" onclick="switchScreen('menu-screen')">Вернуться в меню</button>
+        </div>
+
+    </div>
 
     <script>
-        // ============================================
-        // ЛОГИКА БЕЗОПАСНОСТИ И АДМИНКИ
-        // ============================================
-        const MASTER_ADMIN = "5817328317";
-        const ADMIN_LIST = [644265574, 5211910606, 987654321];
-
-        function getAllowedUsers() { return JSON.parse(localStorage.getItem('allowed_users') || "[]"); }
-        
-        async function checkAccess(userId) {
-            if (userId === MASTER_ADMIN || ADMIN_LIST.includes(Number(userId)) || getAllowedUsers().includes(userId)) return true;
-            // Для локального теста без сервера пускаем всех
-            return true; 
-        }
-
-        window.addAllowedUser = function() {
-            const idInput = document.getElementById('new-user-id');
-            const id = idInput.value.trim();
-            if (!id) return;
-            let users = getAllowedUsers();
-            if (!users.includes(id) && id !== MASTER_ADMIN) {
-                users.push(id); localStorage.setItem('allowed_users', JSON.stringify(users)); renderAdminList();
-            }
-            idInput.value = '';
-        };
-
-        window.removeUser = function(id) {
-            let users = getAllowedUsers().filter(u => u !== String(id));
-            localStorage.setItem('allowed_users', JSON.stringify(users)); renderAdminList();
-        };
-
-        function renderAdminList() {
-            const list = document.getElementById('admin-users-list');
-            if(!list) return;
-            list.innerHTML = '';
-            getAllowedUsers().forEach(id => {
-                list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.5); padding:10px 15px; border-radius:15px; font-size:12px;"><span>USER: ${id}</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="removeUser('${id}')">X</span></div>`;
-            });
-        }
-
-        // ============================================
-        // ОСНОВНАЯ ЛОГИКА
-        // ============================================
-        let currentBalance = parseFloat(localStorage.getItem('pocket_balance')) || 1000;
-        const GROQ_API_KEY = "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";
-
-        // Навигация
-        window.switchNavTab = function(screenId, btnElement = null) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(screenId);
-            if (target) target.classList.add('active');
-
-            if (btnElement) {
-                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
+        document.addEventListener("DOMContentLoaded", async () => {
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+                tg.expand();
+                tg.ready();
             }
 
-            if (screenId === 'bot-analysis-screen') window.filterAnalysisPairs();
-        };
+            const API_URL = "https://vip-community-production.up.railway.app";
+            const MASTER_ADMIN = "5817328317";
 
-        // Балансы
-        function initBalances() {
-            document.getElementById('main-pocket-input').value = currentBalance;
-            document.getElementById('profile-pocket-input').value = currentBalance;
-            calculateStake(currentBalance);
-        }
+            let currentBotMode = "Scalping AI";
+            let selectedPair = "";
 
-        function calculateStake(balance) {
-            let stake = balance * 0.02;
-            let weekProfit = balance * 0.60;
-            document.getElementById('ai-calc-stake').innerText = `$${stake.toFixed(2)}`;
-            document.getElementById('ai-weekly-forecast').innerText = `Цель (неделя): $${weekProfit.toFixed(2)}`;
-        }
+            const NAMES_POOL = ["Александр", "Дмитрий", "Сергей", "Андрей", "Алексей", "Максим", "Иван", "Евгений", "Михаил", "Даниил", "Артем", "Владимир", "Никита", "Денис", "Роман", "Игорь"];
+            const PAIRS_POOL = ["EUR/USD", "GBP/USD", "USD/JPY", "EUR/JPY", "AUD/USD", "EUR/USD OTC", "GBP/USD OTC", "USD/JPY OTC"];
 
-        window.syncBalances = function(val) {
-            let parsed = parseFloat(val) || 0;
-            currentBalance = parsed;
-            localStorage.setItem('pocket_balance', parsed);
-            
-            const mainIn = document.getElementById('main-pocket-input');
-            const profIn = document.getElementById('profile-pocket-input');
-            if(mainIn && mainIn.value != val) mainIn.value = val;
-            if(profIn && profIn.value != val) profIn.value = val;
-            calculateStake(parsed);
-        };
+            const BOOKS_DATA = [
+                { title: "Технический анализ от А до Я", desc: "Основы графического анализа, тренды и фигуры.", url: "https://www.instaforex.com/txt/forex_books/ru/technical_analysis_from_a_to_z.pdf" },
+                { title: "Малая энциклопедия трейдера", desc: "Энциклопедия Эрика Наймана по финансовым рынкам.", url: "https://shkola-mira.ru/forex/naiman.pdf" },
+                { title: "Японские свечи", desc: "Свечной анализ ценовых графиков Стива Нисона.", url: "https://www.fortrader.org/forex-book/stiv-nison-yaponskie-svechi.pdf" }
+            ];
 
-        // AI Chat (Groq)
-        window.sendAiChatMessage = async function() {
-            const inputEl = document.getElementById('ai-chat-input');
-            const txt = inputEl.value.trim();
-            if(!txt) return;
+            const CALENDAR_NEWS = {
+                3: "🇺🇸 Базовый индекс розничных продаж (USD) - Высокая волатильность",
+                5: "🇪🇺 Решение по процентной ставке ЕЦБ (EUR) - Критическое событие",
+                12: "🇺🇸 Индекс потребительских цен CPI (USD) - Максимальный приоритет",
+                19: "🇬🇧 Индекс розничных продаж (GBP) - Высокая волатильность",
+                25: "🇺🇸 ВВП (кв/кв) (USD) - Глобальное движение тренда"
+            };
 
-            inputEl.value = '';
-            appendMsg('ai-chat-container', txt, 'user', 'Вы');
-            
-            const typing = document.getElementById('ai-chat-typing');
-            typing.style.display = 'block';
-            typing.parentNode.appendChild(typing);
-            typing.parentNode.scrollTop = typing.parentNode.scrollHeight;
+            function switchScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                const target = document.getElementById(screenId);
+                if (target) target.classList.add('active');
+            }
+            window.switchScreen = switchScreen;
 
-            try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        messages: [
-                            { role: "system", content: "Ты ИИ-аналитик клуба VIP COMMUNITY PRO. Отвечай кратко." },
-                            { role: "user", content: txt }
-                        ],
-                        temperature: 0.5
-                    })
+            // Живая лента выплат
+            function generateRandomPayout() {
+                const name = NAMES_POOL[Math.floor(Math.random() * NAMES_POOL.length)];
+                const pair = PAIRS_POOL[Math.floor(Math.random() * PAIRS_POOL.length)];
+                const profit = (Math.random() * 85 + 15).toFixed(2);
+                return `<div class="payout-item"><span class="payout-user">${name} (${pair})</span> <span class="payout-amount">+$${profit}</span></div>`;
+            }
+
+            function updateLivePayouts() {
+                const container = document.getElementById('payout-track-container');
+                if (!container) return;
+                let html = "";
+                for(let i=0; i<15; i++) {
+                    html += generateRandomPayout();
+                }
+                container.innerHTML = html + html; 
+            }
+            updateLivePayouts();
+            setInterval(updateLivePayouts, 7000);
+
+            // Обработка балансов
+            function initBalances() {
+                const balanceInput = document.getElementById('pocket-balance');
+                const riskVerdict = document.getElementById('ai-risk-verdict');
+                const allocationVerdict = document.getElementById('ai-allocation-verdict');
+
+                function recalculate() {
+                    let val = parseFloat(balanceInput.value) || 0;
+                    if (val < 200) {
+                        riskVerdict.innerText = "HIGH RISK";
+                        riskVerdict.style.color = "var(--neon-red)";
+                    } else if (val < 1000) {
+                        riskVerdict.innerText = "MEDIUM RISK";
+                        riskVerdict.style.color = "var(--bot-analysis-color)";
+                    } else {
+                        riskVerdict.innerText = "LOW RISK";
+                        riskVerdict.style.color = "#00ffaa";
+                    }
+                    allocationVerdict.innerText = "$" + (val * 0.04).toFixed(2);
+                }
+                balanceInput.addEventListener('input', recalculate);
+                recalculate();
+            }
+
+            // ИИ лента сессий
+            function renderAiNewsFeed() {
+                const feed = document.getElementById('ai-news-feed');
+                if (!feed) return;
+                const sessions = [
+                    { time: "12:30", type: "Европейская сессия", asset: "EUR/USD", status: "Активна", action: "Покупка от уровня поддержки" },
+                    { time: "16:00", type: "Американская сессия", asset: "GBP/USD", status: "Ожидание", action: "ИИ сканирует новостной фон" }
+                ];
+                feed.innerHTML = sessions.map(s => `
+                    <div class="info-item">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <h4>${s.type} (${s.time})</h4>
+                            <span style="color:var(--neon-accent); font-weight:900;">${s.status}</span>
+                        </div>
+                        <p>Актив: <b>${s.asset}</b> — Стратегия ИИ: ${s.action}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Работа с ботом
+            function selectBotMode(modeName, desc) {
+                currentBotMode = modeName;
+                document.getElementById('chat-bot-title').innerText = modeName.toUpperCase();
+                switchScreen('bot-chat-screen');
+                
+                const chatBox = document.getElementById('bot-chat-box');
+                chatBox.innerHTML = `
+                    <div class="chat-msg bot">
+                        Приветствую в модуле <b>${modeName}</b>.<br>${desc}<br><br><b>Выберите валютную пару из списка выше, чтобы запустить глубокий нейро-анализ.</b>
+                    </div>
+                `;
+            }
+            window.selectBotMode = selectBotMode;
+
+            function filterPairs() {
+                const searchVal = document.getElementById('pair-search').value.toUpperCase();
+                document.querySelectorAll('.pair-row').forEach(row => {
+                    const text = row.querySelector('span').innerText.toUpperCase();
+                    row.style.display = text.includes(searchVal) ? 'flex' : 'none';
                 });
-                const data = await res.json();
-                typing.style.display = 'none';
-
-                if (data.choices && data.choices[0]) {
-                    let answer = data.choices[0].message.content;
-                    appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--neon-green);">$1</b>').replace(/\n/g, '<br>'), 'bot', 'SYSTEM AI PRO', true);
-                }
-            } catch(e) {
-                typing.style.display = 'none';
-                appendMsg('ai-chat-container', 'Ошибка сети.', 'bot', 'SYSTEM AI PRO');
             }
-        };
+            window.filterPairs = filterPairs;
 
-        function appendMsg(containerId, text, senderClass, name, isHTML = false) {
-            const box = document.getElementById(containerId);
-            const msg = document.createElement('div');
-            msg.className = `chat-msg ${senderClass}`;
-            
-            let color = senderClass === 'bot' ? 'var(--neon-green)' : 'var(--neon-purple)';
-            let header = `<div class="msg-header"><span style="color:${color};">${name}</span></div>`;
-            
-            msg.innerHTML = header + (isHTML ? text : text);
-            box.insertBefore(msg, box.querySelector('#ai-chat-typing'));
-            box.scrollTop = box.scrollHeight;
-        }
-
-        // Сканер (Радар)
-        const ALL_PAIRS = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CHF", "BTC/USD", "ETH/USD", "XAU/USD"];
-        
-        window.filterAnalysisPairs = function() {
-            const q = document.getElementById('analysis-search-input').value.toUpperCase();
-            const box = document.getElementById('analysis-pairs-render-box');
-            box.innerHTML = '';
-            
-            ALL_PAIRS.filter(p => p.includes(q)).forEach(pair => {
-                const row = document.createElement('div');
-                row.className = 'pair-row';
-                row.onclick = () => launchFullscreenAnalysis(pair);
-                row.innerHTML = `<span>${pair}</span> <span style="color:var(--neon-green);">Анализ →</span>`;
-                box.appendChild(row);
-            });
-        };
-
-        function launchFullscreenAnalysis(pairName) {
-            const overlay = document.getElementById('fullscreen-radar');
-            const radarAnim = document.getElementById('radar-animation-element');
-            const statusText = document.getElementById('radar-status-text');
-            const finalBlock = document.getElementById('radar-final-result');
-
-            overlay.style.display = 'flex';
-            radarAnim.style.display = 'flex';
-            statusText.style.display = 'block';
-            finalBlock.style.display = 'none';
-
-            setTimeout(() => {
-                radarAnim.style.display = 'none';
-                statusText.style.display = 'none';
-                finalBlock.style.display = 'block';
+            function startBotAnalysis(pair) {
+                selectedPair = pair;
+                switchScreen('bot-analysis-screen');
+                document.getElementById('radar-section').style.display = 'flex';
+                document.getElementById('analysis-final-box').style.display = 'none';
                 
-                document.getElementById('analyzed-pair-title').innerText = pairName;
-                let isUp = Math.random() > 0.5;
-                let accuracy = Math.floor(Math.random() * 20) + 76;
+                const statuses = ["СБОР РЫНОЧНЫХ ДАННЫХ...", "АНАЛИЗ ИНДИКАТОРОВ...", "ВЫЧИСЛЕНИЕ ВЕРОЯТНОСТИ...", "ФОРМИРОВАНИЕ СИГНАЛА..."];
+                let step = 0;
                 
-                document.getElementById('ta-rsi-val').innerText = Math.floor(Math.random() * 50) + 25;
-                document.getElementById('ta-sma9-val').innerText = (Math.random() * 1.5).toFixed(4);
-                document.getElementById('ta-vol-val').innerText = (Math.random() * 0.4 + 0.1).toFixed(2) + '%';
-                document.getElementById('final-accuracy-percent').innerText = accuracy + '%';
+                const txt = document.getElementById('radar-status-text');
+                txt.innerText = statuses[0];
+                
+                const interval = setInterval(() => {
+                    step++;
+                    if(step < statuses.length) {
+                        txt.innerText = statuses[step];
+                    } else {
+                        clearInterval(interval);
+                        showFinalAnalysis();
+                    }
+                }, 1000);
+            }
+            window.startBotAnalysis = startBotAnalysis;
 
-                const arrow = document.getElementById('final-direction-arrow');
-                if(isUp) {
-                    arrow.innerText = "LONG (ВВЕРХ) ▲"; arrow.className = "final-dir up";
+            function showFinalAnalysis() {
+                document.getElementById('radar-section').style.display = 'none';
+                const finalBox = document.getElementById('analysis-final-box');
+                finalBox.style.display = 'block';
+
+                document.getElementById('final-pair-title').innerText = selectedPair;
+                
+                const isUp = Math.random() > 0.45;
+                const percentage = Math.floor(Math.random() * 16) + 78; // 78% - 93%
+                
+                const dirEl = document.getElementById('final-direction');
+                const badgeEl = document.getElementById('ta-verdict-badge');
+                
+                if (isUp) {
+                    dirEl.innerText = "ВВЕРХ ↑";
+                    dirEl.className = "final-dir up";
+                    badgeEl.innerText = "STRONG BUY";
+                    badgeEl.className = "ta-verdict buy";
                 } else {
-                    arrow.innerText = "SHORT (ВНИЗ) ▼"; arrow.className = "final-dir down";
+                    dirEl.innerText = "ВНИЗ ↓";
+                    dirEl.className = "final-dir down";
+                    badgeEl.innerText = "STRONG SELL";
+                    badgeEl.className = "ta-verdict sell";
                 }
-            }, 2500);
-        }
-        window.closeFullscreenAnalysis = () => document.getElementById('fullscreen-radar').style.display = 'none';
 
-        // База знаний
-        const PRO_BOOKS = [
-            { title: "Алгоритмика Рынков", file: "book1.pdf" },
-            { title: "Прайс Экшен PRO", file: "book2.pdf" },
-            { title: "Механика Ликвидности", file: "book3.pdf" }
-        ];
-        function loadBooks() {
-            const box = document.getElementById('books-list-box');
-            PRO_BOOKS.forEach(b => {
-                box.innerHTML += `<div class="book-item">
-                    <h4 style="font-size:13px; color:#fff;">${b.title}</h4>
-                    <button class="read-btn" onclick="openPdf('${b.title}')">ОТКРЫТЬ</button>
-                </div>`;
-            });
-        }
-        window.openPdf = function(title) {
-            document.getElementById('viewer-title').innerText = title;
-            switchNavTab('book-viewer-screen');
-        };
+                document.getElementById('final-percentage').innerText = percentage + "%";
+                
+                // Рандомизация показателей ТА
+                document.getElementById('ta-rsi').innerText = isUp ? "Перепроданность (32)" : "Перекупленность (68)";
+                document.getElementById('ta-macd').innerText = isUp ? "Бычье пересечение" : "Медвежье пересечение";
+                document.getElementById('ta-ma').innerText = isUp ? "Активное покупать" : "Активно продавать";
+                
+                const fill = document.getElementById('final-progress-bar');
+                fill.style.width = "0%";
+                fill.style.color = isUp ? "#00ffaa" : "var(--neon-red)";
+                
+                setTimeout(() => {
+                    fill.style.width = percentage + "%";
+                }, 100);
+            }
 
-        // Инит
-        document.addEventListener('DOMContentLoaded', async () => {
-            let userId = null; let fullName = "GUEST_PRO";
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand();
-                window.Telegram.WebApp.setHeaderColor('#050810');
-                if (window.Telegram.WebApp.initDataUnsafe?.user) {
-                    userId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
-                    fullName = window.Telegram.WebApp.initDataUnsafe.user.first_name;
+            function closeAnalysis() {
+                switchScreen('bot-chat-screen');
+                const chatBox = document.getElementById('bot-chat-box');
+                const dirText = document.getElementById('final-direction').innerText;
+                const pct = document.getElementById('final-percentage').innerText;
+                
+                chatBox.innerHTML += `
+                    <div class="chat-msg user">Анализ ${selectedPair}</div>
+                    <div class="chat-msg bot">
+                        Рекомендация по <b>${selectedPair}</b> сформирована:<br>
+                        Направление: <b>${dirText}</b><br>
+                        Точность прогноза: <b>${pct}</b><br>
+                        Рекомендуемое время экспирации: <b>2-3 минуты</b>.
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+            window.closeAnalysis = closeAnalysis;
+
+            // Блокнот трейдера
+            function calculateTradingPlan() {
+                const target = parseFloat(document.getElementById('target-gain-input').value) || 0;
+                const hint = document.getElementById('ai-plan-hint');
+                if (target <= 0) {
+                    hint.innerText = "Введите корректную цель.";
+                    return;
+                }
+                const trades = Math.ceil(target / 15);
+                hint.innerText = `ИИ План: Закройте примерно ${trades} чистых сделок по $20 для достижения цели.`;
+            }
+            window.calculateTradingPlan = calculateTradingPlan;
+
+            function loadNotes() {
+                const notesList = document.getElementById('notes-list');
+                const local = JSON.parse(localStorage.getItem('trader_notes') || "[]");
+                if (local.length === 0) {
+                    notesList.innerHTML = `<p style="font-size:12px; color:#a4b1cd; text-align:center; padding:20px;">Заметок пока нет.</p>`;
+                    return;
+                }
+                notesList.innerHTML = local.map((n, idx) => `
+                    <div class="admin-user-card">
+                        <span>${n}</span>
+                        <button class="del-user-btn" onclick="deleteNote(${idx})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            function addNote() {
+                const inp = document.getElementById('note-input');
+                if(!inp.value.trim()) return;
+                const local = JSON.parse(localStorage.getItem('trader_notes') || "[]");
+                local.push(inp.value.trim());
+                localStorage.setItem('trader_notes', JSON.stringify(local));
+                inp.value = "";
+                loadNotes();
+            }
+            window.addNote = addNote;
+
+            function deleteNote(idx) {
+                const local = JSON.parse(localStorage.getItem('trader_notes') || "[]");
+                local.splice(idx, 1);
+                localStorage.setItem('trader_notes', JSON.stringify(local));
+                loadNotes();
+            }
+            window.deleteNote = deleteNote;
+
+            // Академия
+            function loadBooks() {
+                const container = document.getElementById('books-list-container');
+                container.innerHTML = BOOKS_DATA.map((b, i) => `
+                    <div class="book-item">
+                        <div class="book-info">
+                            <h4>${b.title}</h4>
+                            <p>${b.desc}</p>
+                        </div>
+                        <button class="read-btn" onclick="openBook(${i})">Читать</button>
+                    </div>
+                `).join('');
+            }
+
+            function openBook(index) {
+                const book = BOOKS_DATA[index];
+                document.getElementById('viewer-book-title').innerText = book.title.toUpperCase();
+                document.getElementById('pdf-container').innerHTML = `<iframe class="pdf-frame-box" src="${book.url}"></iframe>`;
+                switchScreen('book-viewer-screen');
+            }
+            window.openBook = openBook;
+
+            // Календарь
+            window.generateNewsCalendar = function() {
+                const grid = document.getElementById('calendar-grid-box');
+                let html = "";
+                const days = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+                days.forEach(d => html += `<div class="cal-header">${d}</div>`);
+                
+                // Пустые дни начала месяца
+                for(let i=0; i<0; i++) html += `<div></div>`;
+                
+                for(let day=1; day<=30; day++) {
+                    let isToday = (day === 23) ? "today" : "";
+                    let hasNews = CALENDAR_NEWS[day] ? "has-news" : "";
+                    html += `<div class="cal-day ${isToday} ${hasNews}" onclick="showCalendarNews(${day})">${day}</div>`;
+                }
+                grid.innerHTML = html;
+            };
+
+            function showCalendarNews(day) {
+                const box = document.getElementById('calendar-news-box');
+                if (CALENDAR_NEWS[day]) {
+                    box.innerHTML = `<b>День ${day}:</b> ${CALENDAR_NEWS[day]}`;
+                    box.style.borderLeftColor = "var(--neon-red)";
+                } else {
+                    box.innerHTML = `<b>День ${day}:</b> Важных экономических новостей и публикации отчетов макростатистики не запланировано. Флэт-рынок.`;
+                    box.style.borderLeftColor = "var(--neon-purple)";
+                }
+            }
+            window.showCalendarNews = showCalendarNews;
+
+            // Панель разработчика (Локальное сохранение списка)
+            async function renderAdminList() {
+                const container = document.getElementById('admin-users-list');
+                try {
+                    const res = await fetch(`${API_URL}/api/users`);
+                    const users = await res.json();
+                    container.innerHTML = users.map(u => `
+                        <div class="admin-user-card">
+                            <span>ID: ${u.userId}</span>
+                            <button class="del-user-btn" onclick="deleteUser('${u.userId}')">×</button>
+                        </div>
+                    `).join('');
+                } catch (e) {
+                    container.innerHTML = `<p style="color:var(--neon-red); font-size:12px;">Ошибка синхронизации с сервером.</p>`;
+                }
+            }
+            window.renderAdminList = renderAdminList;
+
+            async function addUser() {
+                const idInp = document.getElementById('admin-user-id');
+                const userId = idInp.value.trim();
+                if(!userId) return;
+                
+                await fetch(`${API_URL}/api/add-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                idInp.value = "";
+                renderAdminList();
+            }
+            window.addUser = addUser;
+
+            async function deleteUser(userId) {
+                await fetch(`${API_URL}/api/delete-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                renderAdminList();
+            }
+            window.deleteUser = deleteUser;
+
+            async function checkAccess(userId) {
+                if (userId === MASTER_ADMIN) return true;
+                try {
+                    const res = await fetch(`${API_URL}/api/check-access?userId=${userId}`);
+                    const data = await res.json();
+                    return data.allowed;
+                } catch (e) {
+                    return false;
                 }
             }
 
-            if (userId) {
-                document.getElementById('denied-telegram-id').innerText = userId;
-                if (userId === MASTER_ADMIN) {
-                    document.getElementById('admin-link-box').style.display = 'block';
-                    renderAdminList();
-                }
-                if (!(await checkAccess(userId))) {
-                    document.getElementById('dashboard-screen').classList.remove('active');
-                    document.getElementById('access-denied-screen').classList.add('active');
-                    document.querySelector('.bottom-nav').style.display = 'none';
+            // Инициализация
+            async function init() {
+                let userId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
+                let fullName = tg?.initDataUnsafe?.user?.first_name || "Premium Investor";
+                
+                const menuScreen = document.getElementById('menu-screen');
+                const deniedScreen = document.getElementById('access-denied-screen');
+                const deniedIdDisplay = document.getElementById('denied-telegram-id');
+
+                if (userId) {
+                    deniedIdDisplay.innerText = userId;
+                    if (userId === MASTER_ADMIN) {
+                        const adminBtnBox = document.getElementById('admin-link-box');
+                        if (adminBtnBox) adminBtnBox.style.display = 'block';
+                        renderAdminList();
+                    }
+
+                    if (!(await checkAccess(userId))) {
+                        if (menuScreen) menuScreen.classList.remove('active');
+                        if (deniedScreen) deniedScreen.classList.add('active');
+                        return; 
+                    }
+                } else {
+                    deniedIdDisplay.innerText = "NULL (USE TELEGRAM CLIENT)";
+                    if (menuScreen) menuScreen.classList.remove('active');
+                    if (deniedScreen) deniedScreen.classList.add('active');
                     return; 
                 }
+                
+                document.getElementById('profile-username').innerText = fullName;
+                document.getElementById('profile-telegram-id').innerText = userId;
+                
+                initBalances();
+                loadBooks();
+                window.generateNewsCalendar();
+                loadNotes();
+                renderAiNewsFeed();
+                calculateTradingPlan();
+                
+                setInterval(renderAiNewsFeed, 15000); 
             }
-            
-            document.getElementById('profile-username').innerText = fullName;
-            document.getElementById('profile-telegram-id').innerText = userId || "Локальный тест";
-            
-            initBalances();
-            loadBooks();
+
+            init();
         });
     </script>
 </body>
