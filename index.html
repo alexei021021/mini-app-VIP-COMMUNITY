@@ -19,1065 +19,901 @@
             overflow-x: hidden; 
         }
         
-        /* Глобальные неоновые цвета */
         :root {
             --neon-green: #00FFAA;
             --neon-purple: #9D00FF;
             --neon-red: #FF2E63;
-            --glass-bg: rgba(15, 20, 35, 0.55);
+            --glass-bg: rgba(15, 20, 35, 0.65);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-blur: blur(16px);
         }
 
-        .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; }
-        
-        /* Настройка фонов для каждого экрана (стеклянный морфизм поверх котировок) */
-        .screen { 
-            display: none !important; 
-            min-height: 100vh; 
-            padding: 30px 20px; 
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseNeon {
+            0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 170, 0.2); }
+            50% { box-shadow: 0 0 18px rgba(0, 255, 170, 0.5); }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Экран блокировки */
+        .screen-denied {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100vw; height:100vh;
+            background: radial-gradient(circle at center, #100b26, #050810);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+        .screen-denied.active { display: flex; }
+        .denied-icon {
+            font-size: 70px;
+            color: var(--neon-red);
+            text-shadow: 0 0 20px rgba(255, 46, 99, 0.6);
+            margin-bottom: 20px;
+        }
+
+        /* Главный контейнер приложения */
+        .app-container {
+            display: none;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 90px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .app-container.active { display: block; }
+
+        /* Шапка */
+        header {
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(5, 8, 16, 1), rgba(5, 8, 16, 0));
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-text {
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #fff, var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .user-badge {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--neon-green);
+        }
+
+        /* Тайм-зоны (Москва / Киев) */
+        .time-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 15px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #a0a5b5;
+        }
+        .time-item span {
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        /* Навигация сверху */
+        .top-nav {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .top-nav::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #8e94a6;
+            padding: 10px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--neon-purple), #6200EE);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(157, 0, 255, 0.4);
+        }
+
+        /* Экраны контента */
+        .content-screen { display: none; padding: 0 15px; animation: fadeIn 0.4s ease; }
+        .content-screen.active { display: block; }
+
+        /* Карточки и стеклянные панели */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(12px);
+        }
+
+        /* Компонент ИИ-Новостей */
+        .news-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .news-card {
+            background: rgba(18, 24, 43, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.4s ease-out;
+        }
+        .news-card:hover {
+            border-color: var(--neon-green);
+            transform: translateY(-2px);
+        }
+        .news-img-wrapper {
+            position: relative;
+            height: 150px;
+            width: 100%;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
         }
+        .news-blur-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(5,8,16,1), rgba(5,8,16,0));
+            height: 60px;
+        }
+        .news-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 255, 170, 0.85);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .news-quote-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        .news-body { padding: 15px; }
+        .news-time { font-size: 11px; color: #70778c; margin-bottom: 6px; display: block; }
+        .news-title { font-size: 15px; font-weight: 700; line-height: 1.4; color: #fff; margin-bottom: 8px; }
+        .news-desc { font-size: 12px; color: #b2b8c9; line-height: 1.5; }
+
+        /* Виджет Технического Анализа (1 минута) */
+        .tv-widget-box {
+            height: 380px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Книги и Обучение */
+        .section-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 10px 0 15px 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+        }
+        .section-title span { color: var(--neon-purple); }
         
-        #menu-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
-        #profile-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=1080&q=80'); }
-        #bot-selector-screen, #bot-chat-screen, #bot-analysis-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
-        #news-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1080&q=80'); }
-        #education-screen, #book-viewer-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1080&q=80'); }
-        #sessions-screen, #calendar-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1608222284001-a482ccdf0cd5?auto=format&fit=crop&w=1080&q=80'); }
-        #chat-screen { background-image: linear-gradient(rgba(5,8,16,0.85), rgba(5,8,16,0.95)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1080&q=80'); }
-        #admin-panel-screen, #access-denied-screen { background-image: linear-gradient(rgba(20,5,10,0.9), rgba(20,5,10,0.95)), url('https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1080&q=80'); }
-
-        .screen.active { display: block !important; animation: screenFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes screenFade { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-        /* Типографика */
-        .welcome { font-size: 12px; letter-spacing: 4px; color: var(--neon-green); margin-bottom: 4px; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(0, 255, 170, 0.4); text-align: center; }
-        .brand-title { font-size: 34px; font-weight: 900; letter-spacing: 1px; margin-bottom: 24px; color: #ffffff; text-align: center; text-transform: uppercase; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h2 { font-size: 24px; margin-bottom: 20px; color: var(--neon-green); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 170, 0.3); text-align: center; }
-
-        /* Основные блоки (круглые/овальные) */
-        .glass-box {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .book-card {
+            background: rgba(250,250,250,0.02);
             border: 1px solid var(--glass-border);
-            border-radius: 40px; 
-            padding: 24px;
-            margin-bottom: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.02);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .book-card:active { transform: scale(0.97); }
+        .book-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+        .book-name { font-size: 12px; font-weight: 600; color: #e1e4ed; line-height: 1.4; }
+        
+        /* Блок Обучения с ИИ */
+        .ai-learning-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .pattern-card {
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.1), rgba(15, 20, 35, 0.6));
+            border: 1px solid rgba(157, 0, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .pattern-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon-purple);
+        }
+        .pattern-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .pattern-name { font-weight: 700; font-size: 14px; color: #fff; }
+        .pattern-rate {
+            font-size: 11px;
+            background: rgba(157, 0, 255, 0.3);
+            color: #dfbfff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .pattern-visual {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .pattern-tip { font-size: 12px; color: #b2b8c9; line-height: 1.4; }
+        .pattern-status {
+            font-size: 10px;
+            color: var(--neon-green);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
         }
 
-        /* Баланс */
-        .balance-card { position: relative; overflow: hidden; border: 1px solid rgba(0, 255, 170, 0.3); box-shadow: 0 0 30px rgba(0, 255, 170, 0.15); }
-        .balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .balance-info h5 { font-size: 11px; color: #a4b1cd; text-transform: uppercase; letter-spacing: 1px; }
-        .pocket-input-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 255, 170, 0.2); border-radius: 50px; padding: 8px 16px; margin-top: 8px; transition: all 0.3s; }
-        .pocket-input-wrapper:focus-within { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 170, 0.3); }
-        .pocket-input-wrapper span { color: var(--neon-green); font-weight: 900; font-size: 18px; }
-        .pocket-balance-input { background: transparent; border: none; color: #fff; font-size: 20px; font-weight: 900; width: 100%; outline: none; }
-        
-        .status-badge { background: linear-gradient(90deg, var(--neon-green) 0%, #00b36c 100%); color: #000; padding: 6px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 255, 170, 0.5); }
-        
-        .ai-management-box { background: linear-gradient(90deg, rgba(157,0,255,0.1) 0%, rgba(0,255,170,0.1) 100%); border: 1px solid rgba(0, 255, 170, 0.3); border-radius: 50px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
-        .ai-management-box strong { color: var(--neon-green); font-size: 16px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 255, 170, 0.5); }
-        .server-status-info { font-size: 11px; text-align: center; margin-top: -6px; margin-bottom: 20px; color: #a4b1cd; font-weight: 600; letter-spacing: 1px; }
-
-        /* Сетка Меню */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 10px; }
-        .card { 
-            background: var(--glass-bg); 
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); 
-            border-radius: 40px; 
-            aspect-ratio: 1 / 1.1; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        /* Чат Сообщества */
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            background: rgba(0,0,0,0.15);
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .card:active { transform: scale(0.92); border-color: var(--neon-green); background: rgba(0, 255, 170, 0.1); box-shadow: 0 0 25px rgba(0, 255, 170, 0.3); }
-        .icon-circle { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,255,170,0.15) 0%, rgba(157,0,255,0.15) 100%); display: flex; justify-content: center; align-items: center; margin-bottom: 16px; font-size: 28px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
-        .card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; text-align: center; }
+        .chat-msg {
+            background: rgba(255,255,255,0.03);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+        .chat-msg.self {
+            background: rgba(157, 0, 255, 0.15);
+            border: 1px solid rgba(157, 0, 255, 0.2);
+            align-self: flex-end;
+        }
+        .msg-user { font-weight: 700; color: var(--neon-green); margin-bottom: 2px; font-size: 11px; }
+        .msg-user.admin { color: var(--neon-red); }
+        .chat-input-row { display: flex; gap: 8px; }
+        .chat-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .chat-input:focus { outline: 1px solid var(--neon-purple); }
+        .chat-send-btn {
+            background: var(--neon-purple);
+            border: none;
+            border-radius: 12px;
+            padding: 0 16px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-        /* Внутренние экраны */
-        .screen-content { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 40px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--glass-border); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        .info-item { padding: 18px; background: rgba(0,0,0,0.3); border-radius: 25px; margin-bottom: 14px; border-left: 4px solid var(--neon-green); position: relative; overflow: hidden; }
-        .info-item::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(90deg, rgba(0,255,170,0.05) 0%, transparent 100%); pointer-events: none; }
-        .info-item h4 { font-size: 14px; margin-bottom: 6px; color: #fff; font-weight: 800; }
-        .info-item p { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
-        
-        /* Кнопки Назад */
-        .back-btn { width: 100%; padding: 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: all 0.2s ease; margin-top: 10px; backdrop-filter: blur(10px); }
-        .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); border-color: var(--neon-green); }
+        /* Выплаты онлайн */
+        .payout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 12px;
+        }
+        .payout-user { font-weight: 600; color: #e1e4ed; }
+        .payout-amount { color: var(--neon-green); font-weight: 700; font-family: monospace; }
 
-        /* Списки и Поиск */
-        .ai-mode-selection { display: flex; flex-direction: column; gap: 16px; }
-        .mode-btn { background: var(--glass-bg); border: 1px solid rgba(0, 255, 170, 0.2); border-radius: 35px; padding: 22px; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 18px; backdrop-filter: blur(10px); }
-        .mode-btn:active { border-color: var(--neon-green); background: rgba(0, 255, 170, 0.1); transform: scale(0.96); }
-        .mode-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,255,170,0.2); }
-        .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 4px; font-weight: 800; }
-        .mode-info p { font-size: 12px; color: #a4b1cd; line-height: 1.4; }
+        /* Нижнее меню */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: rgba(7, 11, 22, 0.9);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+            backdrop-filter: blur(20px);
+            z-index: 999;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: #61687a;
+            cursor: pointer;
+            width: 60px;
+            transition: color 0.2s;
+        }
+        .tab-item.active { color: var(--neon-green); }
+        .tab-icon { font-size: 20px; }
+        .tab-label { font-size: 10px; font-weight: 600; }
 
-        .search-box { background: var(--glass-bg); border-radius: 35px; padding: 14px; border: 1px solid var(--glass-border); margin-bottom: 14px; backdrop-filter: blur(10px); }
-        .search-input { width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: #fff; font-size: 14px; outline: none; font-weight: 600; transition: all 0.3s; }
-        .search-input:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); }
-        
-        .pairs-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-right: 4px; }
-        .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: rgba(0,0,0,0.4); border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
-        .pair-row:active { border-color: var(--neon-green); background: rgba(0,255,170,0.1); transform: scale(0.98); }
-
-        /* Новости ИИ */
-        .news-item { background: rgba(0,0,0,0.4); border-radius: 25px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--neon-purple); animation: newsPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes newsPop { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        .news-time { font-size: 11px; color: var(--neon-green); font-weight: 800; margin-bottom: 6px; letter-spacing: 1px; }
-        .news-text { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
-        .news-text .highlight { color: var(--neon-green); font-weight: 800; }
-        .news-text .alert { color: var(--neon-red); font-weight: 800; }
-
-        /* Чат */
-        .chat-box { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); border-radius: 35px; padding: 16px; overflow-y: auto; border: 1px solid var(--glass-border); margin-bottom: 12px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); }
-        .chat-msg { max-width: 85%; padding: 14px 18px; border-radius: 25px; margin-bottom: 12px; font-size: 13px; line-height: 1.5; word-wrap: break-word; position: relative; font-weight: 600; }
-        .chat-msg.bot { background: rgba(30, 40, 60, 0.8); color: #fff; align-self: flex-start; border-bottom-left-radius: 5px; border: 1px solid rgba(0,255,170,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .chat-msg.user { background: var(--neon-green); color: #000; align-self: flex-end; border-bottom-right-radius: 5px; box-shadow: 0 4px 15px rgba(0,255,170,0.3); font-weight: 800; }
-        
-        .input-area { display: flex; gap: 10px; align-items: center; background: var(--glass-bg); padding: 10px; border-radius: 50px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
-        .input-area input { flex: 1; padding: 14px 20px; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; font-weight: 600; }
-        .send-btn { background: var(--neon-green); color: #000; border: none; padding: 0 24px; height: 44px; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-        .send-btn:active { transform: scale(0.95); }
-        .attach-btn { background: rgba(255,255,255,0.1); color: #fff; border: none; width: 44px; height: 44px; border-radius: 50%; font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-
-        /* Радар и Анализ (Фуллскрин) */
-        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 5, 15, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .radar-container { position: relative; width: 200px; height: 200px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
-        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(0, 255, 170, 0.1); border-radius: 50%; animation: radarRotate 2s linear infinite; box-shadow: 0 0 50px rgba(0,255,170,0.1); }
-        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(0,255,170,0.5)); transform-origin: bottom left; border-top-right-radius: 100px; }
-        .radar-line { position: absolute; width: 80%; height: 80%; border: 1px dashed rgba(157,0,255,0.4); border-radius: 50%; animation: radarRotate 4s linear infinite reverse; }
-        .radar-core { position: absolute; width: 40px; height: 40px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 40px var(--neon-green), 0 0 80px var(--neon-green); animation: pulse 1s ease-in-out infinite alternate; }
-        @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.2); opacity: 1; } }
-        .radar-status { font-size: 16px; color: var(--neon-green); text-align: center; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px rgba(0,255,170,0.5); }
-        
-        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .final-dir { font-size: 48px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
-        .final-dir.up { color: var(--neon-green); text-shadow: 0 0 40px rgba(0,255,170,0.6); }
-        .final-dir.down { color: var(--neon-red); text-shadow: 0 0 40px rgba(255,46,99,0.6); }
-        .progress-bar-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 50px; overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .progress-bar-fill { height: 100%; width: 0%; transition: width 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 20px currentColor; }
-        
-        .ta-dashboard { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 24px; text-align: left; margin-top: 20px; backdrop-filter: blur(10px); }
-        .ta-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); font-weight: 600; }
-        .ta-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-        .ta-label { color: #a4b1cd; }
-        .ta-val { font-weight: 900; color: #fff; }
-        .ta-verdict { font-size: 15px; font-weight: 900; text-transform: uppercase; text-align: center; padding: 14px; border-radius: 50px; margin-top: 16px; letter-spacing: 1px; }
-        .ta-verdict.buy { background: rgba(0, 255, 170, 0.15); color: var(--neon-green); border: 1px solid rgba(0,255,170,0.3); }
-        .ta-verdict.sell { background: rgba(255, 46, 99, 0.15); color: var(--neon-red); border: 1px solid rgba(255,46,99,0.3); }
-
-        /* Обучение и Книги */
-        .book-item { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 30px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
-        .book-info h4 { font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
-        .book-info p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
-        .read-btn { background: rgba(0,255,170,0.1); color: var(--neon-green); border: 1px solid rgba(0, 255, 170, 0.3); padding: 10px 16px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
-        .pdf-frame-box { width: 100%; height: 65vh; border: none; border-radius: 30px; background: #fff; }
-
-        /* Календарь и Сессии */
-        .target-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 35px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05); }
-        .target-input { width: 100%; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,170,0.2); border-radius: 50px; color: #fff; font-size: 15px; outline: none; margin-bottom: 12px; font-weight: 800; text-align: center; transition: all 0.3s; }
-        .target-input:focus { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0,255,170,0.2); }
-        .ai-hint-label { font-size: 13px; color: #a4b1cd; line-height: 1.5; font-weight: 600; }
-        
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 13px; margin-top: 12px; font-weight: 800; }
-        .cal-header { color: var(--neon-purple); font-weight: 900; padding-bottom: 8px; }
-        .cal-day { padding: 12px 0; color: #fff; border-radius: 15px; position: relative; cursor: pointer; background: rgba(255,255,255,0.05); transition: all 0.2s; }
-        .cal-day:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
-        .cal-day.today { background: var(--neon-green) !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,170,0.5); }
-        .cal-day.has-news::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 8px var(--neon-red); }
-        .news-display-box { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 25px; font-size: 13px; font-weight: 600; min-height: 60px; border-left: 4px solid var(--neon-purple); margin-top: 16px; line-height: 1.5; }
-
-        /* Админ-панель */
-        .admin-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.4); border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; font-weight: 800; }
-        .del-btn { color: var(--neon-red); cursor: pointer; font-weight: 900; padding: 6px 12px; border-radius: 50px; background: rgba(255,46,99,0.1); border: 1px solid rgba(255,46,99,0.3); text-transform: uppercase; font-size: 11px; }
+        /* Панель Админа */
+        .admin-section { display: none; margin-top: 20px; border-top: 2px dashed var(--neon-red); padding-top: 20px; }
+        .admin-section.active { display: block; }
+        .admin-btn {
+            background: var(--neon-red);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="screen" id="access-denied-screen">
-            <h2 style="color: var(--neon-red); text-shadow: 0 0 20px rgba(255,46,99,0.5);">⛔ ДОСТУП ЗАКРЫТ</h2>
-            <div class="glass-box" style="text-align: center;">
-                <p style="color: #a4b1cd; font-size: 14px; line-height: 1.6; margin-bottom: 24px; font-weight: 600;">Система безопасности PRO AI не распознала ваш Telegram ID в реестре закрытого клуба.</p>
-                <div class="info-item" style="border-left-color: var(--neon-red); background: rgba(0,0,0,0.5);">
-                    <h4 style="color: #fff; margin-bottom: 8px;">ВАШ ID-КЛЮЧ:</h4>
-                    <p id="denied-telegram-id" style="font-size: 24px; color: var(--neon-red); font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,46,99,0.3);">Определяется...</p>
-                </div>
-                <p style="font-size: 12px; color: #667085; margin-top: 20px; font-weight: 800; text-transform: uppercase;">Передайте ключ администратору</p>
-            </div>
-        </div>
+    <div class="time-bar">
+        <div class="time-item">МОСКВА <span id="clock-moscow">00:00:00</span></div>
+        <div class="time-item">КИЕВ <span id="clock-kyiv">00:00:00</span></div>
+    </div>
 
-        <div class="screen active" id="menu-screen">
-            <div class="welcome">Neural Network Access</div>
-            <div class="brand-title">PRO AI BOT</div>
-            
-            <div class="balance-card glass-box">
-                <div class="balance-header">
-                    <div class="balance-info">
-                        <h5>Депозит Pocket Option</h5>
-                        <div class="pocket-input-wrapper">
-                            <span>$</span>
-                            <input type="number" id="main-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
-                        </div>
-                    </div>
-                    <div class="status-badge" id="server-indicator">СИНХР...</div>
-                </div>
-                <div class="ai-management-box">
-                    <span>ИИ Риск (2%):</span>
-                    <strong id="ai-calc-stake">$20.00</strong>
-                </div>
-            </div>
-            <div class="server-status-info" id="server-status-text">Установка защищенного соединения...</div>
+    <div class="tradingview-widget-container" style="border-bottom: 1px solid var(--glass-border);">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+        "symbols": [
+            { "proName": "FX_IDC:EURUSD", "title": "EUR/USD" },
+            { "proName": "FX_IDC:GBPUSD", "title": "GBP/USD" },
+            { "proName": "FX_IDC:USDJPY", "title": "USD/JPY" },
+            { "proName": "BITSTAMP:BTCUSD", "title": "BTC/USD" },
+            { "proName": "BITSTAMP:ETHUSD", "title": "ETH/USD" }
+        ],
+        "showSymbolLogo": true,
+        "colorTheme": "dark",
+        "isTransparent": true,
+        "displayMode": "adaptive",
+        "locale": "ru"
+        }
+        </script>
+    </div>
 
-            <div class="grid">
-                <div class="card" data-target="profile-screen">
-                    <div class="icon-circle">👤</div>
-                    <div class="card-title">Профиль</div>
-                </div>
-                <div class="card" data-target="bot-selector-screen">
-                    <div class="icon-circle">🧠</div>
-                    <div class="card-title">Нейросеть</div>
-                </div>
-                <div class="card" data-target="news-screen">
-                    <div class="icon-circle" style="color: var(--neon-purple);">📰</div>
-                    <div class="card-title">ИИ Новости</div>
-                </div>
-                <div class="card" data-target="education-screen">
-                    <div class="icon-circle">📚</div>
-                    <div class="card-title">База знаний</div>
-                </div>
-                <div class="card" data-target="sessions-screen">
-                    <div class="icon-circle">🎯</div>
-                    <div class="card-title">Цели ИИ</div>
-                </div>
-                <div class="card" data-target="calendar-screen">
-                    <div class="icon-circle">📅</div>
-                    <div class="card-title">Макро-данные</div>
-                </div>
-                <div class="card" data-target="chat-screen" style="grid-column: span 2; aspect-ratio: unset; padding: 25px 20px;">
-                    <div class="icon-circle" style="margin-bottom: 12px; width: 70px; height: 70px; font-size: 32px;">💬</div>
-                    <div class="card-title">Закрытый Чат Клуба</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="screen" id="profile-screen">
-            <h2>👤 ДАННЫЕ ТРЕЙДЕРА</h2>
-            <div class="glass-box">
-                <div class="info-item">
-                    <h4>Позывной</h4>
-                    <p id="profile-username">Загрузка...</p>
-                </div>
-                <div class="info-item">
-                    <h4>Telegram ID</h4>
-                    <p id="profile-telegram-id">Загрузка...</p>
-                </div>
-                <div class="info-item">
-                    <h4>Рабочий капитал</h4>
-                    <div class="pocket-input-wrapper" style="background: rgba(0,0,0,0.5); margin-top: 10px;">
-                        <span>$</span>
-                        <input type="number" id="profile-pocket-input" class="pocket-balance-input" value="1000" oninput="syncBalances(this.value)">
-                    </div>
-                </div>
-                
-                <div id="admin-link-box" style="display: none; margin-top: 20px;">
-                    <button class="back-btn" style="color: #000; background: var(--neon-purple); border: none; font-size: 15px; box-shadow: 0 0 20px rgba(157,0,255,0.4);" onclick="switchScreen('admin-panel-screen')">⚙️ ПАНЕЛЬ УПРАВЛЕНИЯ</button>
-                </div>
-
-                <div class="target-box" style="margin-top:20px; border-color: var(--neon-green);">
-                    <h4 style="color:var(--neon-green); font-size:14px; margin-bottom:8px; font-weight:800; text-transform:uppercase;">🧠 Директива ИИ:</h4>
-                    <div class="ai-hint-label" id="ai-profile-hint">Сбор данных для анализа...</div>
-                </div>
-            </div>
-            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="admin-panel-screen">
-            <h2>⚙️ СИСТЕМА ДОСТУПА</h2>
-            <div class="glass-box">
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input type="text" id="new-user-id" placeholder="Ввести ID трейдера" style="flex:1; padding:16px; border-radius:50px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; outline:none; font-size: 14px; font-weight:700;">
-                    <button onclick="addAllowedUser()" style="background:var(--neon-purple); color:#fff; border:none; border-radius:50px; padding:0 24px; font-weight:900; cursor:pointer; text-transform:uppercase; box-shadow: 0 0 15px rgba(157,0,255,0.4);">ADD</button>
-                </div>
-                <h4 style="font-size:12px; color:#a4b1cd; margin-bottom:12px; text-transform: uppercase; letter-spacing: 2px; font-weight:800;">Реестр допусков:</h4>
-                <div class="admin-list" id="admin-users-list"></div>
-            </div>
-            <button class="back-btn" onclick="switchScreen('profile-screen')">← ВЕРНУТЬСЯ</button>
-        </div>
-
-        <div class="screen" id="news-screen">
-            <h2>📰 ИИ НОВОСТИ РЫНКА</h2>
-            <div class="glass-box" style="max-height: 65vh; overflow-y: auto; padding-right: 10px;" id="ai-news-container">
-                <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:20px; font-weight:600;" id="news-waiting-text">Инициализация потока данных. Сбор котировок с мировых бирж...</div>
-            </div>
-            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="bot-selector-screen">
-            <h2>🧠 МОДУЛЬ ИИ PRO</h2>
-            <div class="ai-mode-selection">
-                <div class="mode-btn" onclick="switchScreen('bot-chat-screen')">
-                    <div class="mode-icon" style="color: var(--neon-purple);">💬</div>
-                    <div class="mode-info">
-                        <h4>Прямой диалог с Нейросетью</h4>
-                        <p>Консультации по риск-менеджменту и стратегиям</p>
-                    </div>
-                </div>
-                <div class="mode-btn" onclick="switchScreen('bot-analysis-screen'); window.filterAnalysisPairs();">
-                    <div class="mode-icon" style="color: var(--neon-green);">🔍</div>
-                    <div class="mode-info">
-                        <h4>Сканер котировок</h4>
-                        <p>Запуск глубокого технического анализа валютных пар</p>
-                    </div>
-                </div>
-            </div>
-            <button class="back-btn" style="margin-top: 24px;">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="bot-chat-screen">
-            <h2>💬 ИИ-КОНСУЛЬТАНТ</h2>
-            <div class="chat-box" id="ai-chat-container">
-                <div class="chat-msg bot">Система PRO AI активирована. Готов провести анализ рынка или скорректировать вашу торговую систему. Ввод данных...</div>
-                <div class="chat-msg bot" id="ai-chat-typing" style="display:none; color:var(--neon-green); border:none; background:transparent; box-shadow:none;">Генерация ответа...</div>
-            </div>
-            <div class="input-area">
-                <input type="text" id="ai-chat-input" placeholder="Введите запрос нейросети...">
-                <button class="send-btn" onclick="sendAiChatMessage()">SEND</button>
-            </div>
-            <button class="back-btn" onclick="switchScreen('bot-selector-screen')" style="margin-top:16px;">← СМЕНИТЬ МОДУЛЬ</button>
-        </div>
-
-        <div class="screen" id="bot-analysis-screen">
-            <h2>🔍 СКАНЕР PRO</h2>
-            <div class="search-box">
-                <input type="text" id="analysis-search-input" class="search-input" placeholder="Ввод тикера (например, EUR/USD)..." oninput="window.filterAnalysisPairs()">
-                <div class="pairs-list" id="analysis-pairs-render-box"></div>
-            </div>
-            <button class="back-btn" onclick="switchScreen('bot-selector-screen')">← СМЕНИТЬ МОДУЛЬ</button>
-        </div>
-
-        <div class="screen" id="education-screen">
-            <h2>📚 БАЗА ЗНАНИЙ PRO</h2>
-            <div class="glass-box" style="max-height: 60vh; overflow-y: auto; padding: 16px;" id="books-list-box"></div>
-            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="book-viewer-screen">
-            <h2 id="viewer-title" style="font-size: 16px; text-transform: uppercase;">Чтение Архива</h2>
-            <div class="glass-box" style="padding: 10px;">
-                <iframe id="book-frame" class="pdf-frame-box" src=""></iframe>
-            </div>
-            <button class="back-btn" onclick="switchScreen('education-screen'); document.getElementById('book-frame').src='';">← ЗАКРЫТЬ ДОКУМЕНТ</button>
-        </div>
-
-        <div class="screen" id="sessions-screen">
-            <h2>🎯 ЦЕЛЕПОЛАГАНИЕ</h2>
-            <div class="glass-box">
-                <div class="target-box" style="background: transparent; border: none; padding: 0;">
-                    <h4 style="font-size:14px; margin-bottom:12px; color:#fff; text-align:center; font-weight:800; text-transform:uppercase;">План профита (Неделя $):</h4>
-                    <input type="number" id="user-weekly-target" class="target-input" value="500" placeholder="0.00" onchange="calculateWeeklyTarget()">
-                    
-                    <button class="back-btn" style="background:var(--neon-green); color:#000; font-weight:900; border:none; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0,255,170,0.3);" onclick="calculateWeeklyTarget()">СГЕНЕРИРОВАТЬ АЛГОРИТМ</button>
-                    
-                    <div class="ai-hint-label" id="ai-target-hint" style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 25px; border-left: 4px solid var(--neon-purple);">Установите финансовую цель для формирования торгового плана.</div>
-                </div>
-            </div>
-            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="calendar-screen">
-            <h2>📅 МАКРО-ДАННЫЕ</h2>
-            <div class="glass-box">
-                <div id="calendar-month-title" style="text-align:center; font-weight:900; font-size:18px; color:var(--neon-green); margin-bottom:16px; text-transform:uppercase; letter-spacing:2px;">Загрузка...</div>
-                <div class="cal-grid" id="calendar-days-box"></div>
-                <div class="news-display-box" id="news-details-box">Синхронизация с глобальными экономическими сводками. Выберите дату для отчета ИИ.</div>
-            </div>
-            <button class="back-btn">← НАЗАД В ТЕРМИНАЛ</button>
-        </div>
-
-        <div class="screen" id="chat-screen">
-            <h2>💬 PRO COMMUNITY</h2>
-            <div class="chat-box" id="community-chat-container">
-                <div class="chat-msg bot" style="border-color: var(--neon-purple); background: rgba(157,0,255,0.15);"><b>Система PRO:</b> Защищенный канал связи открыт. Обмен опытом и результатами.</div>
-            </div>
-            <div class="input-area">
-                <label class="attach-btn" for="chat-file-input">
-                    📷
-                    <input type="file" id="chat-file-input" accept="image/*" style="display:none;" onchange="handleChatScreenshot(this)">
-                </label>
-                <input type="text" id="community-chat-input" placeholder="Передача данных в пул...">
-                <button class="send-btn" onclick="sendCommunityMessage()">SEND</button>
-            </div>
-            <button class="back-btn" style="margin-top:16px;">← НАЗАД В ТЕРМИНАЛ</button>
+    <div id="screen-denied" class="screen-denied">
+        <div class="denied-icon">🔒</div>
+        <h2 style="margin-bottom: 10px; font-weight: 900;">ДОСТУП ОГРАНИЧЕН</h2>
+        <p style="font-size: 14px; color: #a0a5b5; margin-bottom: 25px; line-height: 1.5;">
+            Вы не состоите в приватном клубе VIP COMMUNITY.<br>Ваш уникальный ID скопирован в буфер обмена.
+        </p>
+        <div id="denied-id-display" style="background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 10px; font-family: monospace; font-size: 16px; color: var(--neon-red); font-weight: bold; margin-bottom: 20px;">
+            ...
         </div>
     </div>
 
-    <div class="fullscreen-overlay" id="fullscreen-radar">
-        <div class="radar-container" id="radar-animation-element">
-            <div class="radar-sweep"></div>
-            <div class="radar-line"></div>
-            <div class="radar-core"></div>
-        </div>
-        <div class="radar-status" id="radar-status-text">ОБРАБОТКА МАССИВА ДАННЫХ...</div>
+    <div id="app-container" class="app-container">
         
-        <div class="analysis-final glass-box" id="radar-final-result" style="background: rgba(10,15,25,0.85); border: 1px solid var(--neon-green);">
-            <div style="color: #a4b1cd; font-size: 14px; text-transform: uppercase; letter-spacing: 4px; font-weight:800;" id="analyzed-pair-title">EUR/USD</div>
-            <div class="final-dir" id="final-direction-arrow">ВВЕРХ ▲</div>
-            <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 10px;">PRO УВЕРЕННОСТЬ: <strong id="final-accuracy-percent" style="color:var(--neon-green); font-size:18px;">89%</strong></div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="final-progress-fill"></div></div>
+        <header>
+            <div class="header-content">
+                <div class="logo-text">VIP COMMUNITY</div>
+                <div class="user-badge" id="profile-username">Загрузка...</div>
+            </div>
+        </header>
+
+        <div class="top-nav" id="main-nav-bar">
+            <button class="nav-btn active" onclick="switchSubTab('news-subscreen', this)">ИИ Новости & Котировки</button>
+            <button class="nav-btn" onclick="switchSubTab('chat-subscreen', this)">Чат Сообщества</button>
+            <button class="nav-btn" onclick="switchSubTab('payouts-subscreen', this)">Живые Выплаты</button>
+        </div>
+
+        <div id="screen-main" class="content-screen active">
             
-            <div class="ta-dashboard" style="background: rgba(0,0,0,0.6); border: none;">
-                <div style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-purple); margin-bottom: 16px; text-align: center;">Техническая сводка (М1)</div>
-                <div class="ta-row">
-                    <span class="ta-label">Осциллятор RSI (14)</span>
-                    <span class="ta-val" id="ta-rsi-val">0.00</span>
+            <div id="news-subscreen" class="sub-screen" style="display: block;">
+                <div class="glass-card" style="padding: 15px;">
+                    <div style="font-weight: 800; font-size: 13px; margin-bottom: 12px; color: var(--neon-green); display: flex; align-items: center; gap: 6px;">
+                        <span style="display:inline-block; width:8px; height:8px; background:var(--neon-green); border-radius:50%; animation: pulseNeon 1s infinite;"></span>
+                        АНАЛИЗ РЫНКА (1 МИНУТА)
+                    </div>
+                    <div class="tv-widget-box">
+                        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                            {
+                            "interval": "1m",
+                            "width": "100%",
+                            "isTransparent": true,
+                            "height": "100%",
+                            "symbol": "FX:EURUSD",
+                            "showIntervalTabs": false,
+                            "displayMode": "single",
+                            "locale": "ru",
+                            "colorTheme": "dark"
+                            }
+                            </script>
+                        </div>
+                    </div>
                 </div>
-                <div class="ta-row">
-                    <span class="ta-label">Мувинг SMA (9)</span>
-                    <span class="ta-val" id="ta-sma9-val">0.0000</span>
-                </div>
-                <div class="ta-row">
-                    <span class="ta-label">Мувинг SMA (20)</span>
-                    <span class="ta-val" id="ta-sma20-val">0.0000</span>
-                </div>
-                <div class="ta-row">
-                    <span class="ta-label">Индекс Волатильности</span>
-                    <span class="ta-val" id="ta-vol-val">0.00%</span>
-                </div>
-                <div class="ta-verdict" id="ta-verdict-box">ВЫЧИСЛЕНИЕ...</div>
+
+                <div class="section-title">✨ ЛЕНТА <span>ИИ НОВОСТЕЙ</span></div>
+                <div class="news-feed" id="ai-news-container">
+                    </div>
             </div>
 
-            <button class="back-btn" style="background:var(--neon-green); color:#000; border:none; font-weight:900; padding:18px; width: 100%; margin-top: 20px; box-shadow: 0 0 20px rgba(0,255,170,0.3);" onclick="window.closeFullscreenAnalysis()">ЗАВЕРШИТЬ ПРОЦЕСС</button>
+            <div id="chat-subscreen" class="sub-screen" style="display: none;">
+                <div class="glass-card">
+                    <div class="chat-box" id="community-chat-messages"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="community-chat-input" class="chat-input" placeholder="Введите сообщение...">
+                        <button class="chat-send-btn" onclick="sendCommunityMessage()">Отправить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payouts-subscreen" class="sub-screen" style="display: none;">
+                <div class="glass-card">
+                    <div style="font-weight: 800; font-size: 14px; margin-bottom: 15px; color: var(--neon-green);">ОНЛАЙН СТАТИСТИКА ВЫВОДОВ</div>
+                    <div id="live-payouts-list"></div>
+                </div>
+            </div>
+
         </div>
+
+        <div id="screen-academy" class="content-screen">
+            <div class="section-title">🤖 ОБУЧЕНИЕ С <span>ИИ</span></div>
+            <div class="glass-card" style="background: rgba(15, 12, 30, 0.6); border-color: rgba(157, 0, 255, 0.3);">
+                <div style="font-size: 12px; color: #dfbfff; margin-bottom: 15px; line-height: 1.4;">
+                    Интерактивный разбор графических паттернов нейросетью PRO AI. Обучайтесь правильным точкам входа в режиме реального времени.
+                </div>
+                <div class="ai-learning-container">
+                    <div class="pattern-card">
+                        <div class="pattern-header">
+                            <div class="pattern-name">📈 Двойное Дно (Double Bottom)</div>
+                            <div class="pattern-rate">Точность ИИ: 87%</div>
+                        </div>
+                        <div class="pattern-visual">
+                            <svg width="120" height="30" viewBox="0 0 120 30" stroke="#00FFAA" stroke-width="2" fill="none">
+                                <path d="M10 5 L35 25 L55 12 L75 25 L110 2" />
+                            </svg>
+                        </div>
+                        <div class="pattern-tip">Сигнал на <b>Покупку (Вверх)</b>. Формируется у сильных уровней поддержки. Вход осуществляется при пробитии линии шеи.</div>
+                        <div class="pattern-status">● ИИ Статус: Активный поиск паттерна на EUR/USD...</div>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-header">
+                            <div class="pattern-name">📉 Голова и Плечи (Head & Shoulders)</div>
+                            <div class="pattern-rate">Точность ИИ: 84%</div>
+                        </div>
+                        <div class="pattern-visual">
+                            <svg width="120" height="30" viewBox="0 0 120 30" stroke="#FF2E63" stroke-width="2" fill="none">
+                                <path d="M10 25 L30 12 L45 23 L60 5 L75 23 L90 12 L110 28" />
+                            </svg>
+                        </div>
+                        <div class="pattern-tip">Сигнал на <b>Продажу (Вниз)</b>. Разворотный паттерн бычьего тренда. Открывайте сделку после фиксации свечи под уровнем шеи.</div>
+                        <div class="pattern-status" style="color:#b2b8c9;">○ ИИ Статус: В ожидании подтверждения объема</div>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-header">
+                            <div class="pattern-name">⚡ Бычий Флаг (Bullish Flag)</div>
+                            <div class="pattern-rate">Точность ИИ: 91%</div>
+                        </div>
+                        <div class="pattern-visual">
+                            <svg width="120" height="30" viewBox="0 0 120 30" stroke="#00FFAA" stroke-width="2" fill="none">
+                                <path d="M10 28 L30 8 L45 15 L35 22 L55 10 L45 18 L80 2" />
+                            </svg>
+                        </div>
+                        <div class="pattern-tip">Фигура продолжения тренда. Покупайте при выходе цены из нисходящего канала флагштока вверх.</div>
+                        <div class="pattern-status">● ИИ Статус: Обнаружен на BTC/USD (M1 таймфрейм)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">📚 БАЗА ЗНАНИЙ / <span>КНИГИ</span></div>
+            <div class="books-grid" id="academy-books-list">
+                </div>
+        </div>
+
+        <div id="screen-profile" class="content-screen">
+            <div class="glass-card text-center" style="text-align: center;">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--neon-purple), var(--neon-green)); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 0 15px rgba(0,255,170,0.3);">👤</div>
+                <h3 id="profile-card-name" style="font-weight: 800; margin-bottom: 5px;">Пользователь</h3>
+                <p id="profile-telegram-id" style="font-family: monospace; font-size: 13px; color: #70778c;">ID: ---</p>
+            </div>
+
+            <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px;">
+                    <span style="color: #a0a5b5;">Статус членства:</span>
+                    <span style="color: var(--neon-green); font-weight: bold;">VIP Доступ активирован</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                    <span style="color: #a0a5b5;">Сессия ИИ аналитики:</span>
+                    <span style="color: #fff;">Стабильно (1m)</span>
+                </div>
+            </div>
+
+            <div id="admin-panel" class="admin-section">
+                <h3 style="color: var(--neon-red); font-weight: 900; font-size: 15px; margin-bottom: 10px;">🛡️ АДМИН-ПАНЕЛЬ PRO</h3>
+                <input type="text" id="admin-user-id" class="chat-input" placeholder="Telegram ID пользователя" style="margin-bottom: 10px;">
+                <button class="admin-btn" onclick="handleAdminAction('add')">Добавить в белый список</button>
+                <button class="admin-btn" style="background:#551122; margin-top:5px;" onclick="handleAdminAction('remove')">Удалить из белого списка</button>
+                
+                <div style="margin-top: 15px;">
+                    <p style="font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #fff;">Текущий белый список:</p>
+                    <div id="admin-whitelist-display" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 11px; font-family: monospace; max-height: 120px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-bar">
+            <button class="tab-item active" onclick="switchTab('screen-main', this)">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">Главная</span>
+            </button>
+            <button class="tab-item" onclick="switchTab('screen-academy', this)">
+                <span class="tab-icon">🎓</span>
+                <span class="tab-label">Обучение</span>
+            </button>
+            <button class="tab-item" onclick="switchTab('screen-profile', this)">
+                <span class="tab-icon">👤</span>
+                <span class="tab-label">Профиль</span>
+            </button>
+        </nav>
+
     </div>
 
     <script>
-        // ============================================
-        // ЛОГИКА БЕЗОПАСНОСТИ И АВТОРИЗАЦИИ
-        // ============================================
-        const MASTER_ADMIN = "5817328317";
+        // Список администраторов системы
+        const ADMIN_LIST = [644265574, 5211910606, 987654321]; 
+        
+        let tg = window.Telegram ? window.Telegram.WebApp : null;
+        let userId = null;
+        let fullName = "Пользователь";
 
-        function getAllowedUsers() {
-            return JSON.parse(localStorage.getItem('allowed_users') || "[]");
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                userId = tg.initDataUnsafe.user.id;
+                fullName = tg.initDataUnsafe.user.first_name + 
+                           (tg.initDataUnsafe.user.last_name ? " " + tg.initDataUnsafe.user.last_name : "");
+            }
         }
 
-        function checkAccess(userId) {
-            if (String(userId) === MASTER_ADMIN) return true;
-            const users = getAllowedUsers();
-            return users.includes(String(userId));
+        // Двухзонные интерактивные часы (Москва / Киев)
+        function updateClocks() {
+            const now = new Date();
+            
+            const optionsMsk = { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            document.getElementById('clock-moscow').innerText = now.toLocaleTimeString('ru-RU', optionsMsk);
+            
+            const optionsKyiv = { timeZone: 'Europe/Kyiv', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            document.getElementById('clock-kyiv').innerText = now.toLocaleTimeString('ru-RU', optionsKyiv);
+        }
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        // Базовый белый список (локальное хранилище)
+        function getWhitelist() {
+            let list = localStorage.getItem('vip_whitelist');
+            if (!list) {
+                const defaultList = [644265574, 5211910606];
+                localStorage.setItem('vip_whitelist', JSON.stringify(defaultList));
+                return defaultList;
+            }
+            return JSON.parse(list);
         }
 
-        window.addAllowedUser = function() {
-            const idInput = document.getElementById('new-user-id');
-            const id = idInput.value.trim();
-            if (!id) return;
-            
-            let users = getAllowedUsers();
-            if (!users.includes(id) && id !== MASTER_ADMIN) {
-                users.push(id);
-                localStorage.setItem('allowed_users', JSON.stringify(users));
-                renderAdminList();
-            }
-            idInput.value = '';
-        };
-
-        window.removeUser = function(id) {
-            let users = getAllowedUsers().filter(u => u !== String(id));
-            localStorage.setItem('allowed_users', JSON.stringify(users));
-            renderAdminList();
-        };
-
-        function renderAdminList() {
-            const list = document.getElementById('admin-users-list');
-            if(!list) return;
-            list.innerHTML = '';
-            
-            const masterItem = document.createElement('div');
-            masterItem.className = 'admin-item';
-            masterItem.style.borderColor = 'var(--neon-green)';
-            masterItem.innerHTML = `<span style="color:var(--neon-green); font-weight:900;">${MASTER_ADMIN} [ROOT ADMIN]</span> <span></span>`;
-            list.appendChild(masterItem);
-
-            getAllowedUsers().forEach(id => {
-                const item = document.createElement('div');
-                item.className = 'admin-item';
-                item.innerHTML = `<span>USER: ${id}</span> <span class="del-btn" onclick="removeUser('${id}')">DROP</span>`;
-                list.appendChild(item);
-            });
+        async function checkAccess(id) {
+            if (!id) return false;
+            if (ADMIN_LIST.includes(Number(id))) return true;
+            const currentList = getWhitelist();
+            return currentList.includes(Number(id));
         }
 
-        // ============================================
-        // ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
-        // ============================================
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const GROQ_API_KEY = "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";
-            const SERVER_URL = "https://vip-miniapp.onrender.com"; 
-
-            let serverPayouts = {}; 
-
-            const PRO_BOOKS = [
-                { title: "Алгоритмика Рынков", desc: "Базовые паттерны и механика", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
-                { title: "Структура Капитала", desc: "Макроэкономический анализ", file: "Kapital_v_XXI_veke.pdf" },
-                { title: "Архитектура Трейдинга", desc: "Словарь терминов и понятий", file: "Malaya_enciklopediya_trejdera.pdf" },
-                { title: "Прайс Экшен PRO", desc: "Углубленный анализ свечей", file: "Yaponskie_svechi.pdf" },
-                { title: "Волновые Циклы", desc: "Поведенческая модель рынка", file: "Posobie_po_Elliotu.pdf" },
-                { title: "Нейро-психология", desc: "Контроль эмоций в сделках", file: "Psihologiya_trejdinga.pdf" },
-                { title: "Система Черепах", desc: "Исторические стратегии фондов", file: "Put_Cherepah.pdf" },
-                { title: "Теория Хаоса", desc: "Математика нелинейных рынков", file: "Torgovyj_haos.pdf" },
-                { title: "Механика Ликвидности", desc: "Smart Money концепты", file: "Torgovyj_algoritm.pdf" },
-                { title: "Справочник Индикаторов", desc: "Математическое описание ТА", file: "Rossman_R.pdf" }
-            ];
-
-            const cards = document.querySelectorAll('.card');
-            const backButtons = document.querySelectorAll('.back-btn');
-            const screens = document.querySelectorAll('.screen');
-
-            function switchScreen(screenId) {
-                screens.forEach(screen => {
-                    screen.classList.remove('active');
-                    screen.style.setProperty('display', 'none', 'important'); 
-                });
-
-                const targetScreen = document.getElementById(screenId);
-                if (targetScreen) {
-                    targetScreen.classList.add('active');
-                    targetScreen.style.setProperty('display', 'block', 'important');
-                    
-                    if (screenId === 'bot-analysis-screen') {
-                        filterAnalysisPairs();
-                    }
-                    if (screenId === 'profile-screen') {
-                        updateProfileAiHint();
-                    }
-                }
-            }
-
-            cards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const targetScreenId = card.getAttribute('data-target') || card.getAttribute('data-screen');
-                    if (targetScreenId) switchScreen(targetScreenId);
-                });
-            });
-
-            backButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (button.getAttribute('onclick')) return;
-                    switchScreen('menu-screen');
-                });
-            });
-
-            let currentBalance = parseFloat(localStorage.getItem('pocket_balance')) || 1000;
+        // Навигация нижних вкладок
+        function switchTab(screenId, btn) {
+            document.querySelectorAll('.content-screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.bottom-bar .tab-item').forEach(b => b.classList.remove('active'));
             
-            function initBalances() {
-                const mainInput = document.getElementById('main-pocket-input');
-                const profileInput = document.getElementById('profile-pocket-input');
-                if(mainInput) mainInput.value = currentBalance;
-                if(profileInput) profileInput.value = currentBalance;
-                calculateStake(currentBalance);
-            }
+            document.getElementById(screenId).classList.add('active');
+            btn.classList.add('active');
+        }
 
-            function calculateStake(balance) {
-                let stake = balance * 0.02;
-                const stakeEl = document.getElementById('ai-calc-stake');
-                if(stakeEl) stakeEl.innerText = `$${stake.toFixed(2)}`;
-            }
-
-            window.syncBalances = function(val) {
-                let parsed = parseFloat(val) || 0;
-                currentBalance = parsed;
-                localStorage.setItem('pocket_balance', parsed);
-                
-                const mainInput = document.getElementById('main-pocket-input');
-                const profileInput = document.getElementById('profile-pocket-input');
-                if(mainInput && mainInput.value !== val) mainInput.value = val;
-                if(profileInput && profileInput.value !== val) profileInput.value = val;
-                
-                calculateStake(parsed);
-                updateProfileAiHint();
-            };
-
-            function updateProfileAiHint() {
-                const hintEl = document.getElementById('ai-profile-hint');
-                if(!hintEl) return;
-                let stake = currentBalance * 0.02;
-                hintEl.innerHTML = `КАПИТАЛ: <b>$${currentBalance}</b><br>АЛГОРИТМ РИСКА: 2% (<b>$${stake.toFixed(2)}</b> / сделка).<br><br><span style="color:#fff;">Установка PRO ИИ:</span> Завершать сессию после 3 успешных итераций. Блокировка торгов после 3 ступеней Мартингейла. Соблюдение дисциплины обязательно.`;
-            }
-
-            window.calculateWeeklyTarget = function() {
-                const targetInput = document.getElementById('user-weekly-target');
-                const hintEl = document.getElementById('ai-target-hint');
-                if (!targetInput || !hintEl) return;
-
-                let targetSum = parseFloat(targetInput.value) || 0;
-                let singleStake = currentBalance * 0.02; 
-                let averagePayoutPercent = 82; 
-                let profitPerTrade = singleStake * (averagePayoutPercent / 100);
-
-                if (targetSum <= 0) {
-                    hintEl.innerText = "Ошибка: Введено нулевое или отрицательное значение профита.";
-                    return;
-                }
-
-                let requiredTrades = Math.ceil(targetSum / profitPerTrade);
-                let dailyTrades = (requiredTrades / 5).toFixed(1);
-
-                hintEl.innerHTML = `
-                    <span style="color:var(--neon-green); font-weight:900; font-size:15px;">📊 АЛГОРИТМ СГЕНЕРИРОВАН:</span><br><br>
-                    Цель: <b>$${targetSum}</b><br>
-                    Объем входа: <b>$${singleStake.toFixed(2)}</b> (2%)<br><br>
-                    Для выполнения плана требуется: <b>${requiredTrades} успешных позиций</b>.<br>
-                    Суточная норма: <b>${dailyTrades} плюсов</b> (при 5-дневной активности).<br><br>
-                    <span style="color:var(--neon-red);">Внимание:</span> Запрещено превышать рабочий лот ради ускорения плана.
-                `;
-            };
-
-            async function updateLivePayouts() {
-                const indicator = document.getElementById('server-indicator');
-                const statusText = document.getElementById('server-status-text');
-
-                try {
-                    const response = await fetch(`${SERVER_URL}/api/payouts`);
-                    if (response.ok) {
-                        serverPayouts = await response.json();
-                        
-                        if (indicator) {
-                            indicator.innerText = "ONLINE";
-                            indicator.style.background = "linear-gradient(90deg, var(--neon-green) 0%, #00b36c 100%)";
-                        }
-                        if (statusText) statusText.innerText = "Прямой шлюз с сервером Render: СТАБИЛЕН";
-
-                        filterAnalysisPairs();
-                    } else {
-                        throw new Error("API Reject");
-                    }
-                } catch (error) {
-                    if (indicator) {
-                        indicator.innerText = "OFFLINE";
-                        indicator.style.background = "linear-gradient(90deg, var(--neon-red) 0%, #b32e25 100%)";
-                    }
-                    if (statusText) statusText.innerHTML = `<span style="color:var(--neon-red);">Потеря пакетов с хостом ${SERVER_URL}</span>`;
-                }
-            }
-
-            function populateAnalysisPairs(filteredList) {
-                const renderBox = document.getElementById('analysis-pairs-render-box');
-                if (!renderBox) return;
-                
-                renderBox.innerHTML = '';
-                const list = filteredList || Object.keys(serverPayouts);
-
-                if (list.length === 0) {
-                    renderBox.innerHTML = `
-                        <div style="color:#a4b1cd; text-align:center; font-size:13px; padding:30px; font-weight:600;">
-                            Тикер не найден в пуле.
-                        </div>
-                    `;
-                    return;
-                }
-
-                list.forEach(pair => {
-                    let payout = serverPayouts[pair];
-                    const row = document.createElement('div');
-                    row.className = 'pair-row';
-                    row.addEventListener('click', () => launchFullscreenAnalysis(pair));
-                    row.innerHTML = `
-                        <span>${pair}</span> 
-                        <span style="color:var(--neon-green); font-size:13px; font-weight:900;">+${payout}% <span style="font-size:16px;">→</span></span>
-                    `;
-                    renderBox.appendChild(row);
-                });
-            }
-
-            function filterAnalysisPairs() {
-                const searchInput = document.getElementById('analysis-search-input');
-                const q = searchInput ? searchInput.value.toUpperCase() : '';
-                const allPairs = Object.keys(serverPayouts);
-                const filtered = allPairs.filter(p => p.toUpperCase().includes(q));
-                populateAnalysisPairs(filtered);
-            }
-
-            window.filterAnalysisPairs = filterAnalysisPairs;
-
-            function launchFullscreenAnalysis(pairName) {
-                const overlay = document.getElementById('fullscreen-radar');
-                const statusText = document.getElementById('radar-status-text');
-                const finalBlock = document.getElementById('radar-final-result');
-                const radarAnim = document.getElementById('radar-animation-element');
-
-                if(!overlay) return;
-
-                overlay.style.setProperty('display', 'flex', 'important');
-                if(radarAnim) radarAnim.style.display = 'flex';
-                if(statusText) statusText.style.display = 'block';
-                if(finalBlock) finalBlock.style.display = 'none';
-
-                setTimeout(() => {
-                    if(radarAnim) radarAnim.style.display = 'none';
-                    if(statusText) statusText.style.display = 'none';
-                    if(finalBlock) finalBlock.style.display = 'block';
-                    
-                    document.getElementById('analyzed-pair-title').innerText = pairName;
-                    
-                    let basePrice = pairName.includes("JPY") ? 155.20 : 1.0850;
-                    let candles = [];
-                    for(let i=0; i<20; i++) {
-                        basePrice += (Math.random() - 0.5) * (basePrice * 0.001);
-                        candles.push(basePrice);
-                    }
-                    
-                    let currentPrice = candles[candles.length - 1];
-                    let sum9 = 0, sum20 = 0;
-                    candles.slice(-9).forEach(p => sum9 += p);
-                    candles.forEach(p => sum20 += p);
-                    let sma9 = sum9 / 9;
-                    let sma20 = sum20 / 20;
-
-                    let rsi = Math.floor(Math.random() * (78 - 24 + 1)) + 24;
-                    let vol = (Math.random() * 0.45 + 0.05).toFixed(2);
-                    let score = 0; 
-                    if(currentPrice > sma9) score++; else score--;
-                    if(sma9 > sma20) score++; else score--;
-                    if(rsi < 30) score += 2; 
-                    if(rsi > 70) score -= 2; 
-
-                    let isUp = score >= 0;
-                    let accuracy = Math.floor(Math.random() * (96 - 76 + 1)) + 76;
-                    let precision = pairName.includes("JPY") ? 3 : 5;
-                    document.getElementById('ta-rsi-val').innerText = rsi;
-                    document.getElementById('ta-sma9-val').innerText = sma9.toFixed(precision);
-                    document.getElementById('ta-sma20-val').innerText = sma20.toFixed(precision);
-                    document.getElementById('ta-vol-val').innerText = vol + '%';
-
-                    const verdictBox = document.getElementById('ta-verdict-box');
-                    const arrow = document.getElementById('final-direction-arrow');
-                    const fill = document.getElementById('final-progress-fill');
-
-                    document.getElementById('final-accuracy-percent').innerText = accuracy + '%';
-                    fill.style.width = accuracy + '%';
-
-                    if(isUp) {
-                        arrow.innerText = "LONG (ВВЕРХ) ▲";
-                        arrow.className = "final-dir up";
-                        fill.style.background = "var(--neon-green)";
-                        fill.style.boxShadow = "0 0 20px var(--neon-green)";
-                        verdictBox.innerText = score >= 2 ? "СТРОГИЙ LONG" : "УМЕРЕННЫЙ LONG";
-                        verdictBox.className = "ta-verdict buy";
-                    } else {
-                        arrow.innerText = "SHORT (ВНИЗ) ▼";
-                        arrow.className = "final-dir down";
-                        fill.style.background = "var(--neon-red)";
-                        fill.style.boxShadow = "0 0 20px var(--neon-red)";
-                        verdictBox.innerText = score <= -2 ? "СТРОГИЙ SHORT" : "УМЕРЕННЫЙ SHORT";
-                        verdictBox.className = "ta-verdict sell";
-                    }
-                }, 2800); 
-            }
-
-            window.closeFullscreenAnalysis = function() {
-                const overlay = document.getElementById('fullscreen-radar');
-                if(overlay) overlay.style.setProperty('display', 'none', 'important');
-            };
-
-            function loadBooks() {
-                const container = document.getElementById('books-list-box');
-                if (!container) return;
-                container.innerHTML = '';
-                PRO_BOOKS.forEach(b => {
-                    const item = document.createElement('div');
-                    item.className = 'book-item';
-                    item.innerHTML = `
-                        <div class="book-info"><h4>${b.title}</h4><p>${b.desc}</p></div>
-                        <button class="read-btn" data-file="${b.file}" data-title="${b.title}">ОТКРЫТЬ</button>
-                    `;
-                    item.querySelector('.read-btn').addEventListener('click', (e) => {
-                        openPdfViewer(e.target.getAttribute('data-file'), e.target.getAttribute('data-title'));
-                    });
-                    container.appendChild(item);
-                });
-            }
-
-            function openPdfViewer(fileName, title) {
-                document.getElementById('viewer-title').innerText = title;
-                const fileUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + fileName;
-                document.getElementById('book-frame').src = "https://docs.google.com/gview?url=" + encodeURIComponent(fileUrl) + "&embedded=true";
-                switchScreen('book-viewer-screen');
-            }
-
-            // ============================================
-            // ИИ НОВОСТИ (Авто-обновление)
-            // ============================================
-            const AI_NEWS_TEMPLATES = [
-                "🔴 <span class='alert'>АЛЕРТ:</span> Крупный перевод {amount} на неизвестный кошелек. Возможна высокая волатильность на рынке.",
-                "🌐 <span class='highlight'>PRO-Сводка:</span> Индекс доллара (DXY) тестирует критический уровень. Ожидаем реакцию на мажорах.",
-                "🟢 <span class='highlight'>ИНСАЙД:</span> {pair} показывает аномальный объем на покупку в стакане. Рекомендуется поиск точек входа в LONG.",
-                "🤖 <span class='highlight'>ИИ АНАЛИЗ:</span> Нейросеть фиксирует перепроданность по {pair}. Готовимся к развороту тренда.",
-                "📊 <span class='highlight'>МАКРО:</span> Вливание ликвидности от институциональных инвесторов. Снизить риски на сделку до 1%."
-            ];
+        // Навигация подэкранов Главной
+        function switchSubTab(subScreenId, btn) {
+            document.querySelectorAll('.sub-screen').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('#main-nav-bar .nav-btn').forEach(b => b.classList.remove('active'));
             
-            const PAIRS_MOCK = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "XAU/USD", "BTC/USD"];
-            const AMOUNTS_MOCK = ["15,000 BTC", "400,000 ETH", "$1.2 Млрд", "500,000 SOL"];
+            document.getElementById(subScreenId).style.display = 'block';
+            btn.classList.add('active');
+        }
 
-            function generateAiNews() {
-                const container = document.getElementById('ai-news-container');
-                const waitingText = document.getElementById('news-waiting-text');
-                if (!container) return;
-                
-                if(waitingText) waitingText.style.display = 'none';
+        // Генерация реалистичных ИИ Новостей с котировками и изображениями
+        const newsTemplates = [
+            { title: "ЕЦБ готовит экстренное изменение процентной ставки", pair: "EUR/USD", change: "+0.34%", img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80", desc: "Аналитики прогнозируют резкий скачок волатильности в течение ближайших минут. Индикатор ИИ рекомендует краткосрочные опционы CALL." },
+            { title: "Прорыв уровня сопротивления Биткоина вызвал шквал ликвидаций", pair: "BTC/USD", change: "+2.15%", img: "https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=400&q=80", desc: "Цена закрепилась выше психологической отметки. Сканеры объемов фиксируют крупного институционального покупателя на 1м фрейме." },
+            { title: "Данные по безработице в Великобритании вышли хуже ожиданий", pair: "GBP/USD", change: "-0.42%", img: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=400&q=80", desc: "Фунт стерлингов демонстрирует стремительное падение. Алгоритм PRO AI выставил сигнал SELL со временем экспирации 1-3 минуты." },
+            { title: "Иена укрепляется на фоне интервенций Банка Японии", pair: "USD/JPY", change: "-0.68%", img: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80", desc: "Сильное нисходящее движение ломает текущую бычью структуру. Рекомендуется торговать по тренду импульса." }
+        ];
 
-                let template = AI_NEWS_TEMPLATES[Math.floor(Math.random() * AI_NEWS_TEMPLATES.length)];
-                let pair = PAIRS_MOCK[Math.floor(Math.random() * PAIRS_MOCK.length)];
-                let amount = AMOUNTS_MOCK[Math.floor(Math.random() * AMOUNTS_MOCK.length)];
-                
-                let newsText = template.replace("{pair}", `<span class="highlight">${pair}</span>`).replace("{amount}", amount);
-                
-                let now = new Date();
-                let timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
-
-                const newsItem = document.createElement('div');
-                newsItem.className = 'news-item';
-                newsItem.innerHTML = `
-                    <div class="news-time">⌚ ${timeStr}</div>
-                    <div class="news-text">${newsText}</div>
-                `;
-                
-                container.insertBefore(newsItem, container.firstChild);
-                
-                // Keep only last 15 news items to prevent DOM bloat
-                if(container.children.length > 15) {
-                    container.removeChild(container.lastChild);
-                }
-            }
-
-            // ============================================
-            // ДИНАМИЧЕСКИЙ КАЛЕНДАРЬ
-            // ============================================
-            window.generateNewsCalendar = function() {
-                const grid = document.getElementById('calendar-days-box');
-                const title = document.getElementById('calendar-month-title');
-                if (!grid) return;
-                
+        function generateAiNews() {
+            const container = document.getElementById('ai-news-container');
+            if (!container) return;
+            
+            container.innerHTML = "";
+            // Сортируем в случайном порядке для эффекта живого обновления рынка
+            const shuffled = [...newsTemplates].sort(() => 0.5 - Math.random());
+            
+            shuffled.forEach(item => {
                 const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth(); // 0-11
-                const todayDate = now.getDate();
+                const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                 
-                // Кол-во дней в текущем месяце
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-                
-                if(title) title.innerText = `${monthNames[month]} ${year}`;
-                grid.innerHTML = '';
-                
-                const days = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'];
-                days.forEach(d => {
-                    const h = document.createElement('div'); h.className = 'cal-header'; h.innerText = d; grid.appendChild(h);
-                });
-                
-                // Простые макро-сводки для ИИ в зависимости от дня
-                const AI_MACRO_MOCK = [
-                    "Ожидание процентной ставки. Торгуем аккуратно.",
-                    "Выход Non-Farm Payrolls. Высокая волатильность.",
-                    "Нейтральный макроэкономический фон.",
-                    "Заседание ЦБ. Возможны сильные импульсы.",
-                    "Инфляционные данные CPI. Работать только по тренду."
-                ];
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.innerHTML = `
+                    <div class="news-img-wrapper" style="background-image: url('${item.img}')">
+                        <div class="news-badge">ИИ АНАЛИТИКА</div>
+                        <div class="news-quote-tag">${item.pair} (${item.change})</div>
+                        <div class="news-blur-overlay"></div>
+                    </div>
+                    <div class="news-body">
+                        <span class="news-time">Сегодня, ${timeStr} | Live Update</span>
+                        <h4 class="news-title">${item.title}</h4>
+                        <p class="news-desc">${item.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-                for(let i = 1; i <= daysInMonth; i++) {
-                    const dEl = document.createElement('div'); 
-                    dEl.className = 'cal-day'; 
-                    dEl.innerText = i;
-                    
-                    // Случайные новости на днях (чтобы календарь выглядел живым)
-                    let hasNews = Math.random() > 0.7;
-                    if(hasNews) dEl.classList.add('has-news');
-                    if(i === todayDate) dEl.classList.add('today'); 
-                    
-                    dEl.addEventListener('click', () => {
-                        let mockData = AI_MACRO_MOCK[Math.floor(Math.random() * AI_MACRO_MOCK.length)];
-                        document.getElementById('news-details-box').innerHTML = `🌐 <b>ИНДЕКС ДНЯ (${i} ${monthNames[month]}):</b> ${hasNews ? mockData : 'Новостной фон пуст. Идеальные условия для отработки технического анализа.'}`;
-                    });
-                    grid.appendChild(dEl);
-                }
-            };
+        // Загрузка книг в Базу Знаний
+        const booksData = [
+            { name: "Технический анализ. Швагер", icon: "📈" },
+            { name: "Воспоминания биржевого спекулянта", icon: "🧠" },
+            { name: "Японские свечи. Стив Нисон", icon: "🕯️" },
+            { name: "Зональный трейдинг. Марк Дуглас", icon: "💎" }
+        ];
 
-            window.sendAiChatMessage = async function() {
-                const inputEl = document.getElementById('ai-chat-input');
-                const txt = inputEl.value.trim();
-                if(!txt) return;
+        function loadBooks() {
+            const grid = document.getElementById('academy-books-list');
+            if (!grid) return;
+            grid.innerHTML = "";
+            booksData.forEach(b => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <span class="book-icon">${b.icon}</span>
+                    <span class="book-name">${b.name}</span>
+                `;
+                card.onclick = () => alert(`Скачивание книги "${b.name}" начнется в Telegram-боте.`);
+                grid.appendChild(card);
+            });
+        }
 
-                inputEl.value = '';
-                appendMsg('ai-chat-container', txt, 'user');
-                
-                const typing = document.getElementById('ai-chat-typing');
-                if(typing) {
-                    typing.style.display = 'block';
-                    typing.parentNode.appendChild(typing);
-                    typing.parentNode.scrollTop = typing.parentNode.scrollHeight;
-                }
+        // Симуляция Живого чата сообщества
+        const initialMessages = [
+            { user: "Дмитрий К.", text: "Отлично забрал движение по EURUSD на минуту! ИИ отработал четко.", admin: false },
+            { user: "SUPPORT PRO", text: "Приветствуем новых участников клуба! Напоминаем, виджет анализа обновляется каждую минуту автоматически.", admin: true },
+            { user: "Алексей С.", text: "Бычий флаг по битку только что дал отличный профит 👍", admin: false }
+        ];
 
-                try {
-                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST",
-                        headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            model: "llama-3.3-70b-versatile",
-                            messages: [
-                                { role: "system", content: "Ты — продвинутый ИИ-аналитик торгового клуба VIP COMMUNITY PRO. Отвечай кратко, профессионально, как нейросеть для трейдеров." },
-                                { role: "user", content: txt }
-                            ],
-                            temperature: 0.5
-                        })
-                    });
-                    const data = await res.json();
-                    if(typing) typing.style.display = 'none';
-
-                    if (data.choices && data.choices[0]) {
-                        let answer = data.choices[0].message.content;
-                        appendMsg('ai-chat-container', answer.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--neon-green);">$1</b>').replace(/\n/g, '<br>'), 'bot', true);
-                    }
-                } catch(e) {
-                    if(typing) typing.style.display = 'none';
-                    appendMsg('ai-chat-container', 'System Error: Сервер перегружен.', 'bot');
-                }
-            };
-
-            function appendMsg(containerId, text, sender, isHTML = false) {
-                const box = document.getElementById(containerId);
-                if(!box) return;
+        function loadSavedCommunityChat() {
+            const box = document.getElementById('community-chat-messages');
+            if (!box) return;
+            box.innerHTML = "";
+            initialMessages.forEach(m => {
                 const msg = document.createElement('div');
-                msg.className = `chat-msg ${sender}`;
-                if(isHTML) msg.innerHTML = text; else msg.innerText = text;
-                box.insertBefore(msg, box.querySelector('#' + containerId + '-typing') || null);
-                box.scrollTop = box.scrollHeight;
+                msg.className = `chat-msg ${m.admin ? 'admin-type' : ''}`;
+                msg.innerHTML = `
+                    <div class="msg-user ${m.admin ? 'admin' : ''}">${m.user}</div>
+                    <div>${m.text}</div>
+                `;
+                box.appendChild(msg);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendCommunityMessage() {
+            const input = document.getElementById('community-chat-input');
+            const box = document.getElementById('community-chat-messages');
+            if (!input || !input.value.trim()) return;
+
+            const msg = document.createElement('div');
+            msg.className = 'chat-msg self';
+            msg.innerHTML = `
+                <div class="msg-user" style="color:var(--neon-purple);">Вы</div>
+                <div>${input.value}</div>
+            `;
+            box.appendChild(msg);
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // Симуляция Списка выплат онлайн
+        function updateLivePayouts() {
+            const list = document.getElementById('live-payouts-list');
+            if (!list) return;
+            list.innerHTML = "";
+            
+            const names = ["Иван М.", "Сергей П.", "Анна К.", "Владимир Х.", "Elena_Tr", "Dimas_FX", "Nikolay_B"];
+            const amounts = ["$120", "$350", "$80", "$500", "$210", "$145", "$950"];
+            
+            for(let i=0; i<5; i++) {
+                const randName = names[Math.floor(Math.random() * names.length)];
+                const randAmt = amounts[Math.floor(Math.random() * amounts.length)];
+                
+                const row = document.createElement('div');
+                row.className = 'payout-row';
+                row.innerHTML = `
+                    <span class="payout-user">👤 ${randName}</span>
+                    <span style="color:#70778c; font-size:11px;">Вывод одобрен</span>
+                    <span class="payout-amount">${randAmt}</span>
+                `;
+                list.appendChild(row);
+            }
+        }
+
+        // Модуль администратора
+        function renderAdminList() {
+            const container = document.getElementById('admin-whitelist-display');
+            if (!container) return;
+            const currentList = getWhitelist();
+            container.innerHTML = currentList.join('<br>');
+        }
+
+        function handleAdminAction(action) {
+            const input = document.getElementById('admin-user-id');
+            if (!input || !input.value.trim()) return;
+            
+            const targetId = Number(input.value.trim());
+            let currentList = getWhitelist();
+
+            if (action === 'add') {
+                if (!currentList.includes(targetId)) {
+                    currentList.push(targetId);
+                    alert(`ID ${targetId} успешно добавлен.`);
+                }
+            } else if (action === 'remove') {
+                currentList = currentList.filter(id => id !== targetId);
+                alert(`ID ${targetId} успешно удален.`);
             }
 
-            function loadSavedCommunityChat() {
-                const chatContainer = document.getElementById('community-chat-container');
-                if(!chatContainer) return;
-                const saved = localStorage.getItem('team_community_chat_history');
-                if (saved) {
-                    chatContainer.innerHTML = saved;
-                }
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+            localStorage.setItem('vip_whitelist', JSON.stringify(currentList));
+            input.value = "";
+            renderAdminList();
+        }
+
+        // Инициализация приложения
+        document.addEventListener("DOMContentLoaded", async () => {
+            const menuScreen = document.getElementById('app-container');
+            const deniedScreen = document.getElementById('screen-denied');
+            const deniedIdDisplay = document.getElementById('denied-id-display');
+
+            // Безопасное копирование ID при отказе в доступе
+            if (userId) {
+                deniedIdDisplay.innerText = userId;
+                try {
+                    navigator.clipboard.writeText(String(userId));
+                } catch(e) {}
+            } else {
+                deniedIdDisplay.innerText = "Используйте Telegram";
             }
 
-            window.sendCommunityMessage = function() {
-                const inp = document.getElementById('community-chat-input');
-                if(!inp) return;
-                const text = inp.value.trim(); 
-                if(!text) return; 
-                inp.value = '';
+            // Проверка прав доступа
+            const hasAccess = await checkAccess(userId);
+            
+            if (hasAccess || !tg) { 
+                // Если запуск вне Telegram или доступ разрешен
+                if (deniedScreen) deniedScreen.classList.remove('active');
+                if (menuScreen) menuScreen.classList.add('active');
                 
-                const container = document.getElementById('community-chat-container');
-                const msg = document.createElement('div'); 
-                msg.className = 'chat-msg user'; 
-                msg.innerText = text;
-                container.appendChild(msg); 
-                
-                container.scrollTop = container.scrollHeight;
-                localStorage.setItem('team_community_chat_history', container.innerHTML);
-            };
-
-            window.handleChatScreenshot = function(input) {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const container = document.getElementById('community-chat-container');
-                        const msg = document.createElement('div');
-                        msg.className = 'chat-msg user';
-                        msg.innerHTML = `<b>ОТЧЕТ PRO:</b><br><img src="${e.target.result}" style="max-width:100%; border-radius:15px; margin-top:8px; border:1px solid rgba(0,255,170,0.3);">`;
-                        container.appendChild(msg);
-                        
-                        container.scrollTop = container.scrollHeight;
-                        localStorage.setItem('team_community_chat_history', container.innerHTML);
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
-            };
-
-            window.switchScreen = switchScreen;
-
-            async function init() {
-                let userId = null;
-                let fullName = "GUEST_PRO";
-
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.ready();
-                    window.Telegram.WebApp.expand();
-                    window.Telegram.WebApp.setHeaderColor('#050810');
-                    window.Telegram.WebApp.setBackgroundColor('#050810');
-
-                    const tgData = window.Telegram.WebApp.initDataUnsafe;
-                    if (tgData && tgData.user) {
-                        const user = tgData.user;
-                        userId = String(user.id);
-                        fullName = user.first_name || "";
-                        if (user.last_name) fullName += " " + user.last_name;
-                    }
+                if (userId && ADMIN_LIST.includes(Number(userId))) {
+                    const adminPanel = document.getElementById('admin-panel');
+                    if (adminPanel) adminPanel.classList.add('active');
+                    renderAdminList();
                 }
 
-                // ============================================
-                // ЗАПУСК ПРОВЕРКИ БЕЗОПАСНОСТИ
-                // ============================================
-                const deniedScreen = document.getElementById('access-denied-screen');
-                const menuScreen = document.getElementById('menu-screen');
-                const deniedIdDisplay = document.getElementById('denied-telegram-id');
-
-                if (userId) {
-                    deniedIdDisplay.innerText = userId;
-
-                    if (userId === MASTER_ADMIN) {
-                        const adminBtnBox = document.getElementById('admin-link-box');
-                        if (adminBtnBox) adminBtnBox.style.display = 'block';
-                        renderAdminList();
-                    }
-
-                    if (!checkAccess(userId)) {
-                        if (menuScreen) menuScreen.classList.remove('active');
-                        if (deniedScreen) deniedScreen.classList.add('active');
-                        return; 
-                    }
-                } else {
-                    deniedIdDisplay.innerText = "NULL (USE TELEGRAM CLIENT)";
-                    if (menuScreen) menuScreen.classList.remove('active');
-                    if (deniedScreen) deniedScreen.classList.add('active');
-                    return; 
-                }
-                
+                // Первичная подгрузка данных профиля
                 const usernameEl = document.getElementById('profile-username');
+                const cardNameEl = document.getElementById('profile-card-name');
                 const idEl = document.getElementById('profile-telegram-id');
+                
                 if (usernameEl) usernameEl.innerText = fullName;
-                if (idEl) idEl.innerText = userId;
-                
-                initBalances();
-                loadBooks();
-                window.generateNewsCalendar();
-                loadSavedCommunityChat();
-                await updateLivePayouts();
-                
-                // Запуск интервалов
-                setInterval(updateLivePayouts, 5000); 
-                generateAiNews(); // Первая новость сразу
-                setInterval(generateAiNews, 15000); // Каждые 15 секунд новая новость
-                
-                calculateWeeklyTarget();
-            }
+                if (cardNameEl) cardNameEl.innerText = fullName;
+                if (idEl) idEl.innerText = userId ? `ID: ${userId}` : "ID: Локальный режим";
 
-            init();
+                // Запуск модулей
+                loadBooks();
+                generateAiNews();
+                loadSavedCommunityChat();
+                updateLivePayouts();
+
+                // Интервалы автообновления данных
+                setInterval(generateAiNews, 20000); // Обновление новостей каждые 20 сек
+                setInterval(updateLivePayouts, 7000);  // Обновление живых выплат каждые 7 сек
+            } else {
+                // Если доступ запрещен
+                if (menuScreen) menuScreen.classList.remove('active');
+                if (deniedScreen) deniedScreen.classList.add('active');
+            }
         });
     </script>
 </body>
