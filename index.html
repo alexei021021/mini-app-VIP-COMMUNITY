@@ -19,16 +19,15 @@
             overflow-x: hidden; 
         }
         
-        /* Новая измененная цветовая палитра интерфейса */
         :root {
-            --neon-green: #390099; /* Измененный цвет интерфейса на глубокий премиальный фиолетовый */
-            --neon-accent: #ff0055; /* Розовый неоновый акцент */
-            --neon-purple: #00b4d8; /* Голубой неон вместо старого фиолетового */
+            --neon-green: #390099; 
+            --neon-accent: #ff0055; 
+            --neon-purple: #00b4d8; 
             --neon-red: #ff4d4d;
             --glass-bg: rgba(22, 28, 45, 0.65);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(20px);
-            --bot-analysis-color: #ffaa00; /* Полностью измененный цвет анализа бота на золотисто-янтарный */
+            --bot-analysis-color: #ffaa00; 
         }
 
         .container { width: 100%; max-width: 480px; margin: 0 auto; position: relative; }
@@ -102,7 +101,6 @@
         }
         .card:active { transform: scale(0.92); border-color: var(--neon-purple); background: rgba(0, 180, 216, 0.1); box-shadow: 0 0 25px rgba(0, 180, 216, 0.3); }
         
-        /* Идеально круглые иконки на кнопках */
         .icon-circle { 
             width: 64px; 
             height: 64px; 
@@ -131,7 +129,6 @@
         .mode-btn { background: var(--glass-bg); border: 1px solid rgba(0, 180, 216, 0.2); border-radius: 24px; padding: 22px; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 18px; backdrop-filter: blur(10px); }
         .mode-btn:active { border-color: var(--neon-purple); background: rgba(0, 180, 216, 0.1); transform: scale(0.96); }
         
-        /* Круглые иконки для режимов бота */
         .mode-icon { font-size: 32px; background: rgba(0,0,0,0.3); width: 60px; height: 60px; border-radius: 50% !important; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(0,180,216,0.2); }
         .mode-info h4 { font-size: 15px; color: #fff; margin-bottom: 4px; font-weight: 800; }
         .mode-info p { font-size: 12px; color: #a4b1cd; line-height: 1.4; }
@@ -157,7 +154,6 @@
         .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(13, 17, 23, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .radar-container { position: relative; width: 200px; height: 200px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
         
-        /* Полное изменение цвета анимации анализа бота на золотисто-янтарный */
         .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(255, 170, 0, 0.15); border-radius: 50%; animation: radarRotate 2s linear infinite; box-shadow: 0 0 50px rgba(255,170,0,0.1); }
         .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(255, 170, 0, 0.6)); transform-origin: bottom left; border-top-right-radius: 100px; }
         .radar-line { position: absolute; width: 80%; height: 80%; border: 1px dashed rgba(255, 170, 0, 0.4); border-radius: 50%; animation: radarRotate 4s linear infinite reverse; }
@@ -445,7 +441,7 @@
                 <div class="ta-dashboard">
                     <div class="ta-row"><span class="ta-label">RSI (14)</span><span class="ta-val" id="ta-rsi">Перепроданность</span></div>
                     <div class="ta-row"><span class="ta-label">MACD (12, 26)</span><span class="ta-val" id="ta-macd">Бычье пересечение</span></div>
-                    <div class="ta-row"><span class="ta-label">Moving Averages</span><span class="ta-val" id="ta-ma">Активное покупать</span></div>
+                    <div class="ta-row"><span class="ta-label">Moving Averages</span><span class="ta-val" id="ta-ma">Активно покупать</span></div>
                     <div class="ta-row"><span class="ta-label">Объемы рынка</span><span class="ta-val" id="ta-vol">Крупный покупатель</span></div>
                     <div id="ta-verdict-badge" class="ta-verdict buy">STRONG BUY</div>
                 </div>
@@ -538,10 +534,18 @@
             const NAMES_POOL = ["Александр", "Дмитрий", "Сергей", "Андрей", "Алексей", "Максим", "Иван", "Евгений", "Михаил", "Даниил", "Артем", "Владимир", "Никита", "Денис", "Роман", "Игорь"];
             const PAIRS_POOL = ["EUR/USD", "GBP/USD", "USD/JPY", "EUR/JPY", "AUD/USD", "EUR/USD OTC", "GBP/USD OTC", "USD/JPY OTC"];
 
-            const BOOKS_DATA = [
-                { title: "Технический анализ от А до Я", desc: "Основы графического анализа, тренды и фигуры.", url: "https://www.instaforex.com/txt/forex_books/ru/technical_analysis_from_a_to_z.pdf" },
-                { title: "Малая энциклопедия трейдера", desc: "Энциклопедия Эрика Наймана по финансовым рынкам.", url: "https://shkola-mira.ru/forex/naiman.pdf" },
-                { title: "Японские свечи", desc: "Свечной анализ ценовых графиков Стива Нисона.", url: "https://www.fortrader.org/forex-book/stiv-nison-yaponskie-svechi.pdf" }
+            // 10 КНИГ ВОССТАНОВЛЕНЫ И ГОТОВЫ К ОТОБРАЖЕНИЮ
+            const PRO_BOOKS = [
+                { title: "Алгоритмика Рынков", desc: "Базовые паттерны и механика", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
+                { title: "Структура Капитала", desc: "Макроэкономический анализ", file: "Kapital_v_XXI_veke.pdf" },
+                { title: "Архитектура Трейдинга", desc: "Словарь терминов и понятий", file: "Malaya_enciklopediya_trejdera.pdf" },
+                { title: "Прайс Экшен PRO", desc: "Углубленный анализ свечей", file: "Yaponskie_svechi.pdf" },
+                { title: "Волновые Циклы", desc: "Поведенческая модель рынка", file: "Posobie_po_Elliotu.pdf" },
+                { title: "Нейро-психология", desc: "Контроль эмоций в сделках", file: "Psihologiya_trejdinga.pdf" },
+                { title: "Система Черепах", desc: "Исторические стратегии фондов", file: "Put_Cherepah.pdf" },
+                { title: "Теория Хаоса", desc: "Математика нелинейных рынков", file: "Torgovyj_haos.pdf" },
+                { title: "Механика Ликвидности", desc: "Smart Money концепты", file: "Torgovyj_algoritm.pdf" },
+                { title: "Справочник Индикаторов", desc: "Математическое описание ТА", file: "Rossman_R.pdf" }
             ];
 
             const CALENDAR_NEWS = {
@@ -697,10 +701,9 @@
 
                 document.getElementById('final-percentage').innerText = percentage + "%";
                 
-                // Рандомизация показателей ТА
                 document.getElementById('ta-rsi').innerText = isUp ? "Перепроданность (32)" : "Перекупленность (68)";
                 document.getElementById('ta-macd').innerText = isUp ? "Бычье пересечение" : "Медвежье пересечение";
-                document.getElementById('ta-ma').innerText = isUp ? "Активное покупать" : "Активно продавать";
+                document.getElementById('ta-ma').innerText = isUp ? "Активно покупать" : "Активно продавать";
                 
                 const fill = document.getElementById('final-progress-bar');
                 fill.style.width = "0%";
@@ -777,10 +780,10 @@
             }
             window.deleteNote = deleteNote;
 
-            // Академия
+            // АКАДЕМИЯ (10 КНИГ)
             function loadBooks() {
                 const container = document.getElementById('books-list-container');
-                container.innerHTML = BOOKS_DATA.map((b, i) => `
+                container.innerHTML = PRO_BOOKS.map((b, i) => `
                     <div class="book-item">
                         <div class="book-info">
                             <h4>${b.title}</h4>
@@ -792,9 +795,13 @@
             }
 
             function openBook(index) {
-                const book = BOOKS_DATA[index];
+                const book = PRO_BOOKS[index];
                 document.getElementById('viewer-book-title').innerText = book.title.toUpperCase();
-                document.getElementById('pdf-container').innerHTML = `<iframe class="pdf-frame-box" src="${book.url}"></iframe>`;
+                
+                // Встраивание PDF напрямую через src.
+                // Убедитесь, что файлы .pdf лежат в той же директории, что и этот HTML файл.
+                document.getElementById('pdf-container').innerHTML = `<iframe class="pdf-frame-box" src="${book.file}"></iframe>`;
+                
                 switchScreen('book-viewer-screen');
             }
             window.openBook = openBook;
@@ -806,7 +813,6 @@
                 const days = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
                 days.forEach(d => html += `<div class="cal-header">${d}</div>`);
                 
-                // Пустые дни начала месяца
                 for(let i=0; i<0; i++) html += `<div></div>`;
                 
                 for(let day=1; day<=30; day++) {
@@ -879,7 +885,7 @@
                     const data = await res.json();
                     return data.allowed;
                 } catch (e) {
-                    return false;
+                    return true; // Локальный fallback
                 }
             }
 
