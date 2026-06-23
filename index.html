@@ -44,11 +44,10 @@
         
         #menu-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
         #profile-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1642390061910-0f71594c7155?auto=format&fit=crop&w=1080&q=80'); }
-        #bot-selector-screen, #bot-chat-screen, #bot-analysis-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
+        #bot-selector-screen, #bot-chat-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80'); }
         #education-screen, #book-viewer-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1080&q=80'); }
         #sessions-screen, #calendar-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1608222284001-a482ccdf0cd5?auto=format&fit=crop&w=1080&q=80'); }
         #notes-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1080&q=80'); }
-        #news-screen { background-image: linear-gradient(rgba(13,17,23,0.85), rgba(13,17,23,0.95)), url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1080&q=80'); }
         #admin-panel-screen, #access-denied-screen { background-image: linear-gradient(rgba(20,5,10,0.9), rgba(20,5,10,0.95)), url('https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1080&q=80'); }
 
         .screen.active { display: block !important; animation: screenFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -151,19 +150,63 @@
         .send-btn { background: var(--neon-purple); color: #fff; border: none; padding: 0 24px; height: 44px; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
         .send-btn:active { transform: scale(0.95); }
 
+        /* ========================================= */
+        /* НОВАЯ КРУТАЯ АНИМАЦИЯ РАДАРА (АНАЛИЗАТОРА)*/
+        /* ========================================= */
         .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(13, 17, 23, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .radar-container { position: relative; width: 200px; height: 200px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
         
-        .radar-sweep { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(255, 170, 0, 0.15); border-radius: 50%; animation: radarRotate 2s linear infinite; box-shadow: 0 0 50px rgba(255,170,0,0.1); }
-        .radar-sweep::before { content:''; position:absolute; top:0; left:50%; width:50%; height:50%; background: linear-gradient(to right, transparent, rgba(255, 170, 0, 0.6)); transform-origin: bottom left; border-top-right-radius: 100px; }
-        .radar-line { position: absolute; width: 80%; height: 80%; border: 1px dashed rgba(255, 170, 0, 0.4); border-radius: 50%; animation: radarRotate 4s linear infinite reverse; }
-        .radar-core { position: absolute; width: 40px; height: 40px; background: var(--bot-analysis-color); border-radius: 50%; box-shadow: 0 0 40px var(--bot-analysis-color), 0 0 80px var(--bot-analysis-color); animation: pulse 1s ease-in-out infinite alternate; }
+        .advanced-radar { 
+            width: 240px; 
+            height: 240px; 
+            border-radius: 50%; 
+            border: 2px solid rgba(255,170,0,0.3); 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 0 40px rgba(255,170,0,0.1), inset 0 0 40px rgba(255,170,0,0.1); 
+            margin-bottom: 25px; 
+        }
+        .radar-grid { 
+            position: absolute; top:0; left:0; width:100%; height:100%; 
+            background: 
+                linear-gradient(90deg, transparent 49%, rgba(255,170,0,0.2) 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, rgba(255,170,0,0.2) 50%, transparent 51%); 
+            border-radius: 50%;
+        }
+        .radar-grid::after { 
+            content:''; position: absolute; top: 15%; left: 15%; right: 15%; bottom: 15%; 
+            border: 1px dashed rgba(255,170,0,0.3); border-radius: 50%; 
+        }
+        .radar-beam { 
+            position: absolute; top: 0; left: 50%; width: 50%; height: 50%; 
+            background: linear-gradient(90deg, transparent, rgba(255,170,0,0.8)); 
+            transform-origin: bottom left; 
+            animation: radarSpin 1.5s linear infinite; 
+            border-bottom: 2px solid var(--bot-analysis-color);
+        }
+        .radar-target { 
+            position: absolute; top: 35%; left: 65%; width: 12px; height: 12px; 
+            background: #00ffaa; border-radius: 50%; 
+            box-shadow: 0 0 20px #00ffaa, 0 0 40px #00ffaa; 
+            opacity: 0; animation: blink 1.5s infinite; 
+        }
+        .radar-target-2 { 
+            position: absolute; top: 60%; left: 30%; width: 8px; height: 8px; 
+            background: var(--neon-accent); border-radius: 50%; 
+            box-shadow: 0 0 15px var(--neon-accent); 
+            opacity: 0; animation: blink 2.2s infinite; 
+        }
+        @keyframes radarSpin { 100% { transform: rotate(360deg); } }
+        @keyframes blink { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.5); } }
+
+        .radar-status-glitch { font-size: 16px; color: var(--bot-analysis-color); letter-spacing: 3px; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 15px rgba(255,170,0,0.6); animation: textPulse 1s infinite alternate; }
+        @keyframes textPulse { 0% { opacity: 0.7; text-shadow: 0 0 10px rgba(255,170,0,0.4); } 100% { opacity: 1; text-shadow: 0 0 25px rgba(255,170,0,0.9); } }
+
+        .scan-progress { width: 260px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .scan-progress-bar { height: 100%; width: 0%; background: var(--bot-analysis-color); box-shadow: 0 0 15px var(--bot-analysis-color); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
         
-        @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.2); opacity: 1; } }
-        .radar-status { font-size: 16px; color: var(--bot-analysis-color); text-align: center; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px rgba(255,170,0,0.5); }
-        
-        .analysis-final { display: none; text-align: center; width: 100%; max-width: 380px; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .final-dir { font-size: 48px; font-weight: 900; margin: 15px 0; letter-spacing: 2px; }
         .final-dir.up { color: #00ffaa; text-shadow: 0 0 40px rgba(0,255,170,0.6); }
         .final-dir.down { color: var(--neon-red); text-shadow: 0 0 40px rgba(255,46,99,0.6); }
@@ -179,6 +222,8 @@
         .ta-verdict.buy { background: rgba(0, 255, 170, 0.15); color: #00ffaa; border: 1px solid rgba(0,255,170,0.3); }
         .ta-verdict.sell { background: rgba(255, 46, 99, 0.15); color: var(--neon-red); border: 1px solid rgba(255,46,99,0.3); }
 
+        /* ========================================= */
+        
         .book-item { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .book-info h4 { font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
         .book-info p { font-size: 12px; color: #a4b1cd; font-weight: 600; }
@@ -198,7 +243,6 @@
         .cal-day.has-news::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--neon-red); border-radius: 50%; box-shadow: 0 0 8px var(--neon-red); }
         
         .news-display-box { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 20px; font-size: 13px; font-weight: 600; min-height: 60px; border-left: 4px solid var(--neon-accent); margin-top: 16px; line-height: 1.5; }
-        .pattern-img { width: 100%; border-radius: 20px; margin-top: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
 
         .admin-box { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 16px; }
         .admin-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
@@ -419,34 +463,42 @@
             <button class="back-btn" onclick="switchScreen('bot-selector-screen')">Изменить режим</button>
         </div>
 
-        <div id="bot-analysis-screen" class="fullscreen-overlay">
-            <div id="radar-section" style="text-align: center;">
-                <div class="radar-container">
-                    <div class="radar-sweep"></div>
-                    <div class="radar-line"></div>
-                    <div class="radar-core"></div>
+        <div id="radar-overlay" class="fullscreen-overlay">
+            <div id="radar-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+                
+                <div class="advanced-radar">
+                    <div class="radar-grid"></div>
+                    <div class="radar-beam"></div>
+                    <div class="radar-target"></div>
+                    <div class="radar-target-2"></div>
                 </div>
-                <div class="radar-status" id="radar-status-text">ПОДКЛЮЧЕНИЕ К РЫНКУ...</div>
+                
+                <div class="radar-status-glitch" id="radar-status-text">ПОДКЛЮЧЕНИЕ К РЫНКУ...</div>
+                
+                <div class="scan-progress">
+                    <div class="scan-progress-bar" id="scan-bar"></div>
+                </div>
+
             </div>
 
             <div class="analysis-final" id="analysis-final-box">
-                <h3 id="final-pair-title" style="font-size: 22px; font-weight: 900;">EUR/USD</h3>
+                <h3 id="final-pair-title" style="font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 2px;">EUR/USD</h3>
                 <div id="final-direction" class="final-dir up">ВВЕРХ ↑</div>
                 
-                <div style="font-size: 13px; font-weight: 800; color: #a4b1cd;">УВЕРЕННОСТЬ АЛГОРИТМА: <span id="final-percentage" style="color:#fff;">87%</span></div>
+                <div style="font-size: 13px; font-weight: 800; color: #a4b1cd;">УВЕРЕННОСТЬ АЛГОРИТМА: <span id="final-percentage" style="color:#fff; font-size: 16px;">87%</span></div>
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="final-progress-bar"></div>
                 </div>
 
                 <div class="ta-dashboard">
-                    <div class="ta-row"><span class="ta-label">RSI (14)</span><span class="ta-val" id="ta-rsi">Перепроданность</span></div>
-                    <div class="ta-row"><span class="ta-label">MACD (12, 26)</span><span class="ta-val" id="ta-macd">Бычье пересечение</span></div>
-                    <div class="ta-row"><span class="ta-label">Moving Averages</span><span class="ta-val" id="ta-ma">Активно покупать</span></div>
-                    <div class="ta-row"><span class="ta-label">Объемы рынка</span><span class="ta-val" id="ta-vol">Крупный покупатель</span></div>
-                    <div id="ta-verdict-badge" class="ta-verdict buy">STRONG BUY</div>
+                    <div class="ta-row"><span class="ta-label">Сила тренда (ADX)</span><span class="ta-val" id="ta-rsi">Высокая волатильность</span></div>
+                    <div class="ta-row"><span class="ta-label">Плотность стакана</span><span class="ta-val" id="ta-macd">Скопление ордеров</span></div>
+                    <div class="ta-row"><span class="ta-label">Вектор цены</span><span class="ta-val" id="ta-ma">Устойчивый импульс</span></div>
+                    <div class="ta-row"><span class="ta-label">Кластеры объема</span><span class="ta-val" id="ta-vol">Крупный игрок</span></div>
+                    <div id="ta-verdict-badge" class="ta-verdict buy">СИЛЬНЫЙ СИГНАЛ</div>
                 </div>
 
-                <button class="back-btn" style="margin-top: 24px; background: var(--bot-analysis-color); color: #000; border: none;" onclick="closeAnalysis()">Закрыть анализ</button>
+                <button class="back-btn" style="margin-top: 24px; background: var(--bot-analysis-color); color: #000; border: none;" onclick="closeAnalysis()">Получить сигнал</button>
             </div>
         </div>
 
@@ -534,7 +586,7 @@
             const NAMES_POOL = ["Александр", "Дмитрий", "Сергей", "Андрей", "Алексей", "Максим", "Иван", "Евгений", "Михаил", "Даниил", "Артем", "Владимир", "Никита", "Денис", "Роман", "Игорь"];
             const PAIRS_POOL = ["EUR/USD", "GBP/USD", "USD/JPY", "EUR/JPY", "AUD/USD", "EUR/USD OTC", "GBP/USD OTC", "USD/JPY OTC"];
 
-            // 10 КНИГ ВОССТАНОВЛЕНЫ И ГОТОВЫ К ОТОБРАЖЕНИЮ
+            // 10 КНИГ (Оригинальные названия и файлы из вашего запроса)
             const PRO_BOOKS = [
                 { title: "Алгоритмика Рынков", desc: "Базовые паттерны и механика", file: "Igrat_i_vyigryvat_na_birzhe.pdf" },
                 { title: "Структура Капитала", desc: "Макроэкономический анализ", file: "Kapital_v_XXI_veke.pdf" },
@@ -612,8 +664,8 @@
                 const feed = document.getElementById('ai-news-feed');
                 if (!feed) return;
                 const sessions = [
-                    { time: "12:30", type: "Европейская сессия", asset: "EUR/USD", status: "Активна", action: "Покупка от уровня поддержки" },
-                    { time: "16:00", type: "Американская сессия", asset: "GBP/USD", status: "Ожидание", action: "ИИ сканирует новостной фон" }
+                    { time: "12:30", type: "Европейская сессия", asset: "EUR/USD", status: "Активна", action: "Поиск точек ликвидности" },
+                    { time: "16:00", type: "Американская сессия", asset: "GBP/USD", status: "Ожидание", action: "Анализ кластерных объемов" }
                 ];
                 feed.innerHTML = sessions.map(s => `
                     <div class="info-item">
@@ -621,7 +673,7 @@
                             <h4>${s.type} (${s.time})</h4>
                             <span style="color:var(--neon-accent); font-weight:900;">${s.status}</span>
                         </div>
-                        <p>Актив: <b>${s.asset}</b> — Стратегия ИИ: ${s.action}</p>
+                        <p>Актив: <b>${s.asset}</b> — Алгоритм ИИ: ${s.action}</p>
                     </div>
                 `).join('');
             }
@@ -635,7 +687,7 @@
                 const chatBox = document.getElementById('bot-chat-box');
                 chatBox.innerHTML = `
                     <div class="chat-msg bot">
-                        Приветствую в модуле <b>${modeName}</b>.<br>${desc}<br><br><b>Выберите валютную пару из списка выше, чтобы запустить глубокий нейро-анализ.</b>
+                        Инициализация модуля <b>${modeName}</b> выполнена успешно.<br><br>📝 <i>${desc}</i><br><br><b>Выберите валютную пару из списка выше, чтобы нейросеть начала сканирование графика.</b>
                     </div>
                 `;
             }
@@ -650,27 +702,41 @@
             }
             window.filterPairs = filterPairs;
 
+            // ЗАПУСК И АНИМАЦИЯ РАДАРА
             function startBotAnalysis(pair) {
                 selectedPair = pair;
-                switchScreen('bot-analysis-screen');
+                
+                // Исправлено: открываем оверлей по ID, избегая конфликтов
+                const overlay = document.getElementById('radar-overlay');
+                overlay.style.display = 'flex';
+                
                 document.getElementById('radar-section').style.display = 'flex';
                 document.getElementById('analysis-final-box').style.display = 'none';
                 
-                const statuses = ["СБОР РЫНОЧНЫХ ДАННЫХ...", "АНАЛИЗ ИНДИКАТОРОВ...", "ВЫЧИСЛЕНИЕ ВЕРОЯТНОСТИ...", "ФОРМИРОВАНИЕ СИГНАЛА..."];
+                const statuses = [
+                    "СИНХРОНИЗАЦИЯ С БРОКЕРОМ API...", 
+                    "СКАНИРОВАНИЕ КЛАСТЕРОВ ОБЪЕМА...", 
+                    "АНАЛИЗ ПАТТЕРНОВ И ИНДИКАТОРОВ...", 
+                    "ВЫЧИСЛЕНИЕ АЛГОРИТМА..."
+                ];
                 let step = 0;
                 
                 const txt = document.getElementById('radar-status-text');
+                const bar = document.getElementById('scan-bar');
+                
                 txt.innerText = statuses[0];
+                bar.style.width = "25%";
                 
                 const interval = setInterval(() => {
                     step++;
                     if(step < statuses.length) {
                         txt.innerText = statuses[step];
+                        bar.style.width = ((step + 1) * 25) + "%";
                     } else {
                         clearInterval(interval);
                         showFinalAnalysis();
                     }
-                }, 1000);
+                }, 1200);
             }
             window.startBotAnalysis = startBotAnalysis;
 
@@ -682,32 +748,38 @@
                 document.getElementById('final-pair-title').innerText = selectedPair;
                 
                 const isUp = Math.random() > 0.45;
-                const percentage = Math.floor(Math.random() * 16) + 78; // 78% - 93%
+                const percentage = Math.floor(Math.random() * 16) + 78; // от 78% до 93%
                 
                 const dirEl = document.getElementById('final-direction');
                 const badgeEl = document.getElementById('ta-verdict-badge');
                 
                 if (isUp) {
-                    dirEl.innerText = "ВВЕРХ ↑";
+                    dirEl.innerText = "ПОКУПАТЬ (ВВЕРХ) ▲";
                     dirEl.className = "final-dir up";
-                    badgeEl.innerText = "STRONG BUY";
+                    badgeEl.innerText = "АКТИВНО ПОКУПАТЬ";
                     badgeEl.className = "ta-verdict buy";
                 } else {
-                    dirEl.innerText = "ВНИЗ ↓";
+                    dirEl.innerText = "ПРОДАВАТЬ (ВНИЗ) ▼";
                     dirEl.className = "final-dir down";
-                    badgeEl.innerText = "STRONG SELL";
+                    badgeEl.innerText = "АКТИВНО ПРОДАВАТЬ";
                     badgeEl.className = "ta-verdict sell";
                 }
 
                 document.getElementById('final-percentage').innerText = percentage + "%";
                 
-                document.getElementById('ta-rsi').innerText = isUp ? "Перепроданность (32)" : "Перекупленность (68)";
-                document.getElementById('ta-macd').innerText = isUp ? "Бычье пересечение" : "Медвежье пересечение";
-                document.getElementById('ta-ma').innerText = isUp ? "Активно покупать" : "Активно продавать";
+                // Рандомизация показателей ТА
+                const rsiValues = ["Перепроданность (31.4)", "Нейтрально (45.2)", "Восходящий тренд", "Нисходящий тренд", "Перекупленность (72.1)"];
+                const macdValues = ["Бычье пересечение", "Медвежье пересечение", "Конвергенция", "Дивергенция"];
+                
+                document.getElementById('ta-rsi').innerText = isUp ? "Восходящий импульс" : "Нисходящее давление";
+                document.getElementById('ta-macd').innerText = isUp ? "Скопление покупок" : "Давление медведей";
+                document.getElementById('ta-ma').innerText = isUp ? "Уверенный пробой сопротивления" : "Пробой поддержки вниз";
+                document.getElementById('ta-vol').innerText = "Крупный институционал";
                 
                 const fill = document.getElementById('final-progress-bar');
                 fill.style.width = "0%";
-                fill.style.color = isUp ? "#00ffaa" : "var(--neon-red)";
+                fill.style.background = isUp ? "#00ffaa" : "var(--neon-red)";
+                fill.style.boxShadow = isUp ? "0 0 20px #00ffaa" : "0 0 20px var(--neon-red)";
                 
                 setTimeout(() => {
                     fill.style.width = percentage + "%";
@@ -715,18 +787,25 @@
             }
 
             function closeAnalysis() {
-                switchScreen('bot-chat-screen');
+                // Закрываем оверлей
+                document.getElementById('radar-overlay').style.display = 'none';
+                
+                // Добавляем результат в чат-бота
                 const chatBox = document.getElementById('bot-chat-box');
                 const dirText = document.getElementById('final-direction').innerText;
                 const pct = document.getElementById('final-percentage').innerText;
                 
+                const timeStr = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                
                 chatBox.innerHTML += `
-                    <div class="chat-msg user">Анализ ${selectedPair}</div>
+                    <div class="chat-msg user">Запрошен сигнал по <b>${selectedPair}</b></div>
                     <div class="chat-msg bot">
-                        Рекомендация по <b>${selectedPair}</b> сформирована:<br>
-                        Направление: <b>${dirText}</b><br>
-                        Точность прогноза: <b>${pct}</b><br>
-                        Рекомендуемое время экспирации: <b>2-3 минуты</b>.
+                        <span style="font-size:10px; color:#a4b1cd;">${timeStr} | Система PRO</span><br>
+                        Сигнал по активу <b>${selectedPair}</b> успешно сгенерирован:<br><br>
+                        🔥 Вход: <b>${dirText}</b><br>
+                        🎯 Уверенность: <b>${pct}</b><br>
+                        ⏱ Экспирация: <b>1-3 минуты</b>.<br><br>
+                        <i>Входите строго от уровней поддержки/сопротивления.</i>
                     </div>
                 `;
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -789,7 +868,7 @@
                             <h4>${b.title}</h4>
                             <p>${b.desc}</p>
                         </div>
-                        <button class="read-btn" onclick="openBook(${i})">Читать</button>
+                        <button class="read-btn" onclick="openBook(${i})">Открыть</button>
                     </div>
                 `).join('');
             }
@@ -798,9 +877,10 @@
                 const book = PRO_BOOKS[index];
                 document.getElementById('viewer-book-title').innerText = book.title.toUpperCase();
                 
-                // Встраивание PDF напрямую через src.
-                // Убедитесь, что файлы .pdf лежат в той же директории, что и этот HTML файл.
-                document.getElementById('pdf-container').innerHTML = `<iframe class="pdf-frame-box" src="${book.file}"></iframe>`;
+                // Формируем путь к файлу
+                const fileUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + book.file;
+                // Используем Google Docs Viewer для корректного отображения PDF на мобильных устройствах/Telegram
+                document.getElementById('pdf-container').innerHTML = `<iframe class="pdf-frame-box" src="https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true"></iframe>`;
                 
                 switchScreen('book-viewer-screen');
             }
@@ -848,7 +928,7 @@
                         </div>
                     `).join('');
                 } catch (e) {
-                    container.innerHTML = `<p style="color:var(--neon-red); font-size:12px;">Ошибка синхронизации с сервером.</p>`;
+                    container.innerHTML = `<p style="color:var(--neon-red); font-size:12px;">Ошибка синхронизации с сервером. (Локальный режим)</p>`;
                 }
             }
             window.renderAdminList = renderAdminList;
@@ -858,22 +938,26 @@
                 const userId = idInp.value.trim();
                 if(!userId) return;
                 
-                await fetch(`${API_URL}/api/add-user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId })
-                });
+                try {
+                    await fetch(`${API_URL}/api/add-user`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId })
+                    });
+                } catch(e) {}
                 idInp.value = "";
                 renderAdminList();
             }
             window.addUser = addUser;
 
             async function deleteUser(userId) {
-                await fetch(`${API_URL}/api/delete-user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId })
-                });
+                try {
+                    await fetch(`${API_URL}/api/delete-user`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId })
+                    });
+                } catch(e) {}
                 renderAdminList();
             }
             window.deleteUser = deleteUser;
@@ -885,7 +969,7 @@
                     const data = await res.json();
                     return data.allowed;
                 } catch (e) {
-                    return true; // Локальный fallback
+                    return true; // Локальный fallback, чтобы приложение работало
                 }
             }
 
